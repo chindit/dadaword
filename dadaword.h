@@ -108,6 +108,7 @@ private slots:
     void couper();
     void copier();
     void coller();
+    void mode_surecriture();
 
 private:
     void create_menus();
@@ -150,6 +151,7 @@ private:
     QComboBox *nom_format;
     QAction *affichage_format;
     QPushButton *status_is_modified;
+    QPushButton *status_surecriture;
     //Orthographe
     QToolBar *barre_orthographe;
     QComboBox *orth_suggest;

@@ -88,6 +88,7 @@ DadaWord::~DadaWord()
     delete affichage_recherche;
     delete barre_orthographe;
     delete status_is_modified;
+    delete status_surecriture;
 
 }
 
@@ -118,7 +119,16 @@ void DadaWord::cree_iu(){
     //Création de la barre d'état
     barre_etat = statusBar();
     barre_etat->showMessage(tr("Prêt"), 2500);
-    //Initialisation des labels
+    //Initialisation des boutons
+    //Surécriture
+    status_surecriture = new QPushButton(tr("INS"), statusBar());
+    //Bouton aplati
+    status_surecriture->setFlat(true);
+    //Ajout à la barre des tâches
+    statusBar()->addPermanentWidget(status_surecriture);
+    //Connexion
+    connect(status_surecriture, SIGNAL(clicked()), this, SLOT(mode_surecriture()));
+    //Enregistrement
     status_is_modified = new QPushButton(tr("Pas de modifications"), statusBar());
     //Style du bouton pour qu'on ne le remarque pas
     status_is_modified->setFlat(true);
@@ -2576,4 +2586,18 @@ void DadaWord::copier(){
 //Coller
 void DadaWord::coller(){
     find_edit()->paste();
+}
+
+//Mode de sur-écriture
+void DadaWord::mode_surecriture(){
+    bool etat = find_edit()->overwriteMode();
+    //Vu qu'il y a eu clic, on inverse le statut
+    if(etat){
+        find_edit()->setOverwriteMode(false);
+        status_surecriture->setText("INS");
+    }
+    else{
+        find_edit()->setOverwriteMode(true);
+        status_surecriture->setText(tr("RFP")); //"RFP" pour "Refrappe"
+    }
 }
