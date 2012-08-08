@@ -1,0 +1,6 @@
+ÉTAPES POUR L'INSTALLATION :
+
+1)Compiler zlib
+2)Compiler quaZip
+3)Compiler hunspell (adapter le chemin vers la lib dans le .pro)
+3)Compiler DadaWord (n'oubliez pas QMake ;-) )

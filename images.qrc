@@ -1,0 +1,57 @@
+<RCC>
+    <qresource prefix="/menus">
+        <file>images/about.gif</file>
+        <file>images/document_preview.png</file>
+        <file>images/exit.png</file>
+        <file>images/filesave.png</file>
+        <file>images/text_bold.png</file>
+        <file>images/fileopen.png</file>
+        <file>images/text_italic.png</file>
+        <file>images/text_under.png</file>
+        <file>images/odt.png</file>
+        <file>images/precedent.png</file>
+        <file>images/suivant.png</file>
+        <file>images/nouveau.png</file>
+        <file>images/outils.png</file>
+        <file>images/ok.png</file>
+        <file>images/close.png</file>
+        <file>images/couleur_texte.png</file>
+        <file>images/couleur_highlight.png</file>
+        <file>images/redo.png</file>
+        <file>images/undo.png</file>
+        <file>images/enregistrer_sous.png</file>
+        <file>images/format_gauche.png</file>
+        <file>images/format_centre.png</file>
+        <file>images/format_droite.png</file>
+        <file>images/format_justifie.png</file>
+        <file>images/logo_qt.jpg</file>
+        <file>images/image.png</file>
+        <file>images/imprimer.png</file>
+        <file>images/pdf.png</file>
+        <file>images/tableau.png</file>
+        <file>images/add_column.jpeg</file>
+        <file>images/add_row.png</file>
+        <file>images/delete_column.gif</file>
+        <file>images/delete_row.jpeg</file>
+        <file>images/text.png</file>
+        <file>images/puces.png</file>
+        <file>images/log.png</file>
+        <file>images/balai.png</file>
+        <file>images/sortir.png</file>
+        <file>images/visible.png</file>
+        <file>images/full_screen.png</file>
+        <file>images/search.png</file>
+        <file>images/apres.png</file>
+        <file>images/avant.png</file>
+        <file>images/statistiques.png</file>
+        <file>images/liste_ordonnee.png</file>
+        <file>images/orthographe.png</file>
+        <file>images/add_dico.png</file>
+        <file>images/ignorer.png</file>
+        <file>images/suivant2.png</file>
+        <file>images/langue.png</file>
+    </qresource>
+    <qresource prefix="/programme">
+        <file>images/dadaword.gif</file>
+    </qresource>
+</RCC>
