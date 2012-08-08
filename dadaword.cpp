@@ -87,6 +87,7 @@ DadaWord::~DadaWord()
     delete barre_recherche;
     delete affichage_recherche;
     delete barre_orthographe;
+    delete status_is_modified;
 
 }
 
@@ -113,6 +114,17 @@ void DadaWord::cree_iu(){
     //modification = false;
     titre_doc = new QString;
     couleur_actuelle = new QColor(Qt::transparent);
+
+    //Création de la barre d'état
+    barre_etat = statusBar();
+    barre_etat->showMessage(tr("Prêt"), 2500);
+    //Initialisation des labels
+    status_is_modified = new QPushButton(tr("Pas de modifications"), statusBar());
+    //Style du bouton pour qu'on ne le remarque pas
+    status_is_modified->setFlat(true);
+    statusBar()->addPermanentWidget(status_is_modified);
+    //On connecte le QLabel avec le slot d'enregistrement
+    connect(status_is_modified, SIGNAL(clicked()), this, SLOT(enregistrement()));
 
     //Création des menus
     create_menus();
@@ -183,10 +195,6 @@ void DadaWord::cree_iu(){
     //connections globales
     connect(doc_principal, SIGNAL(contentsChanged()), this, SLOT(indicateur_modifications()));
     connect(zone_centrale, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(changement_focus(QMdiSubWindow*)));
-
-    //Création de la barre d'état
-    barre_etat = statusBar();
-    barre_etat->showMessage(tr("Prêt"));
 
 }
 
@@ -413,6 +421,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     temp_document = edit_temp->document();
     temp_document->setModified(false);
     enregistrer->setEnabled(false);
+    status_is_modified->setText(tr("Document modifié"));
 
     return;
 }
@@ -857,6 +866,7 @@ void DadaWord::create_menus(){
     connect(enregistrer, SIGNAL(triggered()), this, SLOT(enregistrement()));
     //Désactivation par défaut, on a rien modifié
     enregistrer->setEnabled(false);
+    status_is_modified->setText(tr("Pas de modifications"));
 
     QAction *enregistrer_sous = menu_fichier->addAction(QIcon(":/menus/images/enregistrer_sous.png"), tr("Enregistrer le fichier sous"));
     enregistrer_sous->setShortcut(QKeySequence("Maj+Ctrl+S"));
@@ -920,6 +930,24 @@ void DadaWord::create_menus(){
     edition_redo->setStatusTip(tr("Refaire l'action précédemment annulée"));
     edition_redo->setShortcut(QKeySequence("Ctrl+Maj+Z"));
     connect(edition_redo, SIGNAL(triggered()), this, SLOT(make_redo()));
+
+    QAction *edition_couper = menu_edition->addAction(tr("Couper"));
+    edition_couper->setStatusTip(tr("Couper la sélection"));
+    edition_couper->setShortcut(QKeySequence("Ctrl+X"));
+    edition_couper->setIcon(QIcon(":/menus/images/edit-cut.png"));
+    connect(edition_couper, SIGNAL(triggered()), this, SLOT(couper()));
+
+    QAction *edition_copier = menu_edition->addAction(tr("Copier"));
+    edition_copier->setStatusTip(tr("Copier la sélection"));
+    edition_copier->setShortcut(QKeySequence("Ctrl+C"));
+    edition_copier->setIcon(QIcon(":/menus/images/edit-copy.png"));
+    connect(edition_copier, SIGNAL(triggered()), this, SLOT(copier()));
+
+    QAction *edition_coller = menu_edition->addAction(tr("Coller"));
+    edition_coller->setStatusTip(tr("Coller la sélection"));
+    edition_coller->setShortcut(QKeySequence("Ctrl+V"));
+    edition_coller->setIcon(QIcon(":/menus/images/edit-paste.png"));
+    connect(edition_coller, SIGNAL(triggered()), this, SLOT(coller()));
 
     //Recherche
     QAction *rechercher = menu_edition->addAction(tr("Rechercher"));
@@ -1391,6 +1419,7 @@ void DadaWord::indicateur_modifications(){
     //Gestion de l'icône d'enregistrement
     if(!enregistrer->isEnabled()){
         enregistrer->setEnabled(true);
+        status_is_modified->setText(tr("Document modifié"));
     }
     return;
 }
@@ -2263,6 +2292,7 @@ void DadaWord::change_style(int style){
     return;
 }
 
+//Orthographe : slot principal de vérification orthographique
 void DadaWord::verif_orthographe(){
     QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
     if(!QFile::exists(userDict)){
@@ -2384,6 +2414,7 @@ void DadaWord::verif_orthographe(){
     return;
 }
 
+//Orthographe : ignorer toutes les occurences du mot
 void DadaWord::orth_ignore(){
     //On ajoute à la liste des mots à ignorer
     list_skip.append(orth_erreur);
@@ -2392,6 +2423,7 @@ void DadaWord::orth_ignore(){
     return;
 }
 
+//Orthographe : ajouter au dictionnaire
 void DadaWord::orth_dico(){
     if(!orth_erreur.isEmpty() && !orth_erreur.isNull()){
         QString dictPath = "/usr/share/hunspell/es_ES";
@@ -2408,6 +2440,7 @@ void DadaWord::orth_dico(){
     }
 }
 
+//Orthographe : remplacer
 void DadaWord::orth_remplace(QString mot){
     QTextCursor temp = pos_orth;
 
@@ -2425,6 +2458,7 @@ void DadaWord::orth_remplace(QString mot){
     return;
 }
 
+//Orthographe : remplacer tout
 void DadaWord::orth_remplace_all(){
     QTextCursor temp(find_edit()->document());
     temp.select(QTextCursor::Document);
@@ -2464,6 +2498,7 @@ void DadaWord::orth_remplace_all(){
     return;
 }
 
+//Changement de la langue de vérification
 void DadaWord::orth_langue(){
     QDialog *fen = new QDialog;
     fen->setWindowTitle(tr("Langue du correcteur"));
@@ -2505,6 +2540,7 @@ void DadaWord::orth_langue(){
     return;
 }
 
+//Arrêt de la vérification orthographique
 void DadaWord::orth_stop(){
     //On remet le curseur au début pour ne pas avoir de bug
     pos_orth.movePosition(QTextCursor::Start);
@@ -2525,4 +2561,19 @@ void DadaWord::orth_stop(){
 
     //Et c'est tout!
     return;
+}
+
+//Couper
+void DadaWord::couper(){
+    find_edit()->cut();
+}
+
+//Copier
+void DadaWord::copier(){
+    find_edit()->copy();
+}
+
+//Coller
+void DadaWord::coller(){
+    find_edit()->paste();
 }

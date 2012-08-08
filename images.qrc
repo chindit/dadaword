@@ -50,6 +50,9 @@
         <file>images/ignorer.png</file>
         <file>images/suivant2.png</file>
         <file>images/langue.png</file>
+        <file>images/edit-copy.png</file>
+        <file>images/edit-cut.png</file>
+        <file>images/edit-paste.png</file>
     </qresource>
     <qresource prefix="/programme">
         <file>images/dadaword.gif</file>

@@ -105,6 +105,9 @@ private slots:
     void orth_remplace_all();
     void orth_langue();
     void orth_stop();
+    void couper();
+    void copier();
+    void coller();
 
 private:
     void create_menus();
@@ -146,6 +149,7 @@ private:
     QToolBar *bar_format;
     QComboBox *nom_format;
     QAction *affichage_format;
+    QPushButton *status_is_modified;
     //Orthographe
     QToolBar *barre_orthographe;
     QComboBox *orth_suggest;
