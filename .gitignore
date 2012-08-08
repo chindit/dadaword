@@ -10,3 +10,6 @@
 *.lai
 *.la
 *.a
+
+# Préférences de QtCreator
+Dadaword.pro.user
