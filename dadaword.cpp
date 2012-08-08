@@ -87,8 +87,6 @@ DadaWord::~DadaWord()
     delete barre_recherche;
     delete affichage_recherche;
     delete barre_orthographe;
-    delete status_is_modified;
-    delete status_surecriture;
 
 }
 
@@ -405,6 +403,14 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         QString nom_fichier_fenetre = nom_fichier;
         nom_fichier_fenetre.remove(0, (nb_carac+1));
         fenetre_temp->setWindowTitle(nom_fichier_fenetre);
+
+        //Activation de la coloration syntaxique
+        if(fenetre_temp->windowTitle().contains(".htm")){
+            colore_html->setEnabled(true);
+        }
+        else{
+            colore_html->setEnabled(false);
+        }
     }
     else{
         nom_fichier = fenetre_temp->accessibleDescription();
@@ -543,6 +549,12 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             }
             if(nom_fichier.endsWith(".ddw", Qt::CaseInsensitive) || nom_fichier.endsWith(".htm", Qt::CaseInsensitive) || nom_fichier.endsWith(".html", Qt::CaseInsensitive)){
                 find_edit()->setHtml(contenu_total_fichier);
+                if(!nom_fichier.endsWith(".ddw", Qt::CaseInsensitive)){
+                    colore_html->setEnabled(true);
+                }
+                else{
+                    colore_html->setEnabled(false);
+                }
             }
             else{
                 find_edit()->setText(contenu_total_fichier);
@@ -1166,6 +1178,15 @@ void DadaWord::create_menus(){
     full_screen->setShortcut(QKeySequence(Qt::Key_F10));
     connect(full_screen, SIGNAL(triggered()), this, SLOT(make_full_screen()));
 
+    //Coloration du HTML
+    colore_html = menu_outils->addAction(tr("Colorer la syntaxe"));
+    colore_html->setIcon(QIcon(":/menus/images/coloration_syntaxique.png"));
+    colore_html->setStatusTip(tr("Colore le code HTML"));
+    colore_html->setCheckable(true);
+    colore_html->setChecked(false);
+    colore_html->setEnabled(false);
+    connect(colore_html, SIGNAL(triggered()), this, SLOT(html_highlight()));
+
     //Statistiques
     QAction *statistiques_doc = menu_outils->addAction(tr("Statistiques"));
     statistiques_doc->setIcon(QIcon(":/menus/images/statistiques.png"));
@@ -1512,6 +1533,15 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         to_text->setChecked(!find_edit()->acceptRichText());
         //Reset du curseur pour la correction orthographique
         pos_orth.movePosition(QTextCursor::Start);
+
+        //Coloration syntaxique
+        //On ne l'affiche que si l'extension le permet
+        if(find_onglet()->windowTitle().contains(".htm")){
+            colore_html->setEnabled(true);
+        }
+        else{
+            colore_html->setEnabled(false);
+        }
     }//Fin du "if" fenêtre valide
     return;
 }
@@ -1850,6 +1880,7 @@ void DadaWord::to_plain_text(){
         QString contenu = find_edit()->toHtml();
         find_edit()->clear();
         find_edit()->setPlainText(contenu);
+        instance = new HighlighterHtml(find_edit()->document());
         //On refuse le RichText sous peine de bug lors du changement de focus
         find_edit()->setAcceptRichText(false);
     }
@@ -2576,16 +2607,19 @@ void DadaWord::orth_stop(){
 //Couper
 void DadaWord::couper(){
     find_edit()->cut();
+    return;
 }
 
 //Copier
 void DadaWord::copier(){
     find_edit()->copy();
+    return;
 }
 
 //Coller
 void DadaWord::coller(){
     find_edit()->paste();
+    return;
 }
 
 //Mode de sur-écriture
@@ -2600,4 +2634,18 @@ void DadaWord::mode_surecriture(){
         find_edit()->setOverwriteMode(true);
         status_surecriture->setText(tr("RFP")); //"RFP" pour "Refrappe"
     }
+    return;
+}
+
+//Bouton de coloration syntaxique
+void DadaWord::html_highlight(){
+    //Si on est ici, c'est que l'utilisateur a cliqué sur le bouton, donc que c'est possible de colorer (sinon le bouton n'apparaîtrait pas)
+    if(colore_html->isChecked()){
+        instance = new HighlighterHtml(find_edit()->document());
+    }
+    else{
+        find_edit()->setTextColor(Qt::black);
+        delete instance;
+    }
+    return;
 }

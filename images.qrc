@@ -53,6 +53,7 @@
         <file>images/edit-copy.png</file>
         <file>images/edit-cut.png</file>
         <file>images/edit-paste.png</file>
+        <file>images/coloration_syntaxique.png</file>
     </qresource>
     <qresource prefix="/programme">
         <file>images/dadaword.gif</file>

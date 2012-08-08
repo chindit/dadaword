@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     erreur.cpp \
     opendocument.cpp \
     fen_puces.cpp \
-    spellchecker.cpp
+    spellchecker.cpp \
+    highlighterhtml.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -26,7 +27,8 @@ HEADERS  += dadaword.h \
     erreur.h \
     opendocument.h \
     fen_puces.h \
-    spellchecker.h
+    spellchecker.h \
+    highlighterhtml.h
 
 RESOURCES += \
     images.qrc

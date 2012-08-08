@@ -42,6 +42,7 @@
 #include "constantes.h"
 #include "erreur.h"
 #include "fen_puces.h"
+#include "highlighterhtml.h"
 #include "outils.h"
 #include "opendocument.h"
 #include "spellchecker.h"
@@ -109,6 +110,7 @@ private slots:
     void copier();
     void coller();
     void mode_surecriture();
+    void html_highlight();
 
 private:
     void create_menus();
@@ -152,6 +154,7 @@ private:
     QAction *affichage_format;
     QPushButton *status_is_modified;
     QPushButton *status_surecriture;
+    QAction *colore_html;
     //Orthographe
     QToolBar *barre_orthographe;
     QComboBox *orth_suggest;
@@ -160,6 +163,7 @@ private:
     QString orth_erreur;
     QString dictPath;
     QStringList list_skip;
+    HighlighterHtml *instance;
 
 };
 
