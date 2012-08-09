@@ -45,6 +45,8 @@ class HighlighterHtml : public QSyntaxHighlighter
 
 public:
     HighlighterHtml(QTextDocument *parent = 0);
+
+protected:
     void highlightBlock(const QString &text);
 
 private:

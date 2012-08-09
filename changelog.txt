@@ -1,5 +1,11 @@
 DadaWord - Changelog
 
+Version 1.0.1 :
+- Ajout de la coloration syntaxique HTML
+- Ajout des liens couper/copier/coller
+- Création du mode refrappe
+- Bouton dans la barre d'état permettant d'enregistrer le fichier
+
 Version 1.0.0 :
 - Listes hiérarchisées (lettres, nombres et chiffres romains)
 - Correcteur orthographique (Hunspell)

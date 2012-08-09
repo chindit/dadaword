@@ -1013,19 +1013,6 @@ void DadaWord::create_menus(){
     mappeur_alignement->setMapping(alignement_justifie, Qt::AlignJustify);
     connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
 
-    /*//Format
-    QMenu *format = menu_edition->addMenu(tr("Format"));
-    QAction *style_select = format->addAction(tr("Standard"));
-    style_select->setStatusTip(tr("Appliquer le style par défaut à la sélection courante"));
-    style_select->setToolTip(tr("Appliquer le style par défaut à la sélection courante"));
-    style_select->setShortcut(QKeySequence("Ctrl+M"));
-    style_select->setWhatsThis(tr("Applique le style par défaut à la sélection courante"));
-    QSignalMapper *mappeur_style = new QSignalMapper;
-    connect(style_select, SIGNAL(triggered()), mappeur_style, SLOT(map()));
-    mappeur_style->setMapping(style_select, 0);
-    connect(mappeur_style, SIGNAL(mapped(int)), this, SLOT(change_style(int)));
-    QAction *style1 = format->addAction()*/
-
     //Création de la barre de menu "Insertion"
     QMenu *menu_insertion = menuBar()->addMenu(tr("Insérer"));
 
