@@ -127,7 +127,9 @@ void DadaWord::cree_iu(){
     //Connexion
     connect(status_surecriture, SIGNAL(clicked()), this, SLOT(mode_surecriture()));
     //Enregistrement
-    status_is_modified = new QPushButton(tr("Pas de modifications"), statusBar());
+    status_is_modified = new QPushButton(statusBar());
+    status_is_modified->setIcon(QIcon(":/menus/images/filesave.png"));
+    status_is_modified->setEnabled(false);
     //Style du bouton pour qu'on ne le remarque pas
     status_is_modified->setFlat(true);
     statusBar()->addPermanentWidget(status_is_modified);
@@ -331,6 +333,8 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     extensions_texte.append("cpp");
     extensions_texte.append("h");
     extensions_texte.append("pro");
+    extensions_texte.append("cxx");
+    extensions_texte.append("hxx");
     extensions_texte.append("log");
     extensions_texte.append("php");
     extensions_texte.append("xml");
@@ -353,7 +357,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     if(nom_fenetre.isEmpty() || nom_fenetre.isNull() || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
-        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml)");
+        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml *.hxx *.cxx)");
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
             //On enregistre pas, on fait comme si de rien n'était
             return;
@@ -437,7 +441,9 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     temp_document = edit_temp->document();
     temp_document->setModified(false);
     enregistrer->setEnabled(false);
-    status_is_modified->setText(tr("Document modifié"));
+    //status_is_modified->setText(tr("Pas de modifications"));
+    //status_is_modified->setIcon(QIcon(":/menus/images/filesave.png"));
+    status_is_modified->setEnabled(false);
 
     return;
 }
@@ -761,6 +767,12 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 make_full_screen();
             }
         }//Fin du "if" de "Escape"
+        //Ici, il y a une touche appuyée.
+        //Si on est à la fin du document, on maintient le slider bas
+        /*if(find_edit()->textCursor().position() == QTextCursor::End){
+            QScrollBar *temp = find_edit()->findChild<QScrollBar *>();
+            temp->setSliderPosition(6);
+        }*/
     }
     return QWidget::eventFilter(obj, event);
 }
@@ -888,7 +900,8 @@ void DadaWord::create_menus(){
     connect(enregistrer, SIGNAL(triggered()), this, SLOT(enregistrement()));
     //Désactivation par défaut, on a rien modifié
     enregistrer->setEnabled(false);
-    status_is_modified->setText(tr("Pas de modifications"));
+    //status_is_modified->setText(tr("Pas de modifications"));
+    status_is_modified->setEnabled(false);
 
     QAction *enregistrer_sous = menu_fichier->addAction(QIcon(":/menus/images/enregistrer_sous.png"), tr("Enregistrer le fichier sous"));
     enregistrer_sous->setShortcut(QKeySequence("Maj+Ctrl+S"));
@@ -1437,7 +1450,8 @@ void DadaWord::indicateur_modifications(){
     //Gestion de l'icône d'enregistrement
     if(!enregistrer->isEnabled()){
         enregistrer->setEnabled(true);
-        status_is_modified->setText(tr("Document modifié"));
+        //status_is_modified->setText(tr("Document modifié"));
+        status_is_modified->setEnabled(true);
     }
     return;
 }

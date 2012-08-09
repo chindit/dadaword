@@ -28,6 +28,7 @@
 #include <QPrinterInfo>
 #include <QPrintPreviewDialog>
 #include <QProgressBar>
+#include <QScrollBar>
 #include <QSignalMapper>
 #include <QSpinBox>
 #include <QStatusBar>
