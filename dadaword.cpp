@@ -206,6 +206,19 @@ void DadaWord::cree_iu(){
     connect(doc_principal, SIGNAL(contentsChanged()), this, SLOT(indicateur_modifications()));
     connect(zone_centrale, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(changement_focus(QMdiSubWindow*)));
 
+    //Maintenant, on récupère les arguments (il faut que l'interface soit créée avant de pouvoir les ouvrir
+    //Récupération des arguments au lancement
+#if defined(Q_WS_MAC)
+    //On récupère les arguments selon MAC
+#else //Arguments Linux & Windows
+    QStringList liste = QCoreApplication::arguments();
+    if(liste.count() > 1){
+        QFile fichier(liste.at(1));
+        if(fichier.exists()){
+            ouvrir_fichier(liste.at(1));
+        }
+    }
+#endif
 }
 
 //A propos du programme
