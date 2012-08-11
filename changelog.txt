@@ -1,5 +1,9 @@
 DadaWord - Changelog
 
+Version 1.0.2 :
+- Ouverture de tous les types de fichiers textes existant
+- Coloration syntaxique également pour le XML
+
 Version 1.0.1 :
 - Ajout de la coloration syntaxique HTML
 - Ajout des liens couper/copier/coller

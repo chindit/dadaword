@@ -327,21 +327,12 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     QTextEdit *edit_temp;
     QMdiSubWindow *fenetre_temp;
 
-    //Création de l'array des extensions
-    QStringList extensions_texte;
-    extensions_texte.append("txt");
-    extensions_texte.append("cpp");
-    extensions_texte.append("h");
-    extensions_texte.append("pro");
-    extensions_texte.append("cxx");
-    extensions_texte.append("hxx");
-    extensions_texte.append("log");
-    extensions_texte.append("php");
-    extensions_texte.append("xml");
+    //Création de l'array des extensions de style
     QStringList extensions_style;
     extensions_style.append("ddw");
     extensions_style.append("htm");
     extensions_style.append("html");
+    extensions_style.append("odt");
 
     //Si fenetre_active vaut 0, c'est qu'on est dans la fenêtre active (oui, ça peut paraitre paradoxal)
     if(fenetre_active == 0){
@@ -357,19 +348,20 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     if(nom_fenetre.isEmpty() || nom_fenetre.isNull() || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
-        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml *.hxx *.cxx)");
+        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
             //On enregistre pas, on fait comme si de rien n'était
             return;
         }
-        //Test des extentions
+
+        //Test des extentions -> Par défaut, c'est du DDW
         QFileInfo nom_info(nom_fichier);
         if(nom_info.completeSuffix().isEmpty() || nom_info.completeSuffix().isNull()){
             nom_fichier.append(".ddw");
         }
 
-        //Test du TXT
-        if(extensions_texte.contains(nom_info.completeSuffix())){
+        //Test des extentions de texte -> Tout ce qui n'est pas style est texte
+        if(!extensions_style.contains(nom_info.completeSuffix())){
             Outils instance_outils;
             if(instance_outils.lire_config("alertes").toInt() != LOW){
                 int reponse = QMessageBox::question(this, tr("Format texte"), tr("Attention: le format que vous avez choisi ne peut sauvegarder les informations de style présentes dans ce document.\n Voulez-vous continuer?"), QMessageBox::Yes | QMessageBox::No);
@@ -409,7 +401,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         fenetre_temp->setWindowTitle(nom_fichier_fenetre);
 
         //Activation de la coloration syntaxique
-        if(fenetre_temp->windowTitle().contains(".htm")){
+        if(fenetre_temp->windowTitle().contains(".htm") || fenetre_temp->windowTitle().contains(".xml")){
             colore_html->setEnabled(true);
         }
         else{
@@ -441,8 +433,6 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     temp_document = edit_temp->document();
     temp_document->setModified(false);
     enregistrer->setEnabled(false);
-    //status_is_modified->setText(tr("Pas de modifications"));
-    //status_is_modified->setIcon(QIcon(":/menus/images/filesave.png"));
     status_is_modified->setEnabled(false);
 
     return;
@@ -452,7 +442,8 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
 void DadaWord::ouvrir_fichier(const QString &fichier){
     QString nom_fichier;
     if(fichier == "null"){
-        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous Documents (*.ddw *.txt *.html *.htm *.odt *.log *.cpp *.h *.php *.pro *.xml);;Documents DadaWord (*.ddw);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml)");
+        //nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous Documents (*.ddw *.txt *.html *.htm *.odt *.log *.cpp *.h *.php *.pro *.xml);;Documents DadaWord (*.ddw);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml)");
+        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous documents (*.*);;Documents DadaWord (*.ddw);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
     }
     else{
         nom_fichier = fichier;
@@ -532,11 +523,15 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
                 contenu_total_fichier = contenu_total_fichier + line + "\n";
             }
             file.close();
+
+            //Fichier vide
             if((contenu_total_fichier.isEmpty() || contenu_total_fichier.isNull()) && !instance_outils->lire_config("fichiers_vides").toBool()){
                 Erreur instance_erreur;
                 instance_erreur.Erreur_msg(tr("Une erreur s'est produite lors de l'ouverture du fichier : aucun contenu n'a été détecté. \n Êtes-vous sûr que le fichier n'est pas corrompu?"), QMessageBox::Critical);
                 return;
             }
+
+            //Fichier déjà ouvert
             QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
             QTextDocument *document_actuel = new QTextDocument;
             if(liste_fichiers.size() == 0){
@@ -553,6 +548,8 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
                     changement_focus(find_onglet());
                 }
             }
+
+            //Fichier avec style (HTML)
             if(nom_fichier.endsWith(".ddw", Qt::CaseInsensitive) || nom_fichier.endsWith(".htm", Qt::CaseInsensitive) || nom_fichier.endsWith(".html", Qt::CaseInsensitive)){
                 find_edit()->setHtml(contenu_total_fichier);
                 if(!nom_fichier.endsWith(".ddw", Qt::CaseInsensitive)){
@@ -562,12 +559,18 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
                     colore_html->setEnabled(false);
                 }
             }
+
+            //Fichier texte
             else{
                 find_edit()->setText(contenu_total_fichier);
                 find_edit()->toPlainText();
                 find_edit()->setAcceptRichText(false);
                 //On coche le "Mode texte" parce que ce ne peut pas être autre chose pour du TXT
                 to_text->setChecked(true);
+                //On active la coloration aussi pour le XML
+                if(!nom_fichier.endsWith(".xml", Qt::CaseInsensitive)){
+                    colore_html->setEnabled(true);
+                }
             }
             find_onglet()->setAccessibleName(titre);
             find_onglet()->setAccessibleDescription(nom_fichier);
@@ -1537,7 +1540,7 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
 
         //Coloration syntaxique
         //On ne l'affiche que si l'extension le permet
-        if(find_onglet()->windowTitle().contains(".htm")){
+        if(find_onglet()->windowTitle().contains(".htm") || find_onglet()->windowTitle().contains(".xml")){
             colore_html->setEnabled(true);
         }
         else{
