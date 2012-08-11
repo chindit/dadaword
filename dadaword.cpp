@@ -2388,7 +2388,7 @@ void DadaWord::verif_orthographe(){
         }
 
         //Il n'y a erreur QUE si le mot n'est pas vide, n'est pas présent dans le dictionnaire ET n'est pas ignoré
-        if(!word.isEmpty() && !spellChecker->spell(word) && !list_skip.contains(word)) {
+        if(!word.isEmpty() && !spellChecker->spell(word) && !list_skip.contains(word)){
             //Affichage de la barre d'outils,
             barre_orthographe->show();
 
@@ -2435,7 +2435,7 @@ void DadaWord::verif_orthographe(){
     find_edit()->setTextCursor(oldCursor);
     if(!erreur){//Si "erreur" est faux, c'est qu'on a atteint la fin du document
         Outils instance_outils;
-        if(instance_outils.lire_config("alertes").toInt() == LOW){
+        if(instance_outils.lire_config("alertes").toInt() == HIGH){
             QMessageBox::information(this, tr("Terminé"), tr("La vérification orthographique est terminée."));
         }
 
@@ -2471,7 +2471,6 @@ void DadaWord::orth_ignore(){
 //Orthographe : ajouter au dictionnaire
 void DadaWord::orth_dico(){
     if(!orth_erreur.isEmpty() && !orth_erreur.isNull()){
-        QString dictPath = "/usr/share/hunspell/es_ES";
         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
         if(!QFile::exists(userDict)){
             userDict = QDir::homePath() + ".dadaword/perso.dic";
@@ -2505,11 +2504,9 @@ void DadaWord::orth_remplace(QString mot){
 
 //Orthographe : remplacer tout
 void DadaWord::orth_remplace_all(){
-    QTextCursor temp(find_edit()->document());
-    temp.select(QTextCursor::Document);
+    int nb_remplacements = 0;
     QDialog *mots = new QDialog;
     QComboBox *select_words = new QComboBox;
-    QString dictPath = "/usr/share/hunspell/es_ES";
     QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
     if(!QFile::exists(userDict)){
         userDict = QDir::homePath() + ".dadaword/perso.dic";
@@ -2532,14 +2529,55 @@ void DadaWord::orth_remplace_all(){
     mots->setLayout(layout);
     mots->exec();
     QCoreApplication::processEvents();
-    QTextCursor cursor = find_edit()->textCursor();
-    cursor.select(QTextCursor::Document);
-    find_edit()->setText(cursor.selectedText().replace(orth_erreur, select_words->currentText()));
 
-    //Delete
+    // save the position of the current cursor
+    QTextCursor oldCursor = find_edit()->textCursor();
+
+    // create a new cursor to walk through the text
+    QTextCursor cursor(find_edit()->document());
+
+    //Parcours de tout le document
+    while(!cursor.atEnd()) {
+        QCoreApplication::processEvents();
+        cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+        QString word = cursor.selectedText();
+
+        //Nettoyage des éléments qui précèdent
+        while(!word.isEmpty() && !word.at(0).isLetter() && cursor.anchor() < cursor.position()) {
+            int cursorPos = cursor.position();
+            cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);
+            cursor.setPosition(cursorPos, QTextCursor::KeepAnchor);
+            word = cursor.selectedText();
+        }
+
+        //Nettoyage des éléments qui suivent
+        while(!word.isEmpty() && !word.at(word.size()-1).isLetter()){
+            word = word.remove(word.size()-1, word.size());
+        }
+
+        //Remplacement du mot
+        if(word == orth_erreur){
+            cursor.removeSelectedText();
+            cursor.insertText(select_words->currentText());
+            nb_remplacements++; //On incrémente le nombre de remplacements
+        }
+
+        //On met à jour le curseur
+        cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+    }
+
+    //On remet en place le vieux curseur
+    find_edit()->setTextCursor(oldCursor);
+
     delete mots;
-    delete select_words;
 
+    //On affiche le nombre de remplacements
+    Outils instance_outils;
+    if(instance_outils.lire_config("alertes").toInt() == HIGH){
+        QMessageBox::information(this, "Remplacement terminé", QString("Le mot «%1» a été remplacé %2 fois").arg(orth_erreur).arg(nb_remplacements));
+    }
+
+    //Return
     return;
 }
 

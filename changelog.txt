@@ -3,6 +3,8 @@ DadaWord - Changelog
 Version 1.0.2 :
 - Ouverture de tous les types de fichiers textes existant
 - Coloration syntaxique également pour le XML
+- BUG : dictionnaire espagnol par défaut pour "Ignorer" & "Ajouter mot"
+- BUG : fonction "Remplacer tout" dans la correction orthographique produisait une SIGSEGV.
 
 Version 1.0.1 :
 - Ajout de la coloration syntaxique HTML
