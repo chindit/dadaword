@@ -1718,12 +1718,12 @@ void DadaWord::add_image(){
     }
     //1)Sélectionne l'image
     QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg, *bmp)");
-    QFile fichier_image(chemin_image);
+    //QFile fichier_image(chemin_image);
 
 
     //On copie l'image dans le répertoire du fichier MAIS on l'enregistre avant
     enregistrement(); //Comme ça on est sûr de pouvoir mettre l'image dans le même répertoire que le fichier
-
+/*
     //On copie dans le répertoir du document
     //on récupère le dossier
     QString dossier_temp = find_onglet()->accessibleDescription();
@@ -1747,8 +1747,9 @@ void DadaWord::add_image(){
         instance_erreur.Erreur_msg(tr("Impossible de copier le fichier. L'insertion de l'image a été annulée"), QMessageBox::Warning);
         return;
     }
-
+*/
     //On insère l'image
+    QString chemin_dossier = chemin_image;
     find_edit()->insertHtml(("<img src=\""+chemin_dossier+"\">"));
 
     return;
