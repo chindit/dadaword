@@ -34,7 +34,10 @@ bool DDZ::enregistre(QString fichier, QString contenu){
 
     //On regarde s'il y avait des images
     int nb_images = contenu.count("<img src=");
-
+    //Définition de la RegExp
+    QRegExp regexp_images("^src=\"(\\d)\">");
+    regexp_images.indexIn(contenu);
+    QStringList saisies = regexp_images.capturedTexts();
 
     //On ferme tout
     ddz_contenu.close();

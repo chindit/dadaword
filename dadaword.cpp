@@ -1718,76 +1718,39 @@ void DadaWord::add_image(){
     }
     //1)Sélectionne l'image
     QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg, *bmp)");
-    QImage image(chemin_image);
     QFile fichier_image(chemin_image);
 
-    //On regarde si l'utilisateur veut du base64 ou non :
-    /*if(instance_outils.lire_config("base64").toBool()){
-        if(fichier_image.size() > 200000){
-            if(instance_outils.lire_config("alertes").toInt() != LOW){
-                int reponse = QMessageBox::question(this, tr("Fichier volumineux"), tr("L'image que vous allez insérer est volumineuse, il se peut que votre ordinateur nécessite une ou plusieurs minutes pour la convertir au format DDW.\n Voulez-vous continuer?"), QMessageBox::Yes | QMessageBox::No);
-                if(reponse == QMessageBox::Yes){
-                    //On ne fait rien, la fonction va continuer
-                }
-                else if(reponse == QMessageBox::No){
-                    //On annule
-                    return;
-                }
-                else{
-                    Erreur instance_erreur;
-                    instance_erreur.Erreur_msg(tr("Exception dans la réponse au chargement d'image"), QMessageBox::Critical);
-                    return;
-                }
-            }
+
+    //On copie l'image dans le répertoire du fichier MAIS on l'enregistre avant
+    enregistrement(); //Comme ça on est sûr de pouvoir mettre l'image dans le même répertoire que le fichier
+
+    //On copie dans le répertoir du document
+    //on récupère le dossier
+    QString dossier_temp = find_onglet()->accessibleDescription();
+    QString chemin_dossier = dossier_temp.remove(instance_outils.compte_caracteres(dossier_temp), dossier_temp.size());
+
+    //On nomme le fichier selon le timestamp pour ne pas avoir de problèmes
+    int result = 0;
+    for(int i=0; i<chemin_image.size(); i++){
+        QChar carac = chemin_image.at(i);
+        if(carac == '.'){
+            result = i;
         }
-        QByteArray byte_array_stockage;
-        QBuffer buffer_stockage(&byte_array_stockage);
-        image.save(&buffer_stockage, "BMP");
-        QByteArray base64 = byte_array_stockage.toBase64();
-        QString image_base64(base64);
-        //On compte les caractères pour récupérer l'extention :
-        int result = 0;
-        for(int i=0; i<chemin_image.size(); i++){
-            QChar carac = chemin_image.at(i);
-            if(carac == '.'){
-                result = i;
-            }
-        }
-        QString extention = chemin_image.remove(0, (result+1));
-        find_edit()->insertHtml(("<img src=\"data:image/"+extention+";base64,"+image_base64+"\">"));
-    }//Fin du "if" base64
-    else{*/
-        //L'utilisateur veut une inclusion normale
+    }
+    QString extention = chemin_image.remove(0, (result+1));
+    qsrand(QDateTime::currentDateTime ().toTime_t ());
+    QString nom_fichier_temp = find_onglet()->accessibleDescription().remove(0, (instance_outils.compte_caracteres(find_onglet()->accessibleDescription())+1));
+    nom_fichier_temp.remove(nom_fichier_temp.size()-4, nom_fichier_temp.size());
+    chemin_dossier += "/"+ nom_fichier_temp + "_" + QString::number(qrand())+"."+extention;
+    if(!fichier_image.copy(chemin_dossier)){
+        Erreur instance_erreur;
+        instance_erreur.Erreur_msg(tr("Impossible de copier le fichier. L'insertion de l'image a été annulée"), QMessageBox::Warning);
+        return;
+    }
 
-        //On copie l'image dans le répertoire du fichier MAIS on l'enregistre avant
-        enregistrement(); //Comme ça on est sûr de pouvoir mettre l'image dans le même répertoire que le fichier
+    //On insère l'image
+    find_edit()->insertHtml(("<img src=\""+chemin_dossier+"\">"));
 
-        //On copie dans le répertoir du document
-        //on récupère le dossier
-        QString dossier_temp = find_onglet()->accessibleDescription();
-        QString chemin_dossier = dossier_temp.remove(instance_outils.compte_caracteres(dossier_temp), dossier_temp.size());
-
-        //On nomme le fichier selon le timestamp pour ne pas avoir de problèmes
-        int result = 0;
-        for(int i=0; i<chemin_image.size(); i++){
-            QChar carac = chemin_image.at(i);
-            if(carac == '.'){
-                result = i;
-            }
-        }
-        QString extention = chemin_image.remove(0, (result+1));
-        qsrand(QDateTime::currentDateTime ().toTime_t ());
-        chemin_dossier += "/"+ QString::number(qrand())+"."+extention;
-        if(!fichier_image.copy(chemin_dossier)){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Impossible de copier le fichier. L'insertion de l'image a été annulée"), QMessageBox::Warning);
-            return;
-        }
-
-        //On insère l'image
-        find_edit()->insertHtml(("<img src=\""+chemin_dossier+"\">"));
-
-    //}
     return;
 }
 
