@@ -362,7 +362,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     if(nom_fenetre.isEmpty() || nom_fenetre.isNull() || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
-        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
+        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddz, *.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
             //On enregistre pas, on fait comme si de rien n'était
             return;
