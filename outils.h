@@ -44,7 +44,7 @@ private slots:
 private:
     QWidget *log_fen;
     QWidget *configure_fen;
-    QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_base64, *checkbox_word;
+    QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word;
     QSpinBox *taille_police_default;
     QFontComboBox *police_default;
     QComboBox *alertes, *liste_dicos;

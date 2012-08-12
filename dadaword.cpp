@@ -346,7 +346,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     extensions_style.append("htm");
     extensions_style.append("html");
     extensions_style.append("odt");
-    extensions_style.append(".ddz");
+    extensions_style.append("ddz");
 
     //Si fenetre_active vaut 0, c'est qu'on est dans la fenêtre active (oui, ça peut paraitre paradoxal)
     if(fenetre_active == 0){
@@ -440,8 +440,11 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
 
     //Vérification du DDZ
     if(nom_fichier.contains(".ddz")){
-        FichiersDDZ instance_ddz;
-        instance_ddz.enregistre(contenu_fichier);
+        DDZ instance_ddz;
+        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier)){
+            Erreur instance_erreur;
+            instance_erreur.Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
+        }
     }
     else{ //Pas de DDZ, fichier normal
         QFile file(nom_fichier);
@@ -1714,12 +1717,12 @@ void DadaWord::add_image(){
         return;
     }
     //1)Sélectionne l'image
-    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg)");
+    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg, *bmp)");
     QImage image(chemin_image);
     QFile fichier_image(chemin_image);
 
     //On regarde si l'utilisateur veut du base64 ou non :
-    if(instance_outils.lire_config("base64").toBool()){
+    /*if(instance_outils.lire_config("base64").toBool()){
         if(fichier_image.size() > 200000){
             if(instance_outils.lire_config("alertes").toInt() != LOW){
                 int reponse = QMessageBox::question(this, tr("Fichier volumineux"), tr("L'image que vous allez insérer est volumineuse, il se peut que votre ordinateur nécessite une ou plusieurs minutes pour la convertir au format DDW.\n Voulez-vous continuer?"), QMessageBox::Yes | QMessageBox::No);
@@ -1753,7 +1756,7 @@ void DadaWord::add_image(){
         QString extention = chemin_image.remove(0, (result+1));
         find_edit()->insertHtml(("<img src=\"data:image/"+extention+";base64,"+image_base64+"\">"));
     }//Fin du "if" base64
-    else{
+    else{*/
         //L'utilisateur veut une inclusion normale
 
         //On copie l'image dans le répertoire du fichier MAIS on l'enregistre avant
@@ -1784,7 +1787,7 @@ void DadaWord::add_image(){
         //On insère l'image
         find_edit()->insertHtml(("<img src=\""+chemin_dossier+"\">"));
 
-    }
+    //}
     return;
 }
 
