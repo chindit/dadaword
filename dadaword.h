@@ -41,6 +41,7 @@
 #include <QToolButton>
 
 #include "constantes.h"
+#include "ddz.h"
 #include "erreur.h"
 #include "fen_puces.h"
 #include "highlighterhtml.h"

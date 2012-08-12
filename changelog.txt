@@ -5,6 +5,7 @@ Version 1.0.2 :
 - Coloration syntaxique également pour le XML
 - BUG : dictionnaire espagnol par défaut pour "Ignorer" & "Ajouter mot"
 - BUG : fonction "Remplacer tout" dans la correction orthographique produisait une SIGSEGV.
+- Ajout de la récupération des arguments de la ligne de commande (ne récupère qu'un nom de fichier à ouvrir)
 
 Version 1.0.1 :
 - Ajout de la coloration syntaxique HTML

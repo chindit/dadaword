@@ -346,6 +346,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     extensions_style.append("htm");
     extensions_style.append("html");
     extensions_style.append("odt");
+    extensions_style.append(".ddz");
 
     //Si fenetre_active vaut 0, c'est qu'on est dans la fenêtre active (oui, ça peut paraitre paradoxal)
     if(fenetre_active == 0){
@@ -367,10 +368,10 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             return;
         }
 
-        //Test des extentions -> Par défaut, c'est du DDW
+        //Test des extentions -> Par défaut, c'est du DDZ
         QFileInfo nom_info(nom_fichier);
         if(nom_info.completeSuffix().isEmpty() || nom_info.completeSuffix().isNull()){
-            nom_fichier.append(".ddw");
+            nom_fichier.append(".ddz");
         }
 
         //Test des extentions de texte -> Tout ce qui n'est pas style est texte
@@ -436,11 +437,19 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             contenu_fichier = edit_temp->toPlainText();
         }
     }
-    QFile file(nom_fichier);
-    if (file.open(QFile::WriteOnly)) {
-        QTextStream out(&file);
-        out << contenu_fichier;
-        file.close();
+
+    //Vérification du DDZ
+    if(nom_fichier.contains(".ddz")){
+        FichiersDDZ instance_ddz;
+        instance_ddz.enregistre(contenu_fichier);
+    }
+    else{ //Pas de DDZ, fichier normal
+        QFile file(nom_fichier);
+        if (file.open(QFile::WriteOnly)) {
+            QTextStream out(&file);
+            out << contenu_fichier;
+            file.close();
+        }
     }
     QTextDocument *temp_document = new QTextDocument;
     temp_document = edit_temp->document();
