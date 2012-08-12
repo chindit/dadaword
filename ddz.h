@@ -4,7 +4,8 @@
 //Includes
 #include "dadaword.h"
 #include "opendocument.h"
-#include "quazip/quazipnewinfo.h"
+#include "qzipwriter.h"
+//#include "quazip/quazipnewinfo.h"
 
 class DDZ
 {

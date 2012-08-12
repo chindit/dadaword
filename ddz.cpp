@@ -9,29 +9,18 @@ bool DDZ::enregistre(QString fichier, QString contenu){
     Erreur instance_erreur;
     Outils instance_outils;
 
-    //Création de l'instance
-    QuaZip ddz_document(fichier);
-    //Codec
-    ddz_document.setFileNameCodec("UTF-8");
+    QZipWriter ddz_global(fichier, QIODevice::WriteOnly);
 
-    //On ouvre en écrasant/créant
-    if(!ddz_document.open(QuaZip::mdCreate)){
-        //On a besoin du QObject parce qu'on ne dérive pas de la classe
-        instance_erreur.Erreur_msg(QObject::tr("Une erreur est survenue lors de l'ouverture en écriture du fichier DDZ"), QMessageBox::Ignore);
-        return false;
-    }
 
     //On remplit le fichier avec le contenu
-    QuaZipFile ddz_contenu(&ddz_document);
     QString nom_fichier = fichier.remove(0, (instance_outils.compte_caracteres(fichier)+1));
     //Le nom du fichier est le même que le nom de l'archive globale si ce n'est que l'extention change
     nom_fichier.remove(nom_fichier.size()-4, nom_fichier.size()).append(".ddw");
-    ddz_contenu.open(QIODevice::WriteOnly, QuaZipNewInfo(nom_fichier));
 
-    //On remplit le fichier
-    QTextStream flux(&ddz_contenu);
-    flux << contenu;
-    ddz_contenu.close();
+
+    QByteArray array_contenu;
+    array_contenu.append(contenu);
+    ddz_global.addFile(nom_fichier, array_contenu);
 
     //On regarde s'il y avait des images
     int nb_images = contenu.count("<img src=");
@@ -57,30 +46,20 @@ bool DDZ::enregistre(QString fichier, QString contenu){
         //Si on est ici, c'est que tout roule
         //On ajoute les images détectées au zip
         for(int i=0; i<list.size(); i++){
-            QuaZipFile ddz_image(&ddz_document); //Instance pour écrire l'image
-            QFile fichier_image(list.at(i));
             QString liste_temp = list.at(i);
             QString nom_fichier = liste_temp.remove(0, (instance_outils.compte_caracteres(liste_temp)+1));
-            ddz_contenu.open(QIODevice::WriteOnly, QuaZipNewInfo(nom_fichier));
-            char c; //Sert pour le transfert des données
-            if(fichier_image.open(QIODevice::ReadOnly)){
-                while(fichier_image.getChar(&c) && ddz_image.putChar(c));
-                if(ddz_image.getZipError() != UNZ_OK) {
-                    instance_erreur.Erreur_msg(QObject::tr("DDZ : Erreur lors de l'écriture des images"), QMessageBox::Ignore);
-                    return false;
-                }
-                fichier_image.close();
-                ddz_image.close();
-            }
-            else{
-                instance_erreur.Erreur_msg(QObject::tr("Impossible d'ouvrir le fichier image"), QMessageBox::Ignore);
-                return false;
-            }
+            QPixmap image;
+            image.load(list.at(i));
+            QByteArray ba;
+            QBuffer buffer(&ba);
+            buffer.open(QIODevice::WriteOnly);
+            image.save(&buffer, "PNG" );
+            ddz_global.addFile(nom_fichier, &buffer);
         }
     }
 
     //On ferme tout
-    ddz_document.close();
+    ddz_global.close();
 
 
     return true;
