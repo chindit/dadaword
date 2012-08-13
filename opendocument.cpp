@@ -35,13 +35,12 @@ QString OpenDocument::ouvre_odt(QString nom){
     //Instance QZipReader
     QZipReader odt_global(nom, QIODevice::ReadOnly);
     //Extraction
-    //odt_global.extractAll(QDir::tempPath());
     odt_global.extractOne(QDir::tempPath(), "content.xml");
 
     //---------------------------------------------
     //Ouverture du fichier principal (DDW)
     //---------------------------------------------
-    QFile contenu_odt(QDir::tempPath()+"/content.xml");
+    QFile contenu_odt(QDir::tempPath()+QDir::separator()+"content.xml");
     if(!contenu_odt.exists()){
         instance_erreur.Erreur_msg(tr("ODT : échec de la sélection du contenu"), QMessageBox::Ignore);
         return "NULL"; //Erreur, on quitte
@@ -50,30 +49,6 @@ QString OpenDocument::ouvre_odt(QString nom){
         instance_erreur.Erreur_msg(tr("ODT : échec de l'ouverture du fichier de contenu"), QMessageBox::Ignore);
         return "NULL"; //Erreur, on quitte
     }
-
-/*
-    //En premier lieu, on sélectionne le fichier intéressant
-    QuaZip fichier_odt(nom);
-
-    //On ouvre le fichier en mode lecture
-    if(!fichier_odt.open(QuaZip::mdUnzip)){
-        instance_erreur.Erreur_msg(tr("Erreur d'ouverture du fichier ODT.  Code erreur n° %1").arg(QString::number(fichier_odt.getZipError())), QMessageBox::Warning);
-        return "null";
-    }
-
-    //On sélectionne le fichier qui gère le contenu
-    if(!fichier_odt.setCurrentFile("content.xml", QuaZip::csInsensitive)){
-        instance_erreur.Erreur_msg(tr("Erreur d'ouverture du fichier ODT:  La sélection de \"content.xml\" a échoué"), QMessageBox::Warning);
-        return "null";
-    }
-
-    //On récupère le contenu du fichier
-    QuaZipFile contenu_odt(&fichier_odt);
-    if(!contenu_odt.open(QIODevice::ReadOnly)){
-        instance_erreur.Erreur_msg(tr("Impossible de lire le contenu du fichier ODT"), QMessageBox::Warning);
-        return "null";
-    }
-*/
 
     QTextStream contents_xml(&contenu_odt);
     //On stocke le contenu dans le QString, c'est plus manipulable
@@ -961,7 +936,7 @@ bool OpenDocument::traite_image(QTextCursor &curseur, QDomElement e, QString nom
         QString ext = url_image.toString();
         ext = ext.remove(0, (ext.size()-4));
         qsrand(QDateTime::currentDateTime ().toTime_t ());
-        file = QDir::tempPath()+"/"+QString::number(qrand())+".png";
+        file = QDir::tempPath()+QDir::separator()+QString::number(qrand())+".png";
         if(!image.isNull()){
             if(!image.save(file, "PNG")){
                 //!sauvegarde
@@ -978,42 +953,16 @@ bool OpenDocument::traite_image(QTextCursor &curseur, QDomElement e, QString nom
         delete reponse;
     }
     else if(e.attribute("xlink:href").contains("Pictures")){//Local
-        //On décompresse l'image
-        //En premier lieu, on sélectionne le fichier intéressant
-        //QuaZip image(nom_odt);
-
-        //On ouvre le fichier en mode lecture
-        //if(!image.open(QuaZip::mdUnzip)){
-            //instance_erreur.Erreur_msg(tr("Erreur d'ouverture du fichier ODT.  Code erreur n° %1").arg(QString::number(image.getZipError())), QMessageBox::Ignore);
-            //return false;
-        //}
-
-        //On sélectionne le fichier qui gère le contenu
-        //if(!image.setCurrentFile(e.attribute("xlink:href"), QuaZip::csInsensitive)){
-            //instance_erreur.Erreur_msg(tr("Erreur d'ouverture du fichier ODT:  La sélection de l'image a échoué"), QMessageBox::Ignore);
-            //return false;
-        //}
-
-        //On récupère le contenu du fichier
-        //QuaZipFile contenu_image(&image);
-        //if(!contenu_image.open(QIODevice::ReadOnly)){
-            //instance_erreur.Erreur_msg(tr("Impossible de lire l'image"), QMessageBox::Ignore);
-            //return false;
-        //}
-        /*file = QDir::tempPath();
-        file += "/"+e.attribute("xlink:href");
-        file = file.remove("Pictures/");
-        QFile fichier; char c;
-        fichier.setFileName(file);
-        fichier.open(QIODevice::WriteOnly);
-        while(contenu_image.getChar(&c) && fichier.putChar(c));
-        fichier.close();
-        //Fermeture du ZIP
+        //On extrait le fichier
+        QZipReader image(nom_odt, QIODevice::ReadOnly);
+        Outils instance_outils;
+        QString clean_fichier = e.attribute("xlink:href");
+        clean_fichier = clean_fichier.remove(0, (instance_outils.compte_caracteres(e.attribute("xlink:href")+1)));
+        image.extractOne(QDir::tempPath(), clean_fichier);
         image.close();
-        contenu_image.close();*/
 
         //On sélectionne le fichier
-        file = QDir::tempPath()+"/"+e.attribute("xlink:href");
+        file = QDir::tempPath()+QDir::separator()+clean_fichier;
 
     }
     else{ //C'est pas normal ça : on se casse
