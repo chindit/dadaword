@@ -48,13 +48,10 @@ bool DDZ::enregistre(QString fichier, QString contenu){
         for(int i=0; i<list.size(); i++){
             QString liste_temp = list.at(i);
             QString nom_fichier = liste_temp.remove(0, (instance_outils.compte_caracteres(liste_temp)+1));
-            QPixmap image;
-            image.load(list.at(i));
-            QByteArray ba;
-            QBuffer buffer(&ba);
-            buffer.open(QIODevice::WriteOnly);
-            image.save(&buffer, "PNG" );
-            ddz_global.addFile(nom_fichier, &buffer);
+            //On récupère l'extention
+            QString extention = list.at(i).section('.', -1);
+            QImageReader image(list.at(i), extention.toUpper().toStdString().c_str());
+            ddz_global.addFile(nom_fichier, image.device());
         }
     }
 
