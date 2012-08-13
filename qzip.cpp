@@ -39,6 +39,14 @@
 **
 ****************************************************************************/
 
+/*
+  Développeur : David Lumaye (littletiger58@gmail.com)
+  Date : 13/08/12
+  Merci de ne pas supprimer cette notice.
+  Toutes les modifications apportées à ce document
+  sont soumises à la licence générale du programme (GPL v3)
+  */
+
 #include <QtGlobal>
 
 #ifndef QT_NO_TEXTODFWRITER
@@ -916,6 +924,41 @@ bool QZipReader::extractAll(const QString &destinationDir) const
     }
 
     return true;
+}
+
+//Classe Perso pour la récupération d'un seul fichier
+bool QZipReader::extractOne(const QString &destinationDir, const QString &nomFichier){
+    //Récupération de la liste des fichiers
+    QList<FileInfo> allFiles = fileInfoList();
+    /*if(!allFiles.contains(nomFichier)){
+        //On cherche un fichier qui n'existe pas -> bug
+        return false;
+    }*/
+    //Boucle de repérage
+    foreach (FileInfo fi, allFiles) {
+        QString chemin_temp = fi.filePath;
+            if(chemin_temp.contains(nomFichier)){
+                //Extraction
+                QString clean_fichier = chemin_temp; //Nettoyage du chemin pour ne pas s'embrouiller dans les répertoires
+                if(clean_fichier.contains(QDir::separator())){
+                    Outils instance_outils;
+                    clean_fichier = clean_fichier.remove(0, (instance_outils.compte_caracteres(nomFichier)+1));
+                }
+                QString chemin = destinationDir + QDir::separator() + clean_fichier;
+                QFile f(chemin);
+                if (!f.open(QIODevice::WriteOnly))
+                    return false;
+                f.write(fileData(fi.filePath));
+                //f.setPermissions(fi.permissions);
+                f.close();
+                return true;
+            }
+    }
+
+
+
+
+    return false;
 }
 
 /*!

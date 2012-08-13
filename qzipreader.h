@@ -58,6 +58,9 @@
 #include <QFile>
 #include <QString>
 
+//P'tits fichiers perso
+#include "outils.h"
+
 QT_BEGIN_NAMESPACE
 
 class QZipReaderPrivate;
@@ -95,6 +98,7 @@ public:
     FileInfo entryInfoAt(int index) const;
     QByteArray fileData(const QString &fileName) const;
     bool extractAll(const QString &destinationDir) const;
+    bool extractOne(const QString &destinationDir, const QString &nomFichier);
 
     enum Status {
         NoError,

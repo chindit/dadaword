@@ -17,9 +17,8 @@
 #include <QtXml>
 #include <iostream>
 
-//Librairies QuaZip
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+//Librairies Zip
+#include "qzipreader.h"
 
 //Classes Perso
 #include "erreur.h"
@@ -38,7 +37,7 @@ signals:
 public slots:
 
 private:
-    QString read_xml(QString fichier);
+    void read_xml(QString fichier);
     void read_styles(QDomElement e);
     bool style_paragraphe(QString nom, QDomElement e);
     bool style_graphics(QString nom, QDomElement e);
