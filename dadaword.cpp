@@ -465,10 +465,12 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
 
 //Ouverture d'un fichier
 void DadaWord::ouvrir_fichier(const QString &fichier){
+    //Variables globales
     QString nom_fichier;
     QString contenu;
     bool style = false;
     bool texte = false;
+
 
     //----------------------------------------------------------------
     //Récupération du nom du fichier et actions de pré-ouverture
@@ -483,8 +485,8 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     }
     if(!nom_fichier.isNull() && !nom_fichier.isEmpty()){
         QString titre = nom_fichier;
-        Outils *instance_outils = new Outils;
-        titre = titre.remove(0, (instance_outils->compte_caracteres(nom_fichier)+1));
+        Outils instance_outils;
+        titre = titre.remove(0, (instance_outils.compte_caracteres(nom_fichier)+1));
 
         //On vérifie si le fichier n'est pas déjà ouvert
         QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
@@ -492,7 +494,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             QMdiSubWindow *temp_boucle = liste_fichiers.at(i);
             if(temp_boucle->accessibleName() == titre){
                 i = 100000; //On sort de la boucle
-                if(instance_outils->lire_config("alertes").toInt() != LOW){
+                if(instance_outils.lire_config("alertes").toInt() != LOW){
                     QMessageBox::information(this, tr("Fichier déjà ouvert"), tr("Le fichier que vous tentez d'ouvrir est déjà ouvert.\n Si ce n'est pas le cas, deux fichiers portent un nom identique. Veuillez les renommer."));
                 }
                 return;
@@ -502,7 +504,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         QString contenu_total_fichier;
         QFile file(nom_fichier);
         if(file.size() > 2000000){
-            if(instance_outils->lire_config("alertes").toInt() == HIGH){
+            if(instance_outils.lire_config("alertes").toInt() == HIGH){
                 int reponse = QMessageBox::question(this, tr("Fichier volumineux"), tr("Le fichier que vous allez ouvrir est volumineux, il se peut que votre ordinateur nécessite une ou plusieurs minutes pour l'ouvrir.\n Voulez-vous continuer?"), QMessageBox::Yes | QMessageBox::No);
                 if(reponse == QMessageBox::Yes){
                     //On ne fait rien, la fonction va continuer
@@ -555,7 +557,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             file.close();
 
             //Fichier vide
-            if((contenu.isEmpty() || contenu.isNull()) && !instance_outils->lire_config("fichiers_vides").toBool()){
+            if((contenu.isEmpty() || contenu.isNull()) && !instance_outils.lire_config("fichiers_vides").toBool()){
                 Erreur instance_erreur;
                 instance_erreur.Erreur_msg(tr("Une erreur s'est produite lors de l'ouverture du fichier : aucun contenu n'a été détecté. \n Êtes-vous sûr que le fichier n'est pas corrompu?"), QMessageBox::Critical);
                 return;
@@ -610,7 +612,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         find_onglet()->setAccessibleName(titre);
         find_onglet()->setAccessibleDescription(nom_fichier);
         //Connexion au slot des récemment ouverts
-        instance_outils->enregistre_fichiers(nom_fichier);
+        instance_outils.enregistre_fichiers(nom_fichier);
         //Configurations WORD
         Outils instance;
         if(instance.lire_config("word").toBool()){
@@ -629,7 +631,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             find_edit()->insertHtml(contenu);
             document_actuel->setModified(false);
             //Connexion au slot des récemment ouverts
-            instance_outils->enregistre_fichiers(nom_fichier);
+            instance_outils.enregistre_fichiers(nom_fichier);
         }
         else if(texte){
             //Gestion des fichiers de texte

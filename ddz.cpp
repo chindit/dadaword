@@ -63,6 +63,70 @@ bool DDZ::enregistre(QString fichier, QString contenu){
 }
 
 QString DDZ::ouvre(QString nom){
+    //Variables globales
+    QString contenu;
+    Erreur instance_erreur;
+    Outils instance_outils;
 
-    return "NULL";
+    //---------------------------------------------
+    //Extraction de l'archive
+    //---------------------------------------------
+
+    //Instance QZipReader
+    QZipReader ddz_global(nom, QIODevice::ReadOnly);
+    //Extraction
+    ddz_global.extractAll(QDir::tempPath());
+
+
+    //---------------------------------------------
+    //Ouverture du fichier principal (DDW)
+    //---------------------------------------------
+    nom.remove(0, (instance_outils.compte_caracteres(nom)+1));
+    nom.remove(nom.size()-4, nom.size()).append(".ddw").prepend(QDir::tempPath()+"/");
+    QFile file(nom);
+    if(file.open(QFile::ReadOnly)){
+        QTextStream in(&file);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            contenu = contenu + line + "\n";
+        }
+        file.close();
+    }
+    else{
+        instance_erreur.Erreur_msg(QObject::tr("DDZ : Erreur lors de la lecture du contenu du document."), QMessageBox::Ignore);
+        return "NULL";
+    }
+
+    //-----------------------------------------------------
+    //Renommage des images contenues (selon l'OS)
+    //-----------------------------------------------------
+    int nb_images = contenu.count("<img src=");
+
+    //Il y a des images, on rentre dans la boucle
+    if(nb_images > 0){
+        //Définition de la RegExp
+        QRegExp regexp_images("<img[^>]*src=\"([^\"]*)");
+
+        //Récupération des images
+        int pos = 0; QStringList list;
+        while ((pos = regexp_images.indexIn(contenu, pos)) != -1){
+            list << regexp_images.cap(1);
+            pos += regexp_images.matchedLength();
+        }
+
+        if(nb_images != list.size()){
+            //On a pas trouvé toutes les images (ou on en a trouvé trop, ce qui est pire)
+            instance_erreur.Erreur_msg(QObject::tr("Problème lors de la détection d'images -> annulation de l'ouverture"), QMessageBox::Ignore);
+            return "NULL";
+        }
+
+        //On change le chemin des images
+        for(int i=0; i<list.size(); i++){
+            QString liste_temp = list.at(i);
+            QString nom_image = liste_temp.remove(0, (instance_outils.compte_caracteres(liste_temp)+1));
+            contenu.replace(list.at(i), QDir::tempPath()+"/"+nom_image);
+        }
+    }
+
+    return contenu;
 }

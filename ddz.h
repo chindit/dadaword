@@ -5,6 +5,7 @@
 #include "dadaword.h"
 #include "opendocument.h"
 #include "qzipwriter.h"
+#include "qzipreader.h"
 #include <QImageReader>
 
 class DDZ
