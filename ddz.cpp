@@ -82,7 +82,7 @@ QString DDZ::ouvre(QString nom){
     //Ouverture du fichier principal (DDW)
     //---------------------------------------------
     nom.remove(0, (instance_outils.compte_caracteres(nom)+1));
-    nom.remove(nom.size()-4, nom.size()).append(".ddw").prepend(QDir::tempPath()+"/");
+    nom.remove(nom.size()-4, nom.size()).append(".ddw").prepend(QDir::tempPath()+QDir::separator());
     QFile file(nom);
     if(file.open(QFile::ReadOnly)){
         QTextStream in(&file);
@@ -124,7 +124,7 @@ QString DDZ::ouvre(QString nom){
         for(int i=0; i<list.size(); i++){
             QString liste_temp = list.at(i);
             QString nom_image = liste_temp.remove(0, (instance_outils.compte_caracteres(liste_temp)+1));
-            contenu.replace(list.at(i), QDir::tempPath()+"/"+nom_image);
+            contenu.replace(list.at(i), QDir::tempPath()+QDir::separator()+nom_image);
         }
     }
 

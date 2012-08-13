@@ -3,6 +3,8 @@ DadaWord - Changelog
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)
 - Réécritude de toute la fonction d'ouverture de fichiers.
+- Suppression de QuaZip et de Zlib au profit d'une micro-librairie interne (Zlib reste utilisé).
+- Utilisation du séparateur de fichier propre à chaque OS pour éviter les bugs.
 
 Version 1.0.2 :
 - Ouverture de tous les types de fichiers textes existant

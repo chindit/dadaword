@@ -1739,36 +1739,10 @@ void DadaWord::add_image(){
     }
     //1)Sélectionne l'image
     QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg, *bmp)");
-    //QFile fichier_image(chemin_image);
 
+    //On enregistre le document par mesure de sécurité
+    enregistrement();
 
-    //On copie l'image dans le répertoire du fichier MAIS on l'enregistre avant
-    enregistrement(); //Comme ça on est sûr de pouvoir mettre l'image dans le même répertoire que le fichier
-/*
-    //On copie dans le répertoir du document
-    //on récupère le dossier
-    QString dossier_temp = find_onglet()->accessibleDescription();
-    QString chemin_dossier = dossier_temp.remove(instance_outils.compte_caracteres(dossier_temp), dossier_temp.size());
-
-    //On nomme le fichier selon le timestamp pour ne pas avoir de problèmes
-    int result = 0;
-    for(int i=0; i<chemin_image.size(); i++){
-        QChar carac = chemin_image.at(i);
-        if(carac == '.'){
-            result = i;
-        }
-    }
-    QString extention = chemin_image.remove(0, (result+1));
-    qsrand(QDateTime::currentDateTime ().toTime_t ());
-    QString nom_fichier_temp = find_onglet()->accessibleDescription().remove(0, (instance_outils.compte_caracteres(find_onglet()->accessibleDescription())+1));
-    nom_fichier_temp.remove(nom_fichier_temp.size()-4, nom_fichier_temp.size());
-    chemin_dossier += "/"+ nom_fichier_temp + "_" + QString::number(qrand())+"."+extention;
-    if(!fichier_image.copy(chemin_dossier)){
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Impossible de copier le fichier. L'insertion de l'image a été annulée"), QMessageBox::Warning);
-        return;
-    }
-*/
     //On insère l'image
     QString chemin_dossier = chemin_image;
     find_edit()->insertHtml(("<img src=\""+chemin_dossier+"\">"));
