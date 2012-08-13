@@ -61,3 +61,8 @@ bool DDZ::enregistre(QString fichier, QString contenu){
 
     return true;
 }
+
+QString DDZ::ouvre(QString nom){
+
+    return "NULL";
+}

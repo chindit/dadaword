@@ -466,14 +466,22 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
 //Ouverture d'un fichier
 void DadaWord::ouvrir_fichier(const QString &fichier){
     QString nom_fichier;
+    QString contenu;
+    bool style = false;
+    bool texte = false;
+
+    //----------------------------------------------------------------
+    //Récupération du nom du fichier et actions de pré-ouverture
+    //----------------------------------------------------------------
+
     if(fichier == "null"){
-        //nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous Documents (*.ddw *.txt *.html *.htm *.odt *.log *.cpp *.h *.php *.pro *.xml);;Documents DadaWord (*.ddw);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml)");
-        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous documents (*.*);;Documents DadaWord (*.ddw);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+        //nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous Documents (*.ddw *.txt *.html *.htm *.odt *.log *.cpp *.h *.php *.pro *.xml);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt);;Documents divers (*.log *.cpp *.h *.php *.pro *.xml)");
+        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
     }
     else{
         nom_fichier = fichier;
     }
-    if(!nom_fichier.isNull()){
+    if(!nom_fichier.isNull() && !nom_fichier.isEmpty()){
         QString titre = nom_fichier;
         Outils *instance_outils = new Outils;
         titre = titre.remove(0, (instance_outils->compte_caracteres(nom_fichier)+1));
@@ -505,105 +513,70 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
                 }
                 else{
                     Erreur instance_erreur;
-                    instance_erreur.Erreur_msg(tr("Exception dans la réponse au chargement d'image"), QMessageBox::Critical);
+                    instance_erreur.Erreur_msg(tr("Exception dans la réponse au chargement de fichier volumineux"), QMessageBox::Critical);
                     return;
                 }
             }//Fin des "alertes"
         }
+
+        //----------------------------------------------------
+        // Récupération du contenu du fichier à ouvrir
+        // ---------------------------------------------------
+
         if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
             //C'est un ODT, on le balance à OpenDocument
             OpenDocument instance_doc;
-            QString contenu = instance_doc.ouvre_odt(nom_fichier);
-            if(!contenu.isEmpty()){
-                QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
-                QTextDocument *document_actuel = new QTextDocument;
-                if(liste_fichiers.size() == 0){
-                    ouvre_onglet(true, titre);
-                }
-                else{
-                    document_actuel = find_edit()->document();
-                    if(document_actuel->isModified() || !document_actuel->isEmpty()){
-                        ouvre_onglet(true, titre);
-                    }
-                    else{
-                        find_onglet()->setWindowTitle(titre);
-                        //Si on ouvre pas un nouvel onglet, on envoie tout de même le signal de changement pour mettre à jour les menus
-                        changement_focus(find_onglet());
-                    }
-                }
-                //On refait un "find_edit()" parce qu'il se peut que celui-ci ait changé vu qu'on a (peut-être) ouvert un nouvel onglet
-                document_actuel = find_edit()->document();
-                find_edit()->insertHtml(contenu);
-                find_onglet()->setAccessibleName(titre);
-                find_onglet()->setAccessibleDescription(nom_fichier);
-                document_actuel->setModified(false);
-                //Connexion au slot des récemment ouverts
-                instance_outils->enregistre_fichiers(nom_fichier);
+            contenu = instance_doc.ouvre_odt(nom_fichier);
+            style = true; //Fichier contenant du style
+            if(contenu.isEmpty() || contenu.isNull() || contenu == "NULL"){
+                Erreur instance_erreur;
+                instance_erreur.Erreur_msg(tr("Une erreur est survenue lors de l'ouverture du fichier ODT. \n Consultez le fichier de LOG pour plus d'informations"), QMessageBox::Critical);
+                return;
             }
         }
-        else if(file.open(QFile::ReadOnly)) {
+        //Gestion du DDZ
+        else if(nom_fichier.endsWith(".ddz", Qt::CaseInsensitive)){
+            DDZ instance_ddz;
+            contenu = instance_ddz.ouvre(nom_fichier);
+            if(contenu.isEmpty() || contenu.isNull() || contenu == "NULL"){
+                Erreur instance_erreur;
+                instance_erreur.Erreur_msg(tr("Une erreur est survenue lors de l'ouverture du fichier DDZ. \n Consultez le fichier de LOG pour plus d'informations"), QMessageBox::Critical);
+                return;
+            }
+            style = true; //Fichier de style
+
+        }
+        else if(file.open(QFile::ReadOnly)){
             QTextStream in(&file);
             while (!in.atEnd()) {
                 QString line = in.readLine();
-                contenu_total_fichier = contenu_total_fichier + line + "\n";
+                contenu = contenu + line + "\n";
             }
             file.close();
 
             //Fichier vide
-            if((contenu_total_fichier.isEmpty() || contenu_total_fichier.isNull()) && !instance_outils->lire_config("fichiers_vides").toBool()){
+            if((contenu.isEmpty() || contenu.isNull()) && !instance_outils->lire_config("fichiers_vides").toBool()){
                 Erreur instance_erreur;
                 instance_erreur.Erreur_msg(tr("Une erreur s'est produite lors de l'ouverture du fichier : aucun contenu n'a été détecté. \n Êtes-vous sûr que le fichier n'est pas corrompu?"), QMessageBox::Critical);
                 return;
             }
 
-            //Fichier déjà ouvert
-            QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
-            QTextDocument *document_actuel = new QTextDocument;
-            if(liste_fichiers.size() == 0){
-                ouvre_onglet(true, titre);
-            }
-            else{
-                document_actuel = find_edit()->document();
-                if(document_actuel->isModified() || !document_actuel->isEmpty()){
-                    ouvre_onglet(true, titre);
-                }
-                else{
-                    find_onglet()->setWindowTitle(titre);
-                    //Si on ouvre pas un nouvel onglet, on envoie tout de même le signal de changement pour mettre à jour les menus
-                    changement_focus(find_onglet());
-                }
-            }
-
             //Fichier avec style (HTML)
             if(nom_fichier.endsWith(".ddw", Qt::CaseInsensitive) || nom_fichier.endsWith(".htm", Qt::CaseInsensitive) || nom_fichier.endsWith(".html", Qt::CaseInsensitive)){
-                find_edit()->setHtml(contenu_total_fichier);
+                find_edit()->setHtml(contenu);
                 if(!nom_fichier.endsWith(".ddw", Qt::CaseInsensitive)){
                     colore_html->setEnabled(true);
                 }
                 else{
                     colore_html->setEnabled(false);
                 }
+                style = true;
             }
 
             //Fichier texte
             else{
-                find_edit()->setText(contenu_total_fichier);
-                find_edit()->toPlainText();
-                find_edit()->setAcceptRichText(false);
-                //On coche le "Mode texte" parce que ce ne peut pas être autre chose pour du TXT
-                to_text->setChecked(true);
-                //On active la coloration aussi pour le XML
-                if(!nom_fichier.endsWith(".xml", Qt::CaseInsensitive)){
-                    colore_html->setEnabled(true);
-                }
+                texte = true;
             }
-            find_onglet()->setAccessibleName(titre);
-            find_onglet()->setAccessibleDescription(nom_fichier);
-            //On refait un "find_edit()" parce qu'il se peut que celui-ci ait changé vu qu'on a (peut-être) ouvert un nouvel onglet
-            document_actuel = find_edit()->document();
-            document_actuel->setModified(false);
-            //Connexion au slot des récemment ouverts
-            instance_outils->enregistre_fichiers(nom_fichier);
         }//Fin ouverture
         else{
             //Échec de l'ouverture du fichier
@@ -611,8 +584,34 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             instance_erreur.Erreur_msg(tr("Le fichier demandé n'a pu être ouvert. \n Veuillez réessayer."), QMessageBox::Critical);
             return;
         }
-        //Si on est encore ici, c'est que tout c'est bien passé.
-        //On repasse un coup de marge si on est en affichage de type Word
+
+        //------------------------------------------------------------
+        //Actions de post-ouverture
+        //Mise à jour des paramètres système
+        //------------------------------------------------------------
+        QTextDocument *document_actuel = new QTextDocument;
+        if(liste_fichiers.size() == 0){
+            ouvre_onglet(true, titre);
+        }
+        else{
+            document_actuel = find_edit()->document();
+            if(document_actuel->isModified() || !document_actuel->isEmpty()){
+                ouvre_onglet(true, titre);
+            }
+            else{
+                find_onglet()->setWindowTitle(titre);
+                //Si on ouvre pas un nouvel onglet, on envoie tout de même le signal de changement pour mettre à jour les menus
+                changement_focus(find_onglet());
+            }
+        }
+        //On refait un "find_edit()" parce qu'il se peut que celui-ci ait changé vu qu'on a (peut-être) ouvert un nouvel onglet
+        document_actuel = find_edit()->document();
+        document_actuel->setModified(false);
+        find_onglet()->setAccessibleName(titre);
+        find_onglet()->setAccessibleDescription(nom_fichier);
+        //Connexion au slot des récemment ouverts
+        instance_outils->enregistre_fichiers(nom_fichier);
+        //Configurations WORD
         Outils instance;
         if(instance.lire_config("word").toBool()){
             QTextFrame *tf = find_edit()->document()->rootFrame();
@@ -621,7 +620,38 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             tf->setFrameFormat(tff);
             find_edit()->document()->setModified(false);
         }
-    }//Fin de nom de fichier nul
+
+        //----------------------------------------------
+        //Insertion du contenu dans le QTextEdit
+        //----------------------------------------------
+        if(style){
+            //Gestion des fichiers de style
+            find_edit()->insertHtml(contenu);
+            document_actuel->setModified(false);
+            //Connexion au slot des récemment ouverts
+            instance_outils->enregistre_fichiers(nom_fichier);
+        }
+        else if(texte){
+            //Gestion des fichiers de texte
+            find_edit()->setText(contenu_total_fichier);
+            find_edit()->toPlainText();
+            find_edit()->setAcceptRichText(false);
+            //On coche le "Mode texte" parce que ce ne peut pas être autre chose pour du TXT
+            to_text->setChecked(true);
+            //On active la coloration aussi pour le XML
+            if(!nom_fichier.endsWith(".xml", Qt::CaseInsensitive)){
+                colore_html->setEnabled(true);
+            }
+        }
+        else{
+            Erreur instance_erreur;
+            instance_erreur.Erreur_msg(tr("Erreur lors de l'ouverture de fichier : il n'a pu être déterminé si le fichier s'ouvrait ou non en mode texte"), QMessageBox::Warning);
+            return;
+        }
+    }
+    //-----------------------------------------------
+    //Nom de fichier invalide -> envoi d'une erreur
+    //-----------------------------------------------
     else{
         Erreur instance_erreur;
         instance_erreur.Erreur_msg(tr("Impossible d'ouvrir le fichier, aucun nom n'a été donné"), QMessageBox::Ignore);
