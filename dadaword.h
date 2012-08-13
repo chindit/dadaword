@@ -121,7 +121,6 @@ private:
     QTextEdit* find_edit();
 
     QMdiArea *zone_centrale;
-    QTextDocument *doc_principal;
     QAction *enregistrer;
     QToolBar *puces;
     QToolBar *barre_tableau;

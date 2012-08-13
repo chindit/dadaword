@@ -1,5 +1,9 @@
 DadaWord - Changelog
 
+Version 1.1.0 :
+- Changement du format de travail de Dadaword : DDZ (format compressé type ODT)
+- Réécritude de toute la fonction d'ouverture de fichiers.
+
 Version 1.0.2 :
 - Ouverture de tous les types de fichiers textes existant
 - Coloration syntaxique également pour le XML
