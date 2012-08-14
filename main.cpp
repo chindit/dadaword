@@ -7,6 +7,7 @@
 
 #include <QtGui/QApplication>
 #include <QLocale>
+#include <QObject>
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QTextCodec>
@@ -33,6 +34,13 @@ int main(int argc, char *argv[])
     instance.cree_iu();
     //Affichage
     instance.show();
+
+    //On crée le timer pour enregistrer automatiquement le fichier
+    QTimer *timer_enregistrement = new QTimer;
+    timer_enregistrement->setSingleShot(false); //Timer répétitif
+    timer_enregistrement->setInterval(300000); //On sauvegarde toutes les 5 minutes
+    timer_enregistrement->start();
+    QObject::connect(timer_enregistrement, SIGNAL(timeout()), &instance, SLOT(enregistrement()));
 
     return app.exec();
 }

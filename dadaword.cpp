@@ -351,6 +351,10 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     if(fenetre_active == 0){
         edit_temp = find_edit();
         fenetre_temp = find_onglet();
+        if(edit_temp == 0){
+            //Si on enregistre et qu'il n'y a pas de fenêtre (déclenchement du QTimer), on quitte
+            return;
+        }
     }
     else{//On n'est pas dans la fenêtre active
         edit_temp = fenetre_active->findChild<QTextEdit *>();
@@ -1337,7 +1341,7 @@ void DadaWord::create_menus(){
     nom_format->addItem(tr("Titre 6"), TITRE6);
     bar_format->addWidget(nom_format);
     //Connexion
-    connect(nom_format, SIGNAL(currentIndexChanged(int)), this, SLOT(change_style(int)));
+    connect(nom_format, SIGNAL(activated(int)), this, SLOT(change_style(int)));
 
     //Création de la toolbar des puces
     puces = new QToolBar;
