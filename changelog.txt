@@ -1,8 +1,11 @@
 DadaWord - Changelog
 
+Version 1.1.1 :
+- BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.
+
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)
-- Réécritude de toute la fonction d'ouverture de fichiers.
+- Réécriture de toute la fonction d'ouverture de fichiers.
 - Suppression de QuaZip et de Zlib au profit d'une micro-librairie interne (Zlib reste utilisé).
 - Utilisation du séparateur de fichier propre à chaque OS pour éviter les bugs.
 
@@ -47,7 +50,7 @@ Version 0.0.8-beta:
 - Gestion des recherches au sein du document (QDialog et Toolbar)
 - Ajout du raccourci "Nouveau" dans la toolbar "Défaut"
 - Correction du style Word (suppression de l'instabilité).
-- BUG : correction de l'error "QFont <= 0" au démarrage
+- BUG : correction de l'erreur "QFont <= 0" au démarrage
 - BUG : correction de "lecture seule" cochée par défaut
 - BUG : interdiction d'afficher un TXT en mode RichText
 - BUG : documents RichText qui pouvaient être passés 2x en mode PlainText
@@ -80,7 +83,7 @@ Version: 0.0.5-alpha
 Version: 0.0.4-alpha
 - BUG : blocage de la fenêtre principale lorsque la fenêtre des préférences est ouverte
 - Ajout des fichiers récemment ouverts
-- BUG : affichage de l'alerte de config pour la verbosité MEDIUM et HIGH
+- BUG : affichage de l'alerte de config pour la verbosité MÉDIUM et HIGH
 - Insertion d'image sans la transformation en base64 sur la demande explicite de l'utilisateur
 - Fichier de log dans le répertoire du programme (à côté de l'exécutable)
 - BUG : non affichage d'un fichier récent si son nom n'a pas été trouvé.

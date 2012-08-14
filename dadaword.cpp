@@ -1639,20 +1639,9 @@ void DadaWord::change_couleur(const int &value){
         find_edit()->setTextColor(couleur);
     }
     else if(value == SURLIGNE){
-        QTextCursor curseur = find_edit()->textCursor();
         QTextCharFormat format_couleur;
         format_couleur.setBackground(QBrush(couleur));
-        QFont police;
-        qreal current_size = 12;
-        if(curseur.hasSelection()){
-            police = find_edit()->currentFont();
-            current_size = find_edit()->fontPointSize();
-        }
         find_edit()->setCurrentCharFormat(format_couleur);
-        if(curseur.hasSelection()){
-            find_edit()->setFont(police);
-            find_edit()->setFontPointSize(current_size);
-        }
     }
     else{
         //Erreur, on ne peut jamais arriver ici
