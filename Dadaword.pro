@@ -38,13 +38,10 @@ HEADERS  += dadaword.h \
 RESOURCES += \
     images.qrc
 
-#QuaZip
-INCLUDEPATH += quazip
-LIBS += -lquazip
-
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
 LIBS += /home/david/Documents/dada/Prog\ H.N/dadaword/hunspell/src/hunspell/.libs/libhunspell-1.3.a
+INCLUDEPATH += zlib
 
 #Traductions
 TRANSLATIONS = dadaword_es.ts

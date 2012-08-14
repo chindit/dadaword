@@ -1,5 +1,5 @@
 ÉTAPES POUR L'INSTALLATION :
 
-1)Zlib DOIT être installé pour que la compilation fonctionne (Disponible sur http://zlib.net/)
+1)Compiler ZLIB
 2)Compiler hunspell (adapter le chemin vers la lib dans le .pro)
 3)Compiler DadaWord (n'oubliez pas QMake ;-) )
