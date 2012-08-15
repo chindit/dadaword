@@ -54,10 +54,11 @@ public:
     QString replacement() const;
 
 private:
-    void put_word(const QString &word);
+    void put_word(const QString word);
     Hunspell *instance_hunspell;
     QString UserDictionary;
     QString encodage;
+    QString dictionnaire_standard;
     QTextCodec *codec;
 };
 

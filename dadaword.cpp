@@ -224,7 +224,6 @@ void DadaWord::cree_iu(){
 void DadaWord::affiche_about(){
 
     QString string_about = ("<h2>A propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString::fromAscii(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58@gmail.com'>littletiger58@gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/lgpl-3.0.fr.html'>LGPL 3</a>");
-    //string_about += "<br>Cet exemplaire de <i>DadaWord</i> est dédicacé à <b>Kelly</b>.";
     QMessageBox::about(this, tr("À propos de DadaWord"), string_about);
     return;
 }
@@ -1378,6 +1377,11 @@ void DadaWord::create_menus(){
     connect(make_recherche, SIGNAL(triggered()), mappeur_toolbar5, SLOT(map()));
     mappeur_toolbar5->setMapping(make_recherche, QTOOLBAR);
     connect(mappeur_toolbar5, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
+    //On connect aussi la QLineEdit
+    QSignalMapper *mappeur_toolbar9 = new QSignalMapper;
+    connect(champ_recherche, SIGNAL(returnPressed()), mappeur_toolbar9, SLOT(map()));
+    mappeur_toolbar9->setMapping(champ_recherche, QTOOLBAR);
+    connect(mappeur_toolbar9, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
     QAction *recherche_avant = barre_recherche->addAction(tr("Occurence précédente"));
     recherche_avant->setIcon(QIcon(":/menus/images/avant.png"));
     recherche_avant->setStatusTip(tr("Recherche l'occurence précédente"));

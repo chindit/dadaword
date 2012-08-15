@@ -25,7 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*
   Développeur : David Lumaye (littletiger58@gmail.com)
-  Date : 01/08/12
+  Date : 15/08/12
   Merci de ne pas supprimer cette notice.
   Toutes les modifications apportées à ce document (disponible ici : http://qt-project.org/wiki/Spell-Checking-with-Hunspell )
   sont soumises à la licence générale du programme (GPL v3)
@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDictionary)
 {
     UserDictionary = userDictionary;
+    dictionnaire_standard = dictionaryPath;
     Erreur instance_erreur;
     QString dictFile = dictionaryPath + ".dic";
     QString affixFile = dictionaryPath + ".aff";
@@ -69,17 +70,19 @@ SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDic
     }
     codec = QTextCodec::codecForName(this->encodage.toLatin1().constData());
 
-    if(!UserDictionary.isEmpty()) {
+    if(!UserDictionary.isEmpty()){
         QFile userDictonaryFile(UserDictionary);
-        if(userDictonaryFile.open(QIODevice::ReadOnly)) {
+        if(userDictonaryFile.open(QIODevice::ReadOnly)){
             QTextStream stream(&userDictonaryFile);
             for(QString word = stream.readLine(); !word.isEmpty(); word = stream.readLine())
                 put_word(word);
             userDictonaryFile.close();
-        } else {
+        }
+        else{
             instance_erreur.Erreur_msg(tr("Le dictionnaire ")+UserDictionary+tr(" n'a pu être ouvert"), QMessageBox::Information);
         }
-    } else {
+    }
+    else{
         instance_erreur.Erreur_msg(tr("Dictionnaire utilisateur non défini."), QMessageBox::Information);
     }
 }
@@ -119,9 +122,9 @@ void SpellChecker::ignoreWord(const QString &word)
 }
 
 
-void SpellChecker::put_word(const QString &word)
-{
+void SpellChecker::put_word(const QString word){
     instance_hunspell->add(codec->fromUnicode(word).constData());
+    return;
 }
 
 
