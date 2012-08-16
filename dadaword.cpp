@@ -1497,6 +1497,8 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
     if(titre_ok && !reponse.isEmpty()){
         QTextEdit *document_onglet = new QTextEdit;
         document_onglet->installEventFilter(this);
+        document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
+        connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));//Connection au slot d'affichage du menu
         QTextDocument *doc_principal_onglet = new QTextDocument;
         document_onglet->setDocument(doc_principal_onglet);
         Outils instance_outils;
