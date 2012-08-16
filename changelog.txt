@@ -4,6 +4,8 @@ Version 1.1.1 :
 - BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.
 - BUG : la liste déroulante de style ne réagissait pas lors de la sélection de "Standard"
 - Ajout d'un timer pour enregistrer le fichier actif toutes les 5 minutes.
+- Correction orthographique en LIVE (activation / désactivation dans les options de configuration)
+- Bouton de sélection de langue dans la barre des tâches
 
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)

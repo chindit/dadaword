@@ -1,6 +1,6 @@
 /*
   Développeur : David Lumaye (littletiger58@gmail.com)
-  Date : 01/08/12
+  Date : 16/08/12
   Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
   Merci de ne pas supprimer cette notice.
   */
@@ -19,14 +19,14 @@ void Outils::fenetre_config(){
     configure_fen->setWindowTitle(tr("Configurer Dadaword"));
 
     //Contenu
-    QLabel *titre_config, *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos;
+    QLabel *titre_config, *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe;
     titre_config = new QLabel;
     affiche_outils = new QLabel;
     affiche_taille_police = new QLabel;
     affiche_nom_police = new QLabel;
     label_fichiers_vides = new QLabel;
     label_alertes = new QLabel;
-    //label_base64 = new QLabel;
+    label_orthographe = new QLabel;
     label_word = new QLabel;
     label_dicos = new QLabel;
     titre_config->setText(tr("<h2>Configuration de Dadaword</h2>"));
@@ -36,12 +36,12 @@ void Outils::fenetre_config(){
     label_fichiers_vides->setText(tr("Autoriser l'ouverture de fichiers vides"));
     label_alertes->setText(tr("Afficher les alertes"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
-    //label_base64->setText(tr("Inclure les images au format DDW"));
-    //label_base64->setToolTip(tr("Décocher cette case accélèrera l'inclusion d'images dans vos documents mais créera plusieurs fichiers"));
-    label_word->setText(tr("<font color=\"#FF0000\"><b>BETA:</b></font> Activer la mise en page type \"Word\""));
+    label_word->setText(tr("Activer la mise en page type \"Word\""));
     label_word->setToolTip(tr("Activer la mise en page Word peut causer l'instabilité de DadaWord ou causer d'autres catastrophes tout aussi préjudiciables. \n Vous êtes prévenus!"));
     label_dicos->setText(tr("Langue du dictionnaire"));
     label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\""));
+    label_orthographe->setText(tr("Activer la correction orthographique"));
+    label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
 
     QPushButton *fermer = new QPushButton;
     fermer->setText(tr("Fermer la fenêtre"));
@@ -55,12 +55,12 @@ void Outils::fenetre_config(){
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
-    //checkbox_base64 = new QCheckBox;
     checkbox_word = new QCheckBox;
+    checkbox_orthographe = new QCheckBox;
     //On y met la configuration déjà existante :
     checkbox_onglets->setChecked(lire_config("onglets").toBool());
     checkbox_fichiers_vides->setChecked(lire_config("fichiers_vides").toBool());
-    //checkbox_base64->setChecked(lire_config("base64").toBool());
+    checkbox_orthographe->setChecked(lire_config("orthographe").toBool());
     checkbox_word->setChecked(lire_config("word").toBool());
 
     alertes = new QComboBox;
@@ -111,20 +111,20 @@ void Outils::fenetre_config(){
     layout_config->addWidget(checkbox_onglets, 1, 1, 1, 1);
     layout_config->addWidget(label_fichiers_vides, 2, 0, 1, 1);
     layout_config->addWidget(checkbox_fichiers_vides, 2, 1, 1, 1);
-    //layout_config->addWidget(label_base64, 3, 0, 1, 1);
-    //layout_config->addWidget(checkbox_base64, 3, 1, 1, 1);
     layout_config->addWidget(label_word, 3, 0, 1, 1);
     layout_config->addWidget(checkbox_word, 3, 1, 1, 1);
-    layout_config->addWidget(affiche_nom_police, 4, 0, 1, 1);
-    layout_config->addWidget(police_default, 4, 1, 1, 1);
-    layout_config->addWidget(affiche_taille_police, 5, 0, 1, 1);
-    layout_config->addWidget(taille_police_default, 5, 1, 1, 1);
-    layout_config->addWidget(label_alertes,6, 0, 1, 1);
-    layout_config->addWidget(alertes, 6, 1, 1, 1);
-    layout_config->addWidget(label_dicos, 7, 0, 1, 1);
-    layout_config->addWidget(liste_dicos, 7, 1, 1, 1);
-    layout_config->addWidget(valider, 8, 0, 1, 1);
-    layout_config->addWidget(fermer, 8, 1, 1, 1);
+    layout_config->addWidget(label_orthographe, 4, 0, 1, 1);
+    layout_config->addWidget(checkbox_orthographe, 4, 1, 1, 1);
+    layout_config->addWidget(affiche_nom_police, 5, 0, 1, 1);
+    layout_config->addWidget(police_default, 5, 1, 1, 1);
+    layout_config->addWidget(affiche_taille_police, 6, 0, 1, 1);
+    layout_config->addWidget(taille_police_default, 6, 1, 1, 1);
+    layout_config->addWidget(label_alertes, 7, 0, 1, 1);
+    layout_config->addWidget(alertes, 7, 1, 1, 1);
+    layout_config->addWidget(label_dicos, 8, 0, 1, 1);
+    layout_config->addWidget(liste_dicos, 8, 1, 1, 1);
+    layout_config->addWidget(valider, 9, 0, 1, 1);
+    layout_config->addWidget(fermer, 9, 1, 1, 1);
 
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
     configure_fen->show();
@@ -151,7 +151,7 @@ void Outils::enregistre_config(QString nom, int valeur){
     settings.setValue("police", police_default->currentFont());
     settings.setValue("taille", taille_police_default->value());
     settings.setValue("alertes", alertes->itemData(alertes->currentIndex()));
-    //settings.setValue("base64", checkbox_base64->isChecked());
+    settings.setValue("orthographe", checkbox_orthographe->isChecked());
     settings.setValue("word", checkbox_word->isChecked());
     settings.setValue("dico", liste_dicos->currentText());
 

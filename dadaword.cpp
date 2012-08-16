@@ -834,35 +834,37 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             }
         }//Fin du "if" de "Escape"
         if(keyEvent->key() == Qt::Key_Space){
-            QTextCursor temp = find_edit()->textCursor();
-            temp.movePosition(QTextCursor::PreviousWord);
-            if(temp.movePosition(QTextCursor::PreviousWord)){
-                temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-                if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
-                    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-                    if(!QFile::exists(userDict)){
-                        userDict = QDir::homePath() + ".dadaword/perso.dic";
-                    }
-                    SpellChecker instance_orthographe(dictPath, userDict);
-                    if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
-                        // highlight the unknown word
-                        QTextCharFormat marquage_erreurs;
-                        QColor couleur(Qt::red);
-                        marquage_erreurs.setUnderlineColor(couleur);
-                        marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+            Outils instance_outils;
+            if(instance_outils.lire_config("orthographe").toBool()){
+                QTextCursor temp = find_edit()->textCursor();
+                temp.movePosition(QTextCursor::PreviousWord);
+                if(temp.movePosition(QTextCursor::PreviousWord)){
+                    temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+                    if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
+                        QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
+                        if(!QFile::exists(userDict)){
+                            userDict = QDir::homePath() + ".dadaword/perso.dic";
+                        }
+                        SpellChecker instance_orthographe(dictPath, userDict);
+                        if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
+                            // highlight the unknown word
+                            QTextCharFormat marquage_erreurs;
+                            QColor couleur(Qt::red);
+                            marquage_erreurs.setUnderlineColor(couleur);
+                            marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-                        //Sélection de texte (pour le surlignage)
-                        QTextEdit::ExtraSelection es;
-                        es.cursor = temp;
-                        es.format = marquage_erreurs;
+                            //Sélection de texte (pour le surlignage)
+                            QTextEdit::ExtraSelection es;
+                            es.cursor = temp;
+                            es.format = marquage_erreurs;
 
-                        liste_erreurs << es;
-                        find_edit()->setExtraSelections(liste_erreurs);
-                    }
-                }
-            }
-
-        }
+                            liste_erreurs << es;
+                            find_edit()->setExtraSelections(liste_erreurs);
+                        } //IF : s'il y a une faute
+                    }//IF : s'il y a sélection et qu'elle est valide
+                }//IF : s'il y a un mot précédent
+            }//IF : si la correction est activée
+        }//IF : activation de la touche "Espace"
     }
     return QWidget::eventFilter(obj, event);
 }

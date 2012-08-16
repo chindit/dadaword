@@ -1,6 +1,6 @@
 /*
   Développeur : David Lumaye (littletiger58@gmail.com)
-  Date : 01/08/12
+  Date : 16/08/12
   Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
   Merci de ne pas supprimer cette notice.
   */
@@ -44,7 +44,7 @@ private slots:
 private:
     QWidget *log_fen;
     QWidget *configure_fen;
-    QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word;
+    QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe;
     QSpinBox *taille_police_default;
     QFontComboBox *police_default;
     QComboBox *alertes, *liste_dicos;
