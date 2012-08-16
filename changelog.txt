@@ -8,6 +8,7 @@ Version 1.1.1 :
 - Bouton de sélection de langue dans la barre des tâches
 - Présélection automatique du dictionnaire choisi.
 - Ajout du bouton "Insérer un tableau" dans la barre d'outils
+- BUG : non affichage du menu de contexte pour les nouvelles fenêtres.
 
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)
