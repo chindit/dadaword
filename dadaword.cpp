@@ -1,6 +1,6 @@
 /*
   Développeur : David Lumaye (littletiger58@gmail.com)
-  Date : 01/08/12
+  Date : 16/08/12
   Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
   Merci de ne pas supprimer cette notice.
   */
@@ -117,6 +117,17 @@ void DadaWord::cree_iu(){
     barre_etat = statusBar();
     barre_etat->showMessage(tr("Prêt"), 2500);
     //Initialisation des boutons
+    //Langue du document en cours
+    status_langue = new QPushButton(statusBar());
+    QString nom_dico = dictPath;
+    int nb_carac = instance_outils.compte_caracteres(dictPath);
+    nom_dico.remove(0, (nb_carac+1));
+    status_langue->setText(nom_dico);
+    status_langue->setToolTip(tr("Langue pour le document actuel"));
+    status_langue->setFlat(true);
+    connect(status_langue, SIGNAL(clicked()), this, SLOT(orth_langue()));
+    statusBar()->addPermanentWidget(status_langue);
+
     //Surécriture
     status_surecriture = new QPushButton(tr("INS"), statusBar());
     //Bouton aplati
@@ -148,6 +159,9 @@ void DadaWord::cree_iu(){
     document->setDocument(doc_principal);
     doc_principal->setModified(false);
     QMdiSubWindow *zone_document;
+    //Connection du QTextEdit à la correction
+    document->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));
 
     //Gestion des onglets Word ou non
     if(instance_outils.lire_config("word").toBool()){
@@ -823,23 +837,29 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             QTextCursor temp = find_edit()->textCursor();
             temp.movePosition(QTextCursor::PreviousWord);
             if(temp.movePosition(QTextCursor::PreviousWord)){
-            temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-            if(temp.hasSelection()){
-                //!word.isEmpty() && !spellChecker->spell(word) && !list_skip.contains(word)
-                // highlight the unknown word
-                QTextCharFormat highlightFormat;
-                highlightFormat.setBackground(QBrush(QColor("#ff6060")));
-                highlightFormat.setForeground(QBrush(QColor("#000000")));
+                temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+                if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
+                    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
+                    if(!QFile::exists(userDict)){
+                        userDict = QDir::homePath() + ".dadaword/perso.dic";
+                    }
+                    SpellChecker instance_orthographe(dictPath, userDict);
+                    if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
+                        // highlight the unknown word
+                        QTextCharFormat marquage_erreurs;
+                        QColor couleur(Qt::red);
+                        marquage_erreurs.setUnderlineColor(couleur);
+                        marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-                //Sélection de texte (pour le surlignage)
-                QTextEdit::ExtraSelection es;
-                es.cursor = temp;
-                es.format = highlightFormat;
+                        //Sélection de texte (pour le surlignage)
+                        QTextEdit::ExtraSelection es;
+                        es.cursor = temp;
+                        es.format = marquage_erreurs;
 
-                QList<QTextEdit::ExtraSelection> esList;
-                esList << es;
-                find_edit()->setExtraSelections(esList);
-            }
+                        liste_erreurs << es;
+                        find_edit()->setExtraSelections(liste_erreurs);
+                    }
+                }
             }
 
         }
@@ -2485,7 +2505,16 @@ void DadaWord::orth_dico(){
 
 //Orthographe : remplacer
 void DadaWord::orth_remplace(QString mot){
-    QTextCursor temp = pos_orth;
+    QTextCursor temp;
+    bool clic = false;
+    if(pos_orth_menu.isNull() || !pos_orth_menu.hasSelection()){
+    temp = pos_orth;
+    }
+    else{
+        temp = pos_orth_menu;
+        pos_orth_menu.clearSelection();
+        clic = true;
+    }
 
     QString word = temp.selectedText();
     while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
@@ -2497,7 +2526,9 @@ void DadaWord::orth_remplace(QString mot){
     temp.removeSelectedText();
     temp.insertText(mot);
     temp.movePosition(QTextCursor::NextWord);
-    verif_orthographe();
+    if(!clic){
+        verif_orthographe();
+    }
     return;
 }
 
@@ -2688,5 +2719,54 @@ void DadaWord::html_highlight(){
         find_edit()->setTextColor(Qt::black);
         delete instance;
     }
+    return;
+}
+
+//Menu personnalisé
+void DadaWord::affiche_menu_perso(const QPoint &position){
+    //Vérification de l'éditeur
+    QTextEdit *editor = qobject_cast<QTextEdit *>(sender());
+    if(!editor){
+        return;
+    }
+
+    //Création du menu
+    QMenu *menu_contextuel = new QMenu;
+
+    //On récupère le mot sous le curseur
+    QTextCursor cursor = editor->textCursor();
+    cursor.select(QTextCursor::WordUnderCursor);
+    QString mot  = cursor.selectedText();
+
+    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
+    if(!QFile::exists(userDict)){
+        userDict = QDir::homePath() + ".dadaword/perso.dic";
+    }
+    SpellChecker instance_orthographe(dictPath, userDict);
+    if(!mot.isEmpty() && !instance_orthographe.spell(mot) && !list_skip.contains(mot)){
+        QStringList propositions = instance_orthographe.suggest(mot);
+        //On parcourt la boucle
+        for(int i=0; i<propositions.size(); i++){
+            menu_contextuel->addAction(propositions.at(i));
+        }
+        //S'il y a des propositions, on ajoute un séparateur
+        menu_contextuel->addSeparator();
+    }
+
+    //Contenu du menu
+    menu_contextuel->addAction(tr("Couper"), this, SLOT(couper()), QKeySequence("Ctrl+X"));
+    menu_contextuel->addAction(tr("Copier"), this, SLOT(copier()), QKeySequence("Ctrl+C"));
+    menu_contextuel->addAction(tr("Coller"), this, SLOT(coller()), QKeySequence("Ctrl+V"));
+    QAction *choix = menu_contextuel->exec(this->cursor().pos());
+
+    if(choix){
+        if((choix->text() != tr("Couper") || choix->text() != tr("Copier") || choix->text() != tr("Coller")) && !choix->isSeparator()){
+            //On veut changer un mot
+            //On transfère le QTextCursor
+            pos_orth_menu = cursor;
+            orth_remplace(choix->text());
+        }
+    }
+    delete menu_contextuel;
     return;
 }

@@ -113,6 +113,7 @@ private slots:
     void coller();
     void mode_surecriture();
     void html_highlight();
+    void affiche_menu_perso(const QPoint &position);
 
 private:
     void create_menus();
@@ -155,15 +156,18 @@ private:
     QAction *affichage_format;
     QPushButton *status_is_modified;
     QPushButton *status_surecriture;
+    QPushButton *status_langue;
     QAction *colore_html;
     //Orthographe
     QToolBar *barre_orthographe;
     QComboBox *orth_suggest;
     QLabel *orth_mot;
     QTextCursor pos_orth;
+    QTextCursor pos_orth_menu;
     QString orth_erreur;
     QString dictPath;
     QStringList list_skip;
+    QList<QTextEdit::ExtraSelection> liste_erreurs;
     HighlighterHtml *instance;
 
 };
