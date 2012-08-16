@@ -74,10 +74,16 @@ void Outils::fenetre_config(){
     QStringList extentions;
     extentions << "*.dic";
     QStringList dicos = dossier.entryList(extentions);
+    //On récupère le dico actuel
+    QString nom_dico = lire_config("dico").toString();
     for(int i=0; i<dicos.size(); i++){
         QString temp = dicos.at(i);
         temp.resize((temp.size()-4));
         liste_dicos->addItem(temp);
+        //On présélectionne la langue actuelle
+        if(temp == nom_dico){
+            liste_dicos->setCurrentIndex(i);
+        }
     }
 
     //Lecture des valeurs

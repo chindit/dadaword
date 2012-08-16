@@ -6,6 +6,8 @@ Version 1.1.1 :
 - Ajout d'un timer pour enregistrer le fichier actif toutes les 5 minutes.
 - Correction orthographique en LIVE (activation / désactivation dans les options de configuration)
 - Bouton de sélection de langue dans la barre des tâches
+- Présélection automatique du dictionnaire choisi.
+- Ajout du bouton "Insérer un tableau" dans la barre d'outils
 
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)

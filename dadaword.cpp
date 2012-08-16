@@ -1394,6 +1394,7 @@ void DadaWord::create_menus(){
     //Création de la toolbar des tableaux
     barre_tableau = new QToolBar;
     addToolBar(Qt::BottomToolBarArea, barre_tableau);
+    barre_tableau->addAction(insere_tableau);
     barre_tableau->addAction(ajoute_ligne);
     barre_tableau->addAction(ajoute_colonne);
     barre_tableau->addSeparator();
@@ -2637,6 +2638,10 @@ void DadaWord::orth_langue(){
         QString temp = liste_dicos.at(i);
         temp.resize((temp.size()-4));
         liste->addItem(temp);
+        //On présélectionne la langue actuelle
+        if(temp == nom_dico){
+            liste->setCurrentIndex(i);
+        }
     }
     valider->setIcon(QIcon(":/menus/images/ok.png"));
     QGridLayout *layout = new QGridLayout;
