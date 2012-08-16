@@ -819,12 +819,30 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 make_full_screen();
             }
         }//Fin du "if" de "Escape"
-        //Ici, il y a une touche appuyée.
-        //Si on est à la fin du document, on maintient le slider bas
-        /*if(find_edit()->textCursor().position() == QTextCursor::End){
-            QScrollBar *temp = find_edit()->findChild<QScrollBar *>();
-            temp->setSliderPosition(6);
-        }*/
+        if(keyEvent->key() == Qt::Key_Space){
+            QTextCursor temp = find_edit()->textCursor();
+            temp.movePosition(QTextCursor::PreviousWord);
+            if(temp.movePosition(QTextCursor::PreviousWord)){
+            temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+            if(temp.hasSelection()){
+                //!word.isEmpty() && !spellChecker->spell(word) && !list_skip.contains(word)
+                // highlight the unknown word
+                QTextCharFormat highlightFormat;
+                highlightFormat.setBackground(QBrush(QColor("#ff6060")));
+                highlightFormat.setForeground(QBrush(QColor("#000000")));
+
+                //Sélection de texte (pour le surlignage)
+                QTextEdit::ExtraSelection es;
+                es.cursor = temp;
+                es.format = highlightFormat;
+
+                QList<QTextEdit::ExtraSelection> esList;
+                esList << es;
+                find_edit()->setExtraSelections(esList);
+            }
+            }
+
+        }
     }
     return QWidget::eventFilter(obj, event);
 }
