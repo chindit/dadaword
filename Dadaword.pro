@@ -45,5 +45,5 @@ INCLUDEPATH += zlib
 
 #Traductions
 TRANSLATIONS = dadaword_es.ts
-
+CODECFORTR = UTF-8
 

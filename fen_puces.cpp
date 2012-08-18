@@ -68,7 +68,7 @@ const QString fen_puces::get_radio(){
     }
     else{
         Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Erreur lors de la déterction du choix de liste : aucun style n'a été coché"), QMessageBox::Information);
+        instance_erreur.Erreur_msg(tr("Erreur lors de la détection du choix de liste : aucun style n'a été coché"), QMessageBox::Information);
         return "";
     }
 }
