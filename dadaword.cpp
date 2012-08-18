@@ -346,22 +346,23 @@ void DadaWord::imprimer(){
 //Enregistrement
 void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
 
-    //Déclaration des variables globales pour la fonction
+    //---------------------------------------------------
+    //Variables globales pour la fonction
+    //---------------------------------------------------
     QString nom_fichier = "";
     QString contenu_fichier;
     QTextEdit *edit_temp;
     QMdiSubWindow *fenetre_temp;
-
-    //Création de l'array des extensions de style
+    QTextDocument *temp_document;
     QStringList extensions_style;
-    extensions_style.append("ddw");
-    extensions_style.append("htm");
-    extensions_style.append("html");
-    extensions_style.append("odt");
-    extensions_style.append("ddz");
+    extensions_style << "ddw" << "htm" << "html" << "odt" << "ddz";
+    Outils instance_outils;
+    Erreur instance_erreur;
 
-    //Si fenetre_active vaut 0, c'est qu'on est dans la fenêtre active (oui, ça peut paraitre paradoxal)
-    if(fenetre_active == 0){
+    //----------------------------------------------
+    //Récupération du QTextEdit à enregistrer
+    //----------------------------------------------
+    if(fenetre_active == 0){ //Pas de QMdiSubWindow -> fenêtre active!
         edit_temp = find_edit();
         fenetre_temp = find_onglet();
         if(edit_temp == 0){
@@ -374,6 +375,9 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         fenetre_temp = fenetre_active;
     }
 
+    //-------------------------------------
+    //Récupération du nom du fichier
+    //-------------------------------------
     QString nom_fenetre = fenetre_temp->accessibleDescription();
     if(nom_fenetre.isEmpty() || nom_fenetre.isNull() || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
@@ -384,15 +388,21 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             return;
         }
 
-        //Test des extentions -> Par défaut, c'est du DDZ
+        //------------------------------------------------
+        //Traitement du fichier selon les extentions
+        //------------------------------------------------
         QFileInfo nom_info(nom_fichier);
         if(nom_info.completeSuffix().isEmpty() || nom_info.completeSuffix().isNull()){
-            nom_fichier.append(".ddz");
+            nom_fichier.append(".ddz"); //Si pas extention -> DDZ!
         }
 
-        //Test des extentions de texte -> Tout ce qui n'est pas style est texte
-        if(!extensions_style.contains(nom_info.completeSuffix())){
-            Outils instance_outils;
+        //---------------------
+        //Extentions de texte
+        //---------------------
+        if(!extensions_style.contains(nom_info.completeSuffix()) && edit_temp->acceptRichText()){
+                //-------------------------
+                //Avertissement de format
+                //-------------------------
             if(instance_outils.lire_config("alertes").toInt() != LOW){
                 int reponse = QMessageBox::question(this, tr("Format texte"), tr("Attention: le format que vous avez choisi ne peut sauvegarder les informations de style présentes dans ce document.\n Voulez-vous continuer?"), QMessageBox::Yes | QMessageBox::No);
                 if(reponse == QMessageBox::Yes){
@@ -404,15 +414,20 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
                     return;
                 }
                 else{
-                    //Erreur
+                    instance_erreur.Erreur_msg(tr("Enregistrement : retour de QMessageBox inopiné -> exit"), QMessageBox::Critical);
+                    return;
                 }
-            }//Fin de la gestion des alertes
+            }//IF : gestion des alertes
             else{
                 contenu_fichier = edit_temp->toPlainText();
             }
             //On désactive le richeText (pour ne pas qu'il y aie de bug si quelqu'un clique sur "Texte seul"
             edit_temp->setAcceptRichText(false);
-        }
+        }//IF : mode Texte
+
+        //--------------------------------------
+        //Extentions de style (export en HTML)
+        //--------------------------------------
         else if(nom_info.completeSuffix() == "odt"){
             //ODT, et que ça saute!!!
             //Mais avant, faut indiquer le nom du fichier sinon ça bugue
@@ -423,8 +438,10 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             contenu_fichier = edit_temp->toHtml();
         }
 
+        //------------------------------------------------
+        //Opérations générales appliquées à la fenêtre
+        //------------------------------------------------
         fenetre_temp->setAccessibleDescription(nom_fichier);
-        Outils instance_outils;
         int nb_carac = instance_outils.compte_caracteres(nom_fichier);
         QString nom_fichier_fenetre = nom_fichier;
         nom_fichier_fenetre.remove(0, (nb_carac+1));
@@ -437,10 +454,14 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         else{
             colore_html->setEnabled(false);
         }
-    }
+    }//IF : nom de fenêtre inexistant
+
+    //-------------------------------------------------
+    //Opérations si le nom de fichier existait déjà
+    //-------------------------------------------------
     else{
         nom_fichier = fenetre_temp->accessibleDescription();
-        if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix())){
+        if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
             contenu_fichier = edit_temp->toHtml();
         }
         else if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
@@ -449,16 +470,17 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             //On se casse parce qu'on a pas besoin d'écrire
             return;
         }
-        else{
+        else{ //Fichiers textes
             contenu_fichier = edit_temp->toPlainText();
         }
     }
 
-    //Vérification du DDZ
+    //-----------------------------------------------------
+    //Écriture du contenu selon les différentes extentions
+    //-----------------------------------------------------
     if(nom_fichier.contains(".ddz")){
         DDZ instance_ddz;
         if(!instance_ddz.enregistre(nom_fichier, contenu_fichier)){
-            Erreur instance_erreur;
             instance_erreur.Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
     }
@@ -470,7 +492,10 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             file.close();
         }
     }
-    QTextDocument *temp_document = new QTextDocument;
+
+    //----------------------------------------------
+    //Opérations de post-enregistrement
+    //----------------------------------------------
     temp_document = edit_temp->document();
     temp_document->setModified(false);
     enregistrer->setEnabled(false);
