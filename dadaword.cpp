@@ -737,9 +737,9 @@ void DadaWord::create_liste_puce(const int ordonne){
     QTextList *liste_actuelle = curseur.currentList();
     if(liste_actuelle == 0){
         if(ordonne == 1){
-            fen_puces puces;
+            fen_puces instance_puces;
             //On récupère le choix dans un QSTring
-            QString choix = puces.get_radio();
+            QString choix = instance_puces.get_radio();
             if(choix == "QTextListFormat::ListDecimal"){
                 liste_puce.setStyle(QTextListFormat::ListDecimal);
             }
@@ -1498,7 +1498,7 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
         QTextEdit *document_onglet = new QTextEdit;
         document_onglet->installEventFilter(this);
         document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
-        connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));//Connection au slot d'affichage du menu
+        connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));//Connection au slot d'affichage du menu
         QTextDocument *doc_principal_onglet = new QTextDocument;
         document_onglet->setDocument(doc_principal_onglet);
         Outils instance_outils;
@@ -2759,6 +2759,11 @@ void DadaWord::affiche_menu_perso(const QPoint &position){
             menu_contextuel->addAction(propositions.at(i));
         }
         //S'il y a des propositions, on ajoute un séparateur
+        menu_contextuel->addSeparator();
+        //On ajoute "Ignorer" et "Ajouter au dictionnaire" au menu
+        menu_contextuel->addAction(tr("Ignorer tout"), this, SLOT(orth_ignore()));
+        menu_contextuel->addAction(tr("Ajouter au dictionnaire"), this, SLOT(orth_dico()));
+        //Et on ré-ajoute un séparateur
         menu_contextuel->addSeparator();
     }
 
