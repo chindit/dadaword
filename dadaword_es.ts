@@ -480,7 +480,7 @@
         <location filename="dadaword.cpp" line="2585"/>
         <location filename="dadaword.cpp" line="2650"/>
         <source>Valider</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OK</translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="2657"/>
@@ -1113,12 +1113,12 @@ Por securidad, el programa va a cerrarse.</translation>
     <message>
         <location filename="opendocument.cpp" line="119"/>
         <source>Erreur lors de la lecture du style de paragraphe</source>
-        <translation type="unfinished"></translation>
+        <translation>Error durante la lectura del estilo de párrafo</translation>
     </message>
     <message>
         <location filename="opendocument.cpp" line="125"/>
         <source>Erreur lors de la lecture du style de texte</source>
-        <translation type="unfinished"></translation>
+        <translation>Error durante la lectura del estilo de texto</translation>
     </message>
     <message>
         <location filename="opendocument.cpp" line="131"/>
@@ -1286,160 +1286,164 @@ Por securidad, el programa va a cerrarse.</translation>
     <message>
         <location filename="outils.cpp" line="19"/>
         <source>Configurer Dadaword</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurar Dadaword</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="32"/>
         <source>&lt;h2&gt;Configuration de Dadaword&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Configuración de Dadaword&lt;/h2&gt;</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="33"/>
         <source>Remplacer les onglets par des fenêtres</source>
         <oldsource>Remplacer les onglets par des fenÃªtres</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Reemplazar pesatañas por ventanas</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="34"/>
         <source>Taille de la police par défaut</source>
         <oldsource>Taille de la police par dÃ©faut</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño del tipo de letra por defecto</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="35"/>
         <source>Type de police par défaut</source>
         <oldsource>Type de police par dÃ©faut</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Estilo del tipo de letra por defecto</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="36"/>
         <source>Autoriser l&apos;ouverture de fichiers vides</source>
-        <translation type="unfinished"></translation>
+        <translation>Acceptar la apertura de ficheros vacíos</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="37"/>
         <source>Afficher les alertes</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar alertas</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="38"/>
         <source>Cette action va active/désactive les alertes du programme</source>
         <oldsource>Cette action va active/dÃ©sactive les alertes du programme</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Esta acción (des)activa las alertas del programa</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="39"/>
         <source>Activer la mise en page type &quot;Word&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar el estilo &quot;Word&quot;</translation>
     </message>
     <message>
-        <location filename="outils.cpp" line="40"/>
         <source>Activer la mise en page Word peut causer l&apos;instabilité de DadaWord ou causer d&apos;autres catastrophes tout aussi préjudiciables. 
  Vous êtes prévenus!</source>
         <oldsource>Activer la mise en page Word peut causer l&apos;instabilitÃ© de DadaWord ou causer d&apos;autres catastrophes tout aussi prÃ©judiciables. 
  Vous Ãªtes prÃ©venus!</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Activar un estilo tipo &quot;Word&quot;</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="41"/>
         <source>Langue du dictionnaire</source>
-        <translation type="unfinished"></translation>
+        <translation>Idioma del diccionario</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="42"/>
-        <source>Change la langue du dictionnaire par défaut (modifiable pour le document courant via l&apos;option du menu &quot;Outils&quot;</source>
-        <oldsource>Change la langue du dictionnaire par dÃ©faut (modifiable pour le document courant via l&apos;option du menu &quot;Outils&quot;</oldsource>
-        <translation type="unfinished"></translation>
+        <source>Change la langue du dictionnaire par défaut (modifiable pour le document courant via l&apos;option du menu &quot;Outils&quot;)</source>
+        <oldsource>Change la langue du dictionnaire par défaut (modifiable pour le document courant via l&apos;option du menu &quot;Outils&quot;</oldsource>
+        <translation>Cambiar el idioma del diccionario por defecto (se puede cambiar el idioma del documento activo via una opción del menú &quot;Herramientas&quot;)</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="43"/>
         <source>Activer la correction orthographique</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar corrección ortográfica</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="44"/>
         <source>Active le surlignement automatique des erreurs dans le document courant</source>
-        <translation type="unfinished"></translation>
+        <translation>Activa el subrayamiento automático de los errores</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="47"/>
         <location filename="outils.cpp" line="235"/>
         <source>Fermer la fenêtre</source>
         <oldsource>Fermer la fenÃªtre</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar la ventana</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="51"/>
         <source>Valider</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="53"/>
         <source>Enregistrer la configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar la configuración</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="67"/>
         <source>Aucunes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguna</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="68"/>
         <source>Indispensables</source>
-        <translation type="unfinished"></translation>
+        <translation>Indispensables</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="69"/>
         <source>Toutes</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="103"/>
         <source>Exception dans la valeur de l&apos;alerte</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en el valor de alerta</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="151"/>
         <source>Configuration modifiée</source>
         <oldsource>Configuration modifiÃ©e</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Configuración modificada</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="151"/>
         <source>Attention, la modification de certains paramètres ne sera prise en compte que lors du redémarrage du programme.</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Cuidado!  La modificación de ciertos parámetros no será tomada en cuenta hasta que reinicie el programa.</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="309"/>
         <source>Le nettoyage du fichie de log a été effectué avec succès</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpieza del LOG completada con éxito</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="222"/>
         <source>Gestion du log de DadaWord</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestionar el LOG de Dadaword</translation>
+    </message>
+    <message>
+        <location filename="outils.cpp" line="40"/>
+        <source>Activer une mise en page type &quot;Word&quot;</source>
+        <translation>Activar el estilo &quot;Word&quot;</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="227"/>
         <source>&lt;h1&gt;Gestion du log&lt;/h1&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Gestión del LOG&lt;/h1&gt;</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="237"/>
         <source>Nettoyer le log</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpiar el LOG</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="239"/>
         <source>Ne laisse que les dix dernières entrées dans le fichier le log</source>
         <oldsource>Ne laisse que les dix derniÃ¨res entrÃ©es dans le fichier le log</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Deja solo las diez últimas entradas en el fichero</translation>
     </message>
     <message>
         <location filename="outils.cpp" line="309"/>
         <source>Nettoyage effectué</source>
         <oldsource>Nettoyage effectuÃ©</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Limpieza completada</translation>
     </message>
 </context>
 <context>
@@ -1532,8 +1536,8 @@ Por securidad, el programa va a cerrarse.</translation>
     </message>
     <message>
         <location filename="fen_puces.cpp" line="71"/>
-        <source>Erreur lors de la déterction du choix de liste : aucun style n&apos;a été coché</source>
-        <oldsource>Erreur lors de la dÃ©terction du choix de liste : aucun style n&apos;a Ã©tÃ© cochÃ©</oldsource>
+        <source>Erreur lors de la détection du choix de liste : aucun style n&apos;a été coché</source>
+        <oldsource>Erreur lors de la déterction du choix de liste : aucun style n&apos;a été coché</oldsource>
         <translation>Error durante la detección del estilo de lista : ningún estilo elegido</translation>
     </message>
 </context>

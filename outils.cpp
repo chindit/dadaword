@@ -37,9 +37,9 @@ void Outils::fenetre_config(){
     label_alertes->setText(tr("Afficher les alertes"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
     label_word->setText(tr("Activer la mise en page type \"Word\""));
-    label_word->setToolTip(tr("Activer la mise en page Word peut causer l'instabilité de DadaWord ou causer d'autres catastrophes tout aussi préjudiciables. \n Vous êtes prévenus!"));
+    label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
     label_dicos->setText(tr("Langue du dictionnaire"));
-    label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\""));
+    label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
     label_orthographe->setText(tr("Activer la correction orthographique"));
     label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
 
