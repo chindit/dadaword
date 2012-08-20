@@ -169,6 +169,7 @@ private:
     QStringList list_skip;
     QList<QTextEdit::ExtraSelection> liste_erreurs;
     HighlighterHtml *instance;
+    QTextCursor pos_recherche;
 
 };
 
