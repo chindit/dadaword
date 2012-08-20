@@ -10,6 +10,7 @@ Version 1.1.1 :
 - Ajout du bouton "Insérer un tableau" dans la barre d'outils
 - BUG : non affichage du menu de contexte pour les nouvelles fenêtres.
 - Ajout de la détection d'une autre instance de Dadaword
+- BUG : recherche inopérante -> recherche dans le QTextDocument plutôt que dans le QTextEdit
 
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)
