@@ -2079,7 +2079,19 @@ void DadaWord::recherche(){
 
 //Effectue la recherche
 void DadaWord::make_search(const int from){
-    int flags = 0;
+    //Initialisations
+    bool rebours = false;
+    bool resultat = false;
+    bool fenetre = false;
+    QTextEdit::ExtraSelection es;
+    QTextCharFormat surligne;
+    Outils instance_outils;
+    surligne.setBackground(QBrush(QColor("#ff6060")));
+    surligne.setForeground(QBrush(QColor("#000000")));
+
+    //---------------------------------------------
+    //Actions de la QToolBar
+    //---------------------------------------------
     if(from == QTOOLBAR || from == GAUCHE || from == DROITE){//Pour les directionnelles, ça revient au même
         if(champ_recherche->text().isEmpty() || champ_recherche->text().isNull()){
             Erreur instance;
@@ -2088,58 +2100,123 @@ void DadaWord::make_search(const int from){
         }
         if(from == GAUCHE){
             //Si on souhaite faire une recherche en remontant dans les occurences, faut le signaler par un flag
-            flags = QTextDocument::FindBackward;
-        }
-        if(!find_edit()->find(champ_recherche->text(), QFlag(flags))){
-            QPalette couleur = champ_recherche->palette();
-            couleur.setColor(champ_recherche->backgroundRole(), Qt::red);
-            champ_recherche->setPalette(couleur);
-        }
-        else{
-            QPalette couleur = champ_recherche->palette();
-            couleur.setColor(champ_recherche->backgroundRole(), Qt::green);
-            champ_recherche->setPalette(couleur);
+            rebours = true;
         }
     }
     else if(from == 196){
-        //On gère les flags
-        if(checkbox_case->isChecked() && checkbox_mots->isChecked()){
-            flags = QTextDocument::FindCaseSensitively | QTextDocument::FindWholeWords;
-        }
-        else if(checkbox_case->isChecked() && !checkbox_mots->isChecked()){
-            flags = QTextDocument::FindCaseSensitively;
-        }
-        else if(!checkbox_case->isChecked() && checkbox_mots->isChecked()){
-            flags = QTextDocument::FindWholeWords;
-        }
-        else{
-            //On ne fait rien, les flags sont OK.
-        }
-        if(champ_recherche2->text().isEmpty() || champ_recherche2->text().isNull()){
-            Erreur instance;
-            instance.Erreur_msg(tr("Tentative de recheche à partir d'une chaine vide"), QMessageBox::Ignore);
-            return;
-        }
-        if(!find_edit()->find(champ_recherche2->text(), QFlag(flags))){
-            Outils instance;
-            if(instance.lire_config("alertes").toInt() == HIGH){
-                QMessageBox::information(this, tr("Recherche infructueurse"), tr("Malheureusement, votre recherche n'a donné aucun résultat. \n Peut-être devriez-vous affiner vos mots clés ou appliquer des paramètres de recherche moins restrictifs"));
-            }
-        }
-        else{
-            //On transfère le contenu, pour faciliter la vie de l'utilisateur
-            champ_recherche->setText(champ_recherche2->text());
-            //Et on affiche la barre de recherche
-            hide_searchbar(true);
-        }
-        //On ferme tout
-        dialog_recherche->close();
-        delete dialog_recherche;
+        //On vient de la fenêtre de recherche
+        fenetre = true;
     }
     else{
         Erreur instance;
         instance.Erreur_msg(tr("Provenance de recherche non identifiée"), QMessageBox::Information);
     }
+
+        //Préparation des curseurs
+        QTextCursor cursor(find_edit()->textCursor());
+        cursor.movePosition(QTextCursor::Start);
+        QTextCharFormat plainFormat(cursor.charFormat());
+        QTextCharFormat colorFormat = plainFormat;
+        colorFormat.setBackground(Qt::red);
+        QTextCursor newCursor(find_edit()->document());
+
+        //On regarde si on est déjà en train de vérifier:
+        if(!pos_recherche.isNull() && !pos_recherche.atStart()){
+            pos_recherche.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+            newCursor = pos_recherche;
+        }
+        
+        //-----------------------
+        //Recherche
+        //-----------------------
+        while (!newCursor.isNull() && !newCursor.atEnd()){
+            if(!fenetre){
+                if(!rebours){
+                    newCursor = find_edit()->document()->find(champ_recherche->text(), newCursor);
+                }
+                else{
+                    newCursor = find_edit()->document()->find(champ_recherche->text(), newCursor, QTextDocument::FindBackward);
+                }
+            }
+            else{//On vient de la fenêtre de recherche
+                if(checkbox_case->isChecked() && checkbox_mots->isChecked()){
+                    newCursor = find_edit()->document()->find(champ_recherche2->text(), newCursor, QTextDocument::FindCaseSensitively | QTextDocument::FindWholeWords);
+                }
+                else if(checkbox_case->isChecked() && !checkbox_mots->isChecked()){
+                    newCursor = find_edit()->document()->find(champ_recherche2->text(), newCursor, QTextDocument::FindCaseSensitively);
+                }
+                else if(!checkbox_case->isChecked() && checkbox_mots->isChecked()){
+                    newCursor = find_edit()->document()->find(champ_recherche2->text(), newCursor, QTextDocument::FindWholeWords);
+                }
+                else{
+                    //Les flags sont OK. -> Recherche simple
+                    newCursor = find_edit()->document()->find(champ_recherche2->text(), newCursor);
+                }
+            }
+            if (!newCursor.isNull()){
+                newCursor.movePosition(QTextCursor::WordRight, QTextCursor::KeepAnchor);
+                //On surligne le mot
+                es.cursor = newCursor;
+                es.format = surligne;
+
+                QList<QTextEdit::ExtraSelection> esList;
+                esList << es;
+                find_edit()->setExtraSelections(esList);
+
+                resultat = true;
+                break;
+            }
+        }
+        
+        //-------------------------------------------
+        //Gestion du curseur post-recherche
+        //-------------------------------------------
+        if(newCursor.atEnd()){
+            pos_recherche.movePosition(QTextCursor::Start);
+            if(instance_outils.lire_config("alertes").toInt() == HIGH && !resultat){
+                QMessageBox::information(this, tr("Fin du document"), tr("Le curseur a atteint la fin du document sans trouver de résultat"));
+            }
+        }
+        else{
+            pos_recherche = newCursor;
+        }
+
+        //-----------------------------------------------------
+        //Action selon le résultat (ou l'absence de résultat
+        //------------------------------------------------------
+        if(!resultat){
+            QPalette couleur = champ_recherche->palette();
+            couleur.setColor(champ_recherche->backgroundRole(), Qt::red);
+            champ_recherche->setPalette(couleur);
+
+            //Avant de partir, on transfère les résultats si on vient de la fenêtre
+            if(fenetre){
+                if(instance_outils.lire_config("alertes").toInt() == HIGH || instance_outils.lire_config("alertes").toInt() == MEDIUM){
+                    QMessageBox::warning(this, tr("Recherche infructueuse"), tr("Malheureusement, votre recheche n'a donné aucun résultat.\nPeut-être devriez-vous essayer avec des critères moins stricts?"));
+                }
+                //On ferme tout
+                dialog_recherche->close();
+                delete dialog_recherche;
+                fenetre = false;
+            }
+        }
+        else{
+            QPalette couleur = champ_recherche->palette();
+            couleur.setColor(champ_recherche->backgroundRole(), Qt::green);
+            champ_recherche->setPalette(couleur);
+
+            //Avant de partir, on transfère les résultats si on vient de la fenêtre
+            if(fenetre){
+                champ_recherche->setText(champ_recherche2->text());
+                //Et on affiche la barre de recherche
+                hide_searchbar(true);
+                //On ferme tout
+                dialog_recherche->close();
+                delete dialog_recherche;
+                fenetre = false;
+            }
+        }
+
     return;
 }
 
