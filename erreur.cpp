@@ -1,6 +1,6 @@
 /*
   Développeur : David Lumaye (littletiger58@gmail.com)
-  Date : 01/08/12
+  Date : 21/08/12
   Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
   Merci de ne pas supprimer cette notice.
   */
@@ -43,8 +43,7 @@ void Erreur::Erreur_msg(QString msg, int etat){
     //1)Inscription dans le log
     //On stocke dans le fichier de log
     //Emplacement du fichier de LOG
-    QString place_log = QDir::homePath();
-    place_log += "/.dadaword/dadaword.log";
+    QString place_log = QDir::homePath() + QDir::separator()+".dadaword"+QDir::separator()+"dadaword.log";
     QFile fichier(place_log);
     if(fichier.open(QIODevice::Append | QIODevice::Text)){
         QDateTime datetime = QDateTime::currentDateTime();
