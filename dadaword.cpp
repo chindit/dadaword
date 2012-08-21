@@ -23,7 +23,7 @@ DadaWord::DadaWord(QWidget *parent)
     }
 
     //On regarde si le dossier de config existe
-    QString dossier = QDir::homePath()+"/.dadaword";
+    QString dossier = QDir::homePath()+QDir::separator+".dadaword";
     QDir dir_dossier(dossier);
     if(!dir_dossier.exists()){
         if(!dir_dossier.mkdir(dossier)){
