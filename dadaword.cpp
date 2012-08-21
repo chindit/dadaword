@@ -2115,9 +2115,6 @@ void DadaWord::make_search(const int from){
         //Préparation des curseurs
         QTextCursor cursor(find_edit()->textCursor());
         cursor.movePosition(QTextCursor::Start);
-        QTextCharFormat plainFormat(cursor.charFormat());
-        QTextCharFormat colorFormat = plainFormat;
-        colorFormat.setBackground(Qt::red);
         QTextCursor newCursor(find_edit()->document());
 
         //On regarde si on est déjà en train de vérifier:
