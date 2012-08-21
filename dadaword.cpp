@@ -1837,9 +1837,18 @@ void DadaWord::slot_lecture_seule(){
 
 //Crée un tableau en demandant la taille à l'utilisateur
 void DadaWord::creer_tableau(){
+    bool ok = true;
     //On demande quelle taille de tableau à l'utilisateur
-    int largeur = QInputDialog::getInt(this, tr("Largeur du tableau"), tr("Combien de colonnes?"), 4, 1);
-    int longueur = QInputDialog::getInt(this, tr("Longueur tableau"), tr("Combien de lignes?"), 5, 1);
+    int largeur = QInputDialog::getInt(this, tr("Largeur du tableau"), tr("Combien de colonnes?"), 4, 1, 10000, 1, &ok);
+    if(!ok){
+        //L'utilisateur a appuyé sur "Annuler" -> On se casse
+        return;
+    }
+    int longueur = QInputDialog::getInt(this, tr("Longueur tableau"), tr("Combien de lignes?"), 5, 1, 10000, 1, &ok);
+    if(!ok){
+        //Idem
+        return;
+    }
 
     QTextCursor curseur = find_edit()->textCursor();
     curseur.insertTable(longueur, largeur);
