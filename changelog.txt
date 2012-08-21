@@ -1,5 +1,8 @@
 DadaWord - Changelog
 
+Version 1.1.2 :
+- BUG : mauvaise gestion des fichiers de style
+
 Version 1.1.1 :
 - BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.
 - BUG : la liste déroulante de style ne réagissait pas lors de la sélection de "Standard"
