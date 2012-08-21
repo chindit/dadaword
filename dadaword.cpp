@@ -461,7 +461,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     //-------------------------------------------------
     else{
         nom_fichier = fenetre_temp->accessibleDescription();
-        if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
+        if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && !nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
             contenu_fichier = edit_temp->toHtml();
         }
         else if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
