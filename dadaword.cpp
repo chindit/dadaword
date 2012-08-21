@@ -2596,7 +2596,9 @@ void DadaWord::orth_ignore(){
     //On ajoute à la liste des mots à ignorer
     list_skip.append(orth_erreur);
     //Et on poursuit notre petit chemin
-    verif_orthographe();
+    if(!pos_orth.isNull() && !pos_orth.atStart()){ //Si on ne vient pas du menu contextuel, on continue
+        verif_orthographe();
+    }
     return;
 }
 
@@ -2860,8 +2862,10 @@ void DadaWord::affiche_menu_perso(const QPoint &position){
         userDict = QDir::homePath() + ".dadaword/perso.dic";
     }
     SpellChecker instance_orthographe(dictPath, userDict);
+    QStringList propositions;
     if(!mot.isEmpty() && !instance_orthographe.spell(mot) && !list_skip.contains(mot)){
-        QStringList propositions = instance_orthographe.suggest(mot);
+        propositions = instance_orthographe.suggest(mot);
+        orth_erreur = mot;
         //On parcourt la boucle
         for(int i=0; i<propositions.size(); i++){
             menu_contextuel->addAction(propositions.at(i));
@@ -2882,7 +2886,7 @@ void DadaWord::affiche_menu_perso(const QPoint &position){
     QAction *choix = menu_contextuel->exec(this->cursor().pos());
 
     if(choix){
-        if((choix->text() != tr("Couper") || choix->text() != tr("Copier") || choix->text() != tr("Coller")) && !choix->isSeparator()){
+        if((propositions.contains(choix->text())) && !choix->isSeparator()){
             //On veut changer un mot
             //On transfère le QTextCursor
             pos_orth_menu = cursor;
