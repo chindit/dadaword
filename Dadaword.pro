@@ -21,7 +21,7 @@ SOURCES += main.cpp\
     spellchecker.cpp \
     highlighterhtml.cpp \
     ddz.cpp \
-    qzip.cpp
+    qzip.cpp 
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -33,7 +33,7 @@ HEADERS  += dadaword.h \
     highlighterhtml.h \
     ddz.h \
     qzipreader.h \
-    qzipwriter.h
+    qzipwriter.h 
 
 RESOURCES += \
     images.qrc
@@ -41,6 +41,8 @@ RESOURCES += \
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
 LIBS += /home/david/Documents/dada/Prog\ H.N/dadaword/hunspell/src/hunspell/.libs/libhunspell-1.3.a
+
+#Zlib
 INCLUDEPATH += zlib
 
 #Traductions

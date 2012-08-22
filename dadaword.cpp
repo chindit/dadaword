@@ -1803,14 +1803,18 @@ void DadaWord::add_image(){
         return;
     }
     //1)Sélectionne l'image
-    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg, *bmp)");
+    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg *bmp)");
+
+    //S'il n'y a pas d'image, on se casse
+    if(chemin_image.isEmpty() || chemin_image.isNull()){
+        return;
+    }
 
     //On enregistre le document par mesure de sécurité
     enregistrement();
 
     //On insère l'image
-    QString chemin_dossier = chemin_image;
-    find_edit()->insertHtml(("<img src=\""+chemin_dossier+"\">"));
+    find_edit()->insertHtml(("<img src=\""+chemin_image+"\">"));
 
     return;
 }
