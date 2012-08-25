@@ -8,7 +8,7 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
 
-#define VERSION "1.1.1"
+#define VERSION "1.1.2"
 
 //Nombre de lignes à laisser dans le fichier de debug lors du délestage
 #define ITEMS_LOG 10
@@ -34,8 +34,5 @@ enum { FENETRE, QTOOLBAR };
 
 //Énumérations our le sens de la recherche
 enum { GAUCHE, DROITE };
-
-//Énumérations de style
-//enum { STANDARD, TITRE1, TITRE2, TITRE3, TITRE4, TITRE5, TITRE6 };
 
 #endif // CONSTANTES_H
