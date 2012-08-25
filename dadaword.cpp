@@ -2337,146 +2337,17 @@ void DadaWord::statistiques(){
 
 //Change le format si sélection depuis la Toolbar
 void DadaWord::change_style(int style){
-    //On détecte le style
-    /*Outils instance_outils;
-    QTextCursor curseur = find_edit()->textCursor();
-    QTextCharFormat format;
-    switch(style){ //Style par défaut
-    case 0:
-        if(curseur.hasSelection()){
-        //On récupère le style par défaut
-        format.setFont(instance_outils.lire_config("police").value<QFont>());
-        format.setFontPointSize(instance_outils.lire_config("taille").toInt());
-        curseur.setCharFormat(format);
-        }
-        else{
-            //find_edit()->setFont(instance_outils.lire_config("police").value<QFont>());
-            find_edit()->setFontPointSize(instance_outils.lire_config("taille").toInt());
-            find_edit()->setFontWeight(QFont::Normal);
-            find_edit()->setFontItalic(false);
-            find_edit()->setFontUnderline(false);
-            italique->setChecked(false);
-            souligne->setChecked(false);
-            gras->setChecked(false);
-        }
-        break;
-    case 1:
-        //Titre 1
-        if(curseur.hasSelection()){
-            format.setFontPointSize(24);
-            format.setFontWeight(QFont::Bold);
-            curseur.setCharFormat(format);//On applique le style
-        }
-        else{
-            find_edit()->setFontPointSize(24);
-            find_edit()->setFontWeight(QFont::Bold);
-            gras->setChecked(true);//On met à jour le menu
-            italique->setChecked(false);
-            souligne->setChecked(false);
-            find_edit()->setFontItalic(false);
-            find_edit()->setFontUnderline(false);
-        }
-        break;
-    case 2:
-        //Titre 2
-        if(!curseur.hasSelection()){
-            find_edit()->setFontPointSize(20);
-            find_edit()->setFontWeight(QFont::Bold);
-            find_edit()->setFontItalic(true);
-            gras->setChecked(true);
-            italique->setChecked(true);
-            souligne->setChecked(false);
-            find_edit()->setFontUnderline(false);
-        }
-        else{
-            format.setFontPointSize(20);
-            format.setFontWeight(QFont::Bold);
-            format.setFontItalic(true);
-            curseur.setCharFormat(format);
-        }
-        break;
-    case 3:
-        //Titre 3
-        if(!curseur.hasSelection()){
-            find_edit()->setFontPointSize(16);
-            find_edit()->setFontWeight(QFont::Bold);
-            find_edit()->setFontItalic(false);
-            gras->setChecked(true);
-            italique->setChecked(false);
-            souligne->setChecked(false);
-            find_edit()->setFontUnderline(false);
-        }
-        else{
-            format.setFontPointSize(16);
-            format.setFontWeight(QFont::Bold);
-            curseur.setCharFormat(format);
-        }
-        break;
-    case 4:
-        //Titre 4
-        if(!curseur.hasSelection()){
-            find_edit()->setFontPointSize(14);
-            find_edit()->setFontWeight(QFont::Bold);
-            find_edit()->setFontItalic(true);
-            gras->setChecked(true);
-            italique->setChecked(true);
-            souligne->setChecked(false);
-            find_edit()->setFontUnderline(false);
-        }
-        else{
-            format.setFontItalic(true);
-            format.setFontPointSize(14);
-            format.setFontWeight(QFont::Bold);
-            curseur.setCharFormat(format);
-        }
-        break;
-    case 5:
-        //Titre 5
-        if(!curseur.hasSelection()){
-            find_edit()->setFontItalic(true);
-            find_edit()->setFontPointSize(13);
-            find_edit()->setFontUnderline(true);
-            find_edit()->setFontWeight(QFont::Normal);
-            souligne->setChecked(true);
-            italique->setChecked(true);
-            gras->setChecked(false);
-            souligne->setChecked(false);
-        }
-        else{
-            format.setFontItalic(true);
-            format.setFontPointSize(13);
-            format.setFontUnderline(true);
-            curseur.setCharFormat(format);
-        }
-        break;
-    case 6:
-        //Titre 6
-        if(!curseur.hasSelection()){
-            find_edit()->setFontPointSize(12);
-            find_edit()->setFontUnderline(true);
-            find_edit()->setFontItalic(false);
-            find_edit()->setFontWeight(QFont::Normal);
-            souligne->setChecked(true);
-            gras->setChecked(false);
-            italique->setChecked(false);
-        }
-        else{
-            format.setFontPointSize(12);
-            format.setFontUnderline(true);
-            curseur.setCharFormat(format);
-        }
-        break;
-    default:
-        Erreur instance;
-        instance.Erreur_msg(tr("Changement vers un style inexistant : saut de l'opération"), QMessageBox::Information);
-        return;
-        break;
-    }*/
+    //Préparation des variables
     QSettings settings("Dadaword", "dadaword");
     QStringList nom_styles = settings.value("noms_styles").toStringList();
     QTextCursor curseur = find_edit()->textCursor();
     QTextCharFormat format;
 
+    //--------------------------------
+    //Application du style
+    //--------------------------------
+
+    //Pas de sélection
     if(!curseur.hasSelection()){
         settings.beginGroup(nom_styles.at(style));
         find_edit()->setCurrentFont(settings.value("police").value<QFont>());
@@ -2496,6 +2367,7 @@ void DadaWord::change_style(int style){
         }
         settings.endGroup();
     }
+    //Sélection
     else{
         settings.beginGroup(nom_styles.at(style));
         format.setFont(settings.value("police").value<QFont>());
