@@ -48,6 +48,7 @@
 #include "outils.h"
 #include "opendocument.h"
 #include "spellchecker.h"
+#include "style.h"
 
 class DadaWord : public QMainWindow
 {

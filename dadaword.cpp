@@ -1108,6 +1108,12 @@ void DadaWord::create_menus(){
     rechercher->setIcon(QIcon(":/menus/images/search.png"));
     connect(rechercher, SIGNAL(triggered()), this, SLOT(recherche()));
 
+    //Gestion des style
+    QAction *gere_styles = menu_edition->addAction(tr("Gérer les styles"));
+    gere_styles->setStatusTip(tr("Gére les styles par défauts et vous permet de créer vos propres styles"));
+    Style *instance_style = new Style;
+    connect(gere_styles, SIGNAL(triggered()), instance_style, SLOT(affiche_fen()));
+
     //Alignement
     QMenu *alignement = menu_edition->addMenu(tr("Alignement"));
     QAction *alignement_gauche = alignement->addAction(tr("Gauche"));
@@ -1396,13 +1402,11 @@ void DadaWord::create_menus(){
     bar_format = new QToolBar;
     addToolBar(Qt::TopToolBarArea, bar_format);
     nom_format = new QComboBox;
-    nom_format->addItem(tr("Standard"), STANDARD);
-    nom_format->addItem(tr("Titre 1"), TITRE1);
-    nom_format->addItem(tr("Titre 2"), TITRE2);
-    nom_format->addItem(tr("Titre 3"), TITRE3);
-    nom_format->addItem(tr("Titre 4"), TITRE4);
-    nom_format->addItem(tr("Titre 5"), TITRE5);
-    nom_format->addItem(tr("Titre 6"), TITRE6);
+    QSettings settings("Dadaword", "dadaword");
+    QStringList noms_styles = settings.value("noms_styles").toStringList();
+    for(int i=0; i<noms_styles.count(); i++){
+        nom_format->addItem(noms_styles.at(i));
+    }
     bar_format->addWidget(nom_format);
     //Connexion
     connect(nom_format, SIGNAL(activated(int)), this, SLOT(change_style(int)));
@@ -2334,7 +2338,7 @@ void DadaWord::statistiques(){
 //Change le format si sélection depuis la Toolbar
 void DadaWord::change_style(int style){
     //On détecte le style
-    Outils instance_outils;
+    /*Outils instance_outils;
     QTextCursor curseur = find_edit()->textCursor();
     QTextCharFormat format;
     switch(style){ //Style par défaut
@@ -2467,7 +2471,43 @@ void DadaWord::change_style(int style){
         instance.Erreur_msg(tr("Changement vers un style inexistant : saut de l'opération"), QMessageBox::Information);
         return;
         break;
+    }*/
+    QSettings settings("Dadaword", "dadaword");
+    QStringList nom_styles = settings.value("noms_styles").toStringList();
+    QTextCursor curseur = find_edit()->textCursor();
+    QTextCharFormat format;
+
+    if(!curseur.hasSelection()){
+        settings.beginGroup(nom_styles.at(style));
+        find_edit()->setCurrentFont(settings.value("police").value<QFont>());
+        find_edit()->setFontPointSize(settings.value("taille").toInt());
+        find_edit()->setFontUnderline(settings.value("souligne").toBool());
+        find_edit()->setFontItalic(settings.value("italique").toBool());
+        find_edit()->setFontWeight(settings.value("gras").toInt());
+        find_edit()->setTextColor(settings.value("foreground").value<QColor>());
+        find_edit()->setTextBackgroundColor(settings.value("background").value<QColor>());
+        souligne->setChecked(settings.value("souligne").toBool());
+        italique->setChecked(settings.value("italique").toBool());
+        if(settings.value("gras").toInt() == QFont::Bold){
+            gras->setChecked(true);
+        }
+        else{
+            gras->setChecked(false);
+        }
+        settings.endGroup();
     }
+    else{
+        settings.beginGroup(nom_styles.at(style));
+        format.setFont(settings.value("police").value<QFont>());
+        format.setFontPointSize(settings.value("taille").toInt());
+        format.setFontUnderline(settings.value("souligne").toBool());
+        format.setFontItalic(settings.value("italique").toBool());
+        format.setFontWeight(settings.value("gras").toInt());
+        format.setBackground(QBrush(settings.value("background").value<QColor>()));
+        format.setForeground(QBrush(settings.value("foreground").value<QColor>()));
+        curseur.setCharFormat(format);
+    }
+
     //On rend le focus au QTextEdit
     find_edit()->setFocus();
     return;

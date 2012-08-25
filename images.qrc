@@ -57,5 +57,7 @@
     </qresource>
     <qresource prefix="/programme">
         <file>images/dadaword.gif</file>
+        <file>images/edit.png</file>
+        <file>images/ajouter.png</file>
     </qresource>
 </RCC>

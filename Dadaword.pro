@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     spellchecker.cpp \
     highlighterhtml.cpp \
     ddz.cpp \
-    qzip.cpp 
+    qzip.cpp \  
+    style.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -33,7 +34,8 @@ HEADERS  += dadaword.h \
     highlighterhtml.h \
     ddz.h \
     qzipreader.h \
-    qzipwriter.h 
+    qzipwriter.h \  
+    style.h
 
 RESOURCES += \
     images.qrc
