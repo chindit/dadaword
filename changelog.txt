@@ -4,6 +4,7 @@ Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style
 - BUG : non annulation de la création de tableau lors du clic sur "Annuler"
 - BUG : lien "Ignorer tout" du menu contextuel non-opérant
+- Création d'un système de gestion de styles personnalisé
 
 Version 1.1.1 :
 - BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.

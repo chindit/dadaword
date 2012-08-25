@@ -165,7 +165,6 @@ void Style::affiche_fen(){
 
     setWindowTitle(tr("Gestion des styles - Dadaword"));
     setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
-    //setAttribute(Qt::WA_DeleteOnClose);
     exec();
 
     return;
@@ -356,10 +355,15 @@ void Style::enregistre_style(){
         //La modification est effectuée, on annule l'ID pour ne pas avoir de problèmes par la suite.
         id_modif = -255;
     }
+    else{
+        //On émet le signal si on a ajouté un nouveau style
+        emit styles_changed();
+    }
 
     //On ferme la fenêtre
     add_style->close();
     delete add_style;
+
     return;
 }
 
@@ -406,6 +410,9 @@ void Style::supprime_style(int style){
         //Mise à jour des settings
         settings.setValue("nb_styles", nb_styles);
         settings.setValue("noms_styles", styles);
+
+        //On émet le signal
+        emit styles_changed();
     }
     else{
         Erreur instance_erreur;

@@ -1113,6 +1113,7 @@ void DadaWord::create_menus(){
     gere_styles->setStatusTip(tr("Gére les styles par défauts et vous permet de créer vos propres styles"));
     Style *instance_style = new Style;
     connect(gere_styles, SIGNAL(triggered()), instance_style, SLOT(affiche_fen()));
+    connect(instance_style, SIGNAL(styles_changed()), this, SLOT(recharge_styles()));
 
     //Alignement
     QMenu *alignement = menu_edition->addMenu(tr("Alignement"));
@@ -2810,5 +2811,16 @@ void DadaWord::affiche_menu_perso(const QPoint &position){
         }
     }
     delete menu_contextuel;
+    return;
+}
+
+//Recharge les styles si on en a rajouté un (ou supprimé un)
+void DadaWord::recharge_styles(){
+    nom_format->clear();
+    QSettings settings("Dadaword", "dadaword");
+    QStringList noms_styles = settings.value("noms_styles").toStringList();
+    for(int i=0; i<noms_styles.count(); i++){
+        nom_format->addItem(noms_styles.at(i));
+    }
     return;
 }

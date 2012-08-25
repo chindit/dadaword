@@ -59,6 +59,9 @@ public:
     ~DadaWord();
     void cree_iu();
 
+public slots:
+    void recharge_styles();
+
 private slots:
     void affiche_about();
     void change_police(QFont nouvelle_police);

@@ -25,6 +25,7 @@ public:
     explicit Style(QWidget *parent = 0);
     
 signals:
+    void styles_changed();
     
 public slots:
     void affiche_fen();
