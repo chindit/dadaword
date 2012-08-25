@@ -123,6 +123,7 @@ void Style::affiche_fen(){
     this_add = new QPushButton(QIcon(":/programme/images/ajouter.png"), tr("Nouveau style"));
 
     connect(this_exit, SIGNAL(clicked()), this, SLOT(close()));
+    connect(this_add, SIGNAL(clicked()), this, SLOT(ajoute_style()));
 
     layout->addWidget(titre, 0, 0, 1, 3, Qt::AlignHCenter);
     layout->addWidget(titre_nom, 1, 0);
@@ -157,7 +158,77 @@ void Style::affiche_fen(){
 
     setWindowTitle(tr("Gestion des styles - Dadaword"));
     setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+    setAttribute(Qt::WA_DeleteOnClose);
     exec();
+
+    return;
+}
+
+//Crée un nouveau style
+void Style::ajoute_style(){
+    QDialog *add_style = new QDialog();
+    add_style->setWindowIcon(QIcon(":/programme/dadaword.gif"));
+    add_style->setWindowTitle(tr("Ajouter un nouveau style - Dadaword"));
+    add_style->setWindowModality(Qt::ApplicationModal);
+
+    QGridLayout *layout = new QGridLayout;
+    add_style->setLayout(layout);
+
+    //Initialisations
+    QLabel *titre, *label_nom, *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
+    titre = new QLabel(tr("<h3>Créer un nouveau style</h3>"));
+    label_nom = new QLabel(tr("Nom du style"));
+    label_police = new QLabel(tr("Police"));
+    label_taille = new QLabel(tr("Taille"));
+    label_gras = new QLabel(tr("Gras"));
+    label_italique = new QLabel(tr("Italique"));
+    label_souligne = new QLabel(tr("Souligné"));
+    label_foreground = new QLabel(tr("Couleur du texte"));
+    label_background = new QLabel(tr("Couleur d'arrière-plan"));
+
+    line_edite_nom_style = new QLineEdit;
+    combo_police = new QFontComboBox;
+    box_taille = new QSpinBox;
+    checkbox_gras = new QCheckBox;
+    checkbox_souligne = new QCheckBox;
+    checkbox_italique = new QCheckBox;
+    color_foreground = new QPushButton;
+    color_background = new QPushButton;
+    QPalette palette_background;
+    palette_background.setColor(QPalette::Window, Qt::transparent);
+    color_background->setPalette(palette_background);
+    QPalette palette_foreground;
+    palette_foreground.setColor(QPalette::WindowText, Qt::black);
+    color_foreground->setText(tr("Couleur"));
+    color_foreground->setPalette(palette_foreground);
+
+    QPushButton *valider = new QPushButton(QIcon(":/menus/images/ok.png"), tr("Valider"));
+    QPushButton *annuler = new QPushButton(QIcon(":/menus/images/stop.png"), tr("Annuler"));
+    connect(annuler, SIGNAL(clicked()), add_style, SLOT(close()));
+
+    //On ajoute tout au layout
+    layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
+    layout->addWidget(label_nom, 1, 0);
+    layout->addWidget(line_edite_nom_style, 1, 1);
+    layout->addWidget(label_police, 2, 0);
+    layout->addWidget(combo_police, 2, 1);
+    layout->addWidget(label_taille, 3, 0);
+    layout->addWidget(box_taille, 3, 1);
+    layout->addWidget(label_gras, 4, 0);
+    layout->addWidget(checkbox_gras, 4, 1);
+    layout->addWidget(label_souligne, 5, 0);
+    layout->addWidget(checkbox_souligne, 5, 1);
+    layout->addWidget(label_italique, 6, 0);
+    layout->addWidget(checkbox_italique, 6, 1);
+    layout->addWidget(label_foreground, 7, 0);
+    layout->addWidget(color_foreground, 7, 1);
+    layout->addWidget(label_background, 8, 0);
+    layout->addWidget(color_background, 8, 1);
+    layout->addWidget(valider, 9, 0);
+    layout->addWidget(annuler, 9, 1);
+
+    //Exécution
+    add_style->exec();
 
     return;
 }
