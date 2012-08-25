@@ -10,6 +10,7 @@ Style::Style(QWidget *parent) :
     QStringList liste_noms;
     QSettings settings("Dadaword", "dadaword");
     int nb_styles = settings.value("nb_styles").toInt(&conversion);
+    id_modif = -225;
 
     if(!conversion || nb_styles < 7){
         //On procède à la création des styles
@@ -117,10 +118,10 @@ void Style::affiche_fen(){
     titre_nom = new QLabel("<b>Nom</b>");
     titre_modifier = new QLabel("<b>Modifier</b>");
     titre_supprimer = new QLabel("<b>Supprimer</b>");
-    QPushButton *modifier[nb_styles], *supprimer[nb_styles], *this_exit, *this_validate, *this_add;
+    QPushButton *modifier[nb_styles], *supprimer[nb_styles], *this_exit, *this_add;
     this_exit = new QPushButton(QIcon(":/menus/images/exit.png"), tr("Fermer"));
-    this_validate = new QPushButton(QIcon(":/menus/images/ok.png"), tr("Valider"));
     this_add = new QPushButton(QIcon(":/programme/images/ajouter.png"), tr("Nouveau style"));
+    QSignalMapper *edit_buttons[nb_styles], *delete_buttons[nb_styles];
 
     connect(this_exit, SIGNAL(clicked()), this, SLOT(close()));
     connect(this_add, SIGNAL(clicked()), this, SLOT(ajoute_style()));
@@ -137,9 +138,18 @@ void Style::affiche_fen(){
         modifier[i] = new QPushButton;
         modifier[i]->setIcon(QIcon(":/programme/images/edit.png"));
         modifier[i]->setText(tr("Modifier"));
+        edit_buttons[i] = new QSignalMapper;
+        connect(modifier[i], SIGNAL(clicked()), edit_buttons[i], SLOT(map()));
+        edit_buttons[i]->setMapping(modifier[i], i);
+        connect(edit_buttons[i], SIGNAL(mapped(int)), this, SLOT(modifie(int)));
         supprimer[i] = new QPushButton;
         supprimer[i]->setIcon(QIcon(":/menus/images/sortir.png"));
         supprimer[i]->setText(tr("Supprimer"));
+        delete_buttons[i] = new QSignalMapper;
+        connect(supprimer[i], SIGNAL(clicked()), delete_buttons[i], SLOT(map()));
+        delete_buttons[i]->setMapping(supprimer[i], i);
+        connect(delete_buttons[i], SIGNAL(mapped(int)), this, SLOT(supprime_style(int)));
+
         if(i < 7){
             //Interdiction de supprimer les styles par défaut
             supprimer[i]->setEnabled(false);
@@ -151,14 +161,11 @@ void Style::affiche_fen(){
     }
     //Ajout des boutons
     layout->addWidget(this_add, nb_styles+2, 1, 1, 2, Qt::AlignHCenter);
-    QHBoxLayout *layout_horizontal = new QHBoxLayout;
-    layout_horizontal->addWidget(this_validate);
-    layout_horizontal->addWidget(this_exit);
-    layout->addLayout(layout_horizontal, nb_styles+3, 0, 1, 3, Qt::AlignHCenter);
+    layout->addWidget(this_exit, nb_styles+3, 1, 1, 2, Qt::AlignHCenter);
 
     setWindowTitle(tr("Gestion des styles - Dadaword"));
     setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
-    setAttribute(Qt::WA_DeleteOnClose);
+    //setAttribute(Qt::WA_DeleteOnClose);
     exec();
 
     return;
@@ -166,9 +173,14 @@ void Style::affiche_fen(){
 
 //Crée un nouveau style
 void Style::ajoute_style(){
-    QDialog *add_style = new QDialog(this);
+    add_style = new QDialog(this);
     add_style->setWindowIcon(QIcon(":/programme/dadaword.gif"));
-    add_style->setWindowTitle(tr("Ajouter un nouveau style - Dadaword"));
+    if(id_modif >= 0){
+        add_style->setWindowTitle(tr("Modifier un style - Dadaword"));
+    }
+    else{
+        add_style->setWindowTitle(tr("Ajouter un nouveau style - Dadaword"));
+    }
     add_style->setWindowModality(Qt::ApplicationModal);
 
     QGridLayout *layout = new QGridLayout;
@@ -176,7 +188,12 @@ void Style::ajoute_style(){
 
     //Initialisations
     QLabel *titre, *label_nom, *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
-    titre = new QLabel(tr("<h3>Créer un nouveau style</h3>"));
+    if(id_modif >= 0){
+        titre = new QLabel(tr("<h3>Modifier un style</h3>"));
+    }
+    else{
+        titre = new QLabel(tr("<h3>Créer un nouveau style</h3>"));
+    }
     label_nom = new QLabel(tr("Nom du style"));
     label_police = new QLabel(tr("Police"));
     label_taille = new QLabel(tr("Taille"));
@@ -196,6 +213,37 @@ void Style::ajoute_style(){
     color_background = new QPushButton;
     color_background->setText(tr("Transparent"));
     color_foreground->setText("#000000");
+
+    //Si on modifie un style, on précharge les valeurs
+    if(id_modif >= 0){
+        QSettings settings("Dadaword", "dadaword");
+        QStringList styles = settings.value("noms_styles").toStringList();
+        if(id_modif < styles.count()){
+            settings.beginGroup(styles.at(id_modif));
+            line_edite_nom_style->setText(styles.at(id_modif));
+            line_edite_nom_style->setEnabled(false);
+            combo_police->setCurrentFont(settings.value("police").value<QFont>());
+            box_taille->setValue(settings.value("taille").toInt());
+            if(settings.value("gras").toInt() == QFont::Bold){
+                checkbox_gras->setChecked(true);
+            }
+            checkbox_italique->setChecked(settings.value("italique").toBool());
+            checkbox_souligne->setChecked(settings.value("souligne").toBool());
+            color_foreground->setText(settings.value("foreground").value<QColor>().name());
+            if(settings.value("background").value<QColor>() != Qt::transparent){
+                color_background->setText(settings.value("background").value<QColor>().name());
+            }
+            else{
+                color_background->setText(tr("Transparent"));
+            }
+            settings.endGroup();
+        }
+        else{
+            Erreur instance_erreur;
+            instance_erreur.Erreur_msg(tr("Style::Id de modification erronnée, annulation"), QMessageBox::Warning);
+            return;
+        }
+    }
 
     QPushButton *valider = new QPushButton(QIcon(":/menus/images/ok.png"), tr("Valider"));
     QPushButton *annuler = new QPushButton(QIcon(":/menus/images/sortir.png"), tr("Annuler"));
@@ -268,12 +316,21 @@ void Style::enregistre_style(){
     QSettings settings("Dadaword", "dadaword");
     QStringList liste_styles = settings.value("noms_styles").toStringList();
     int nb_styles = settings.value("nb_styles").toInt();
-    liste_styles.append(line_edite_nom_style->text());
-    nb_styles++;
 
-    //On remplit les settings
-    settings.setValue("nb_styles", nb_styles);
-    settings.setValue("noms_styles", liste_styles);
+    if(id_modif < 0){
+        liste_styles.append(line_edite_nom_style->text());
+        nb_styles++;
+        //On remplit les settings
+        settings.setValue("nb_styles", nb_styles);
+        settings.setValue("noms_styles", liste_styles);
+    }
+    else{
+        if(liste_styles.at(id_modif) != line_edite_nom_style->text()){
+            Erreur instance_erreur;
+            instance_erreur.Erreur_msg(tr("Style::Impossible de modifier le style, le nom n'a pas été reconnu"), QMessageBox::Information);
+            return;
+        }
+    }
 
     settings.beginGroup(line_edite_nom_style->text());
     settings.setValue("police", combo_police->currentFont());
@@ -295,9 +352,67 @@ void Style::enregistre_style(){
     }
     settings.endGroup();
 
-    //On ferme toutes les fenêtres
-    QDialog *temp = this->findChild<QDialog *>();
-    temp->close();
-    this->close();
+    if(id_modif >= 0){
+        //La modification est effectuée, on annule l'ID pour ne pas avoir de problèmes par la suite.
+        id_modif = -255;
+    }
+
+    //On ferme la fenêtre
+    add_style->close();
+    delete add_style;
+    return;
+}
+
+//Modifie un style
+void Style::modifie(int style){
+    id_modif = style;
+    ajoute_style();
+    return;
+}
+
+//Supprime un style
+void Style::supprime_style(int style){
+    if(style < 7){
+        //On ne peut pas supprimer les styles par défaut
+        Erreur instance_erreur;
+        instance_erreur.Erreur_msg(tr("Style:: Tentative de suppression d'un style par défaut"), QMessageBox::Ignore);
+        return;
+    }
+
+    QSettings settings("Dadaword", "dadaword");
+    QStringList styles = settings.value("noms_styles").toStringList();
+    int nb_styles = settings.value("nb_styles").toInt();
+
+    //Si l'ID est fausse, on part
+    if(nb_styles != styles.count() || style >= styles.count()){
+        Erreur instance_erreur;
+        instance_erreur.Erreur_msg(tr("Style::ID de style incorrecte lors de la suppression"), QMessageBox::Ignore);
+        return;
+    }
+
+    int reponse = QMessageBox::question(this, tr("Supprimer un style"), tr("Êtes-vous sûr de vouloir supprimer le style %1 ?").arg(styles.at(style)), QMessageBox::Yes, QMessageBox::No);
+    if(reponse == QMessageBox::No){
+        return;
+    }
+    else if(reponse == QMessageBox::Yes){
+        //Si on est ici, c'est que tout roule
+        settings.beginGroup(styles.at(style));
+        settings.remove("");
+        settings.endGroup();
+
+        styles.removeAt(style);
+        nb_styles--;
+
+        //Mise à jour des settings
+        settings.setValue("nb_styles", nb_styles);
+        settings.setValue("noms_styles", styles);
+    }
+    else{
+        Erreur instance_erreur;
+        instance_erreur.Erreur_msg(tr("Styles::Impossible de supprimer le style -> Mauvaise réponse au QMessageBox"), QMessageBox::Ignore);
+        return;
+    }
+
+
     return;
 }

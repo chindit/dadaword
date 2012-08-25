@@ -33,13 +33,17 @@ private slots:
     void ajoute_style();
     void change_couleur(int bouton);
     void enregistre_style();
+    void modifie(int style);
+    void supprime_style(int style);
 
 private:
+    QDialog *add_style;
     QLineEdit *line_edite_nom_style;
     QFontComboBox *combo_police;
     QSpinBox *box_taille;
     QCheckBox *checkbox_gras, *checkbox_souligne, *checkbox_italique;
     QPushButton *color_foreground, *color_background;
+    int id_modif;
     
 };
 
