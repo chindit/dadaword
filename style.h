@@ -15,6 +15,8 @@
 #include <QSpinBox>
 #include <QStringList>
 
+#include "erreur.h"
+
 class Style : public QDialog
 {
     Q_OBJECT
@@ -29,6 +31,8 @@ public slots:
 
 private slots:
     void ajoute_style();
+    void change_couleur(int bouton);
+    void enregistre_style();
 
 private:
     QLineEdit *line_edite_nom_style;

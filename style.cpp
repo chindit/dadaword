@@ -166,7 +166,7 @@ void Style::affiche_fen(){
 
 //Crée un nouveau style
 void Style::ajoute_style(){
-    QDialog *add_style = new QDialog();
+    QDialog *add_style = new QDialog(this);
     add_style->setWindowIcon(QIcon(":/programme/dadaword.gif"));
     add_style->setWindowTitle(tr("Ajouter un nouveau style - Dadaword"));
     add_style->setWindowModality(Qt::ApplicationModal);
@@ -194,17 +194,21 @@ void Style::ajoute_style(){
     checkbox_italique = new QCheckBox;
     color_foreground = new QPushButton;
     color_background = new QPushButton;
-    QPalette palette_background;
-    palette_background.setColor(QPalette::Window, Qt::transparent);
-    color_background->setPalette(palette_background);
-    QPalette palette_foreground;
-    palette_foreground.setColor(QPalette::WindowText, Qt::black);
-    color_foreground->setText(tr("Couleur"));
-    color_foreground->setPalette(palette_foreground);
+    color_background->setText(tr("Transparent"));
+    color_foreground->setText("#000000");
 
     QPushButton *valider = new QPushButton(QIcon(":/menus/images/ok.png"), tr("Valider"));
-    QPushButton *annuler = new QPushButton(QIcon(":/menus/images/stop.png"), tr("Annuler"));
+    QPushButton *annuler = new QPushButton(QIcon(":/menus/images/sortir.png"), tr("Annuler"));
+    connect(valider, SIGNAL(clicked()), this, SLOT(enregistre_style()));
     connect(annuler, SIGNAL(clicked()), add_style, SLOT(close()));
+    QSignalMapper *mappeur = new QSignalMapper;
+    QSignalMapper *mappeur2 = new QSignalMapper;
+    connect(color_foreground, SIGNAL(clicked()), mappeur, SLOT(map()));
+    mappeur->setMapping(color_foreground, 0);
+    connect(mappeur, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
+    connect(color_background, SIGNAL(clicked()), mappeur2, SLOT(map()));
+    mappeur2->setMapping(color_background, 1);
+    connect(mappeur2, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
 
     //On ajoute tout au layout
     layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
@@ -230,5 +234,70 @@ void Style::ajoute_style(){
     //Exécution
     add_style->exec();
 
+    return;
+}
+
+//Slot de changement de couleur
+void Style::change_couleur(int bouton){
+
+    QColor couleur = QColorDialog::getColor();
+
+    if(bouton == 0){
+        color_foreground->setText(couleur.name());
+    }
+    else if(bouton == 1){
+        color_background->setText(couleur.name());
+    }
+    else{
+        Erreur instance_erreur;
+        instance_erreur.Erreur_msg(tr("Style:: Exception dans le changement de couleur : pas de bouton spécifié"), QMessageBox::Warning);
+        return;
+    }
+    return;
+}
+
+//Enregistre le style nouvellement crée
+void Style::enregistre_style(){
+
+    //S'il y a un champ vide, on arrête
+    if(line_edite_nom_style->text().isEmpty() || line_edite_nom_style->text().isNull() || combo_police->currentText().isEmpty() || combo_police->currentText().isNull() || box_taille->value() <= 0){
+        QMessageBox::warning(this, tr("Champs non-remplis"), tr("Veuillez compléter les champs \"Titre\", \"Police\" et \"Taille\" avant de poursuivre.\nMerci"));
+        return;
+    }
+
+    QSettings settings("Dadaword", "dadaword");
+    QStringList liste_styles = settings.value("noms_styles").toStringList();
+    int nb_styles = settings.value("nb_styles").toInt();
+    liste_styles.append(line_edite_nom_style->text());
+    nb_styles++;
+
+    //On remplit les settings
+    settings.setValue("nb_styles", nb_styles);
+    settings.setValue("noms_styles", liste_styles);
+
+    settings.beginGroup(line_edite_nom_style->text());
+    settings.setValue("police", combo_police->currentFont());
+    settings.setValue("taille", box_taille->value());
+    if(checkbox_gras->isChecked()){
+        settings.setValue("gras", QFont::Bold);
+    }
+    else{
+        settings.setValue("gras", QFont::Normal);
+    }
+    settings.setValue("italique", checkbox_italique->isChecked());
+    settings.setValue("souligne", checkbox_souligne->isChecked());
+    settings.setValue("foreground", QColor(color_foreground->text()));
+    if(color_background->text() == tr("Transparent")){
+        settings.setValue("background", QColor(Qt::transparent));
+    }
+    else{
+        settings.setValue("background", QColor(color_background->text()));
+    }
+    settings.endGroup();
+
+    //On ferme toutes les fenêtres
+    QDialog *temp = this->findChild<QDialog *>();
+    temp->close();
+    this->close();
     return;
 }
