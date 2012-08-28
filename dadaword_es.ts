@@ -8,53 +8,55 @@
         <location filename="dadaword.cpp" line="198"/>
         <location filename="dadaword.cpp" line="199"/>
         <location filename="dadaword.cpp" line="382"/>
-        <location filename="dadaword.cpp" line="978"/>
+        <location filename="dadaword.cpp" line="979"/>
         <source>Nouveau document</source>
-        <translation type="unfinished">Nuevo documento</translation>
+        <translation>Nuevo documento</translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="118"/>
         <source>Prêt</source>
         <oldsource>PrÃªt</oldsource>
-        <translation type="unfinished">Listo</translation>
+        <translation>Listo</translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="338"/>
         <source>Imprimer le document</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimir el documento</translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="407"/>
+        <location filename="dadaword.cpp" line="408"/>
         <source>Format texte</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato de texto</translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="554"/>
+        <location filename="dadaword.cpp" line="555"/>
         <source>Fichier déjà ouvert</source>
         <oldsource>Fichier dÃ©jÃ  ouvert</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Fichero ya abierto</translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="601"/>
+        <location filename="dadaword.cpp" line="602"/>
         <source>Une erreur s&apos;est produite lors de l&apos;ouverture du fichier : aucun contenu n&apos;a été détecté. 
  Êtes-vous sûr que le fichier n&apos;est pas corrompu?</source>
         <oldsource>Une erreur s&apos;est produite lors de l&apos;ouverture du fichier : aucun contenu n&apos;a Ã©tÃ© dÃ©tectÃ©. 
  Ãtes-vous sÃ»r que le fichier n&apos;est pas corrompu?</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Un error se ha producido durante la abertura del fichere : ningún contenido ha sido detectado.
+¿Está Vd seguro de que el fichero no ha sido corrupto?</translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="625"/>
+        <location filename="dadaword.cpp" line="626"/>
         <source>Le fichier demandé n&apos;a pu être ouvert. 
  Veuillez réessayer.</source>
         <oldsource>Le fichier demandÃ© n&apos;a pu Ãªtre ouvert. 
  Veuillez rÃ©essayer.</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>El fichero no ha podido estar abierto.
+Intente otra vez.</translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="526"/>
+        <location filename="dadaword.cpp" line="527"/>
         <source>Impossible d&apos;ouvrir le fichier, aucun nom n&apos;a été donné</source>
         <oldsource>Impossible d&apos;ouvrir le fichier, aucun nom n&apos;a Ã©tÃ© donnÃ©</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Imposible abrir el fichero, ningún nombre recibido</translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="31"/>
@@ -79,73 +81,73 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="407"/>
+        <location filename="dadaword.cpp" line="408"/>
         <source>Attention: le format que vous avez choisi ne peut sauvegarder les informations de style présentes dans ce document.
  Voulez-vous continuer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="417"/>
+        <location filename="dadaword.cpp" line="418"/>
         <source>Enregistrement : retour de QMessageBox inopiné -&gt; exit</source>
         <oldsource>Enregistrement : retour de QMessageBox inopinÃ© -&gt; exit</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="484"/>
+        <location filename="dadaword.cpp" line="485"/>
         <source>Impossible d&apos;enregistrer au format DDZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="554"/>
+        <location filename="dadaword.cpp" line="555"/>
         <source>Le fichier que vous tentez d&apos;ouvrir est déjà ouvert.
  Si ce n&apos;est pas le cas, deux fichiers portent un nom identique. Veuillez les renommer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="573"/>
+        <location filename="dadaword.cpp" line="574"/>
         <source>Une erreur est survenue lors de l&apos;ouverture du fichier ODT. 
  Consultez le fichier de LOG pour plus d&apos;informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="584"/>
+        <location filename="dadaword.cpp" line="585"/>
         <source>Une erreur est survenue lors de l&apos;ouverture du fichier DDZ. 
  Consultez le fichier de LOG pour plus d&apos;informations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="689"/>
+        <location filename="dadaword.cpp" line="690"/>
         <source>Erreur lors de l&apos;ouverture de fichier : il n&apos;a pu être déterminé si le fichier s&apos;ouvrait ou non en mode texte</source>
         <oldsource>Erreur lors de l&apos;ouverture de fichier : il n&apos;a pu Ãªtre dÃ©terminÃ© si le fichier s&apos;ouvrait ou non en mode texte</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="706"/>
+        <location filename="dadaword.cpp" line="707"/>
         <source>ODT : Emplacement non inscriptible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="707"/>
+        <location filename="dadaword.cpp" line="708"/>
         <source>Enregistrer un fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="707"/>
+        <location filename="dadaword.cpp" line="708"/>
         <source>Documents textes (*.odt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="740"/>
+        <location filename="dadaword.cpp" line="741"/>
         <source>Exporter en PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="740"/>
+        <location filename="dadaword.cpp" line="741"/>
         <source>Documents PDF (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="749"/>
+        <location filename="dadaword.cpp" line="750"/>
         <source>Aucune imprimante PDF n&apos;a été trouvée sur votre système.
  Annulation de l&apos;impression</source>
         <oldsource>Aucune imprimante PDF n&apos;a Ã©tÃ© trouvÃ©e sur votre systÃ¨me.
@@ -153,751 +155,752 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="785"/>
+        <location filename="dadaword.cpp" line="786"/>
         <source>Erreur lors de la transmission du type de liste à DadaWord::create_liste_puce</source>
         <oldsource>Erreur lors de la transmission du type de liste Ã  DadaWord::create_liste_puce</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="808"/>
+        <location filename="dadaword.cpp" line="809"/>
         <source>Erreur de liste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="976"/>
+        <location filename="dadaword.cpp" line="977"/>
         <source>Fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="981"/>
+        <location filename="dadaword.cpp" line="982"/>
         <source>Ouvrir un nouveau document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="984"/>
+        <location filename="dadaword.cpp" line="985"/>
         <source>Ouvrir un fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="987"/>
+        <location filename="dadaword.cpp" line="988"/>
         <source>Ouvrir un nouveau fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="990"/>
+        <location filename="dadaword.cpp" line="991"/>
         <source>Récemments ouverts</source>
         <oldsource>RÃ©cemments ouverts</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1008"/>
+        <location filename="dadaword.cpp" line="1009"/>
         <source>Erreur lors de la génération des fichiers récents; des items vides ont été trouvés</source>
         <oldsource>Erreur lors de la gÃ©nÃ©ration des fichiers rÃ©cents; des items vides ont Ã©tÃ© trouvÃ©s</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1013"/>
+        <location filename="dadaword.cpp" line="1014"/>
         <source>Enregistrer le fichier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1016"/>
+        <location filename="dadaword.cpp" line="1017"/>
         <source>Enregistrer le fichier courant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1023"/>
+        <location filename="dadaword.cpp" line="1024"/>
         <source>Enregistrer le fichier sous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1025"/>
+        <location filename="dadaword.cpp" line="1026"/>
         <source>Enregistrer le fichier courant sous…</source>
         <oldsource>Enregistrer le fichier courant sousâ¦</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1029"/>
+        <location filename="dadaword.cpp" line="1030"/>
         <source>Exporter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1031"/>
+        <location filename="dadaword.cpp" line="1032"/>
         <source>ODT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1034"/>
+        <location filename="dadaword.cpp" line="1035"/>
         <source>Exporter le fichier courant en ODT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1037"/>
+        <location filename="dadaword.cpp" line="1038"/>
         <source>PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1039"/>
+        <location filename="dadaword.cpp" line="1040"/>
         <source>Exporter le fichier courant en PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1043"/>
+        <location filename="dadaword.cpp" line="1044"/>
         <source>Aperçu avant impression</source>
         <oldsource>AperÃ§u avant impression</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1045"/>
+        <location filename="dadaword.cpp" line="1046"/>
         <source>Afficher un aperçu avant impression</source>
         <oldsource>Afficher un aperÃ§u avant impression</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1048"/>
+        <location filename="dadaword.cpp" line="1049"/>
         <source>Imprimer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1050"/>
+        <location filename="dadaword.cpp" line="1051"/>
         <source>Imprimer le fichier courant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1054"/>
+        <location filename="dadaword.cpp" line="1055"/>
         <source>Fermer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1055"/>
+        <location filename="dadaword.cpp" line="1056"/>
         <source>Fermer le document actif</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1058"/>
+        <location filename="dadaword.cpp" line="1059"/>
         <source>Fermer l&apos;onglet courant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1061"/>
-        <location filename="dadaword.cpp" line="2181"/>
+        <location filename="dadaword.cpp" line="1062"/>
+        <location filename="dadaword.cpp" line="2319"/>
         <source>Quitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1069"/>
+        <location filename="dadaword.cpp" line="1070"/>
         <source>Fermer le programme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1073"/>
+        <location filename="dadaword.cpp" line="1074"/>
         <source>Édition</source>
         <oldsource>Ãdition</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1074"/>
-        <location filename="dadaword.cpp" line="1485"/>
-        <location filename="dadaword.cpp" line="2051"/>
+        <location filename="dadaword.cpp" line="1075"/>
+        <location filename="dadaword.cpp" line="1498"/>
+        <location filename="dadaword.cpp" line="2093"/>
         <source>Annuler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1077"/>
+        <location filename="dadaword.cpp" line="1078"/>
         <source>Annuler l&apos;opération précédente</source>
         <oldsource>Annuler l&apos;opÃ©ration prÃ©cÃ©dente</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1080"/>
+        <location filename="dadaword.cpp" line="1081"/>
         <source>Refaire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1082"/>
+        <location filename="dadaword.cpp" line="1083"/>
         <source>Refaire l&apos;action précédemment annulée</source>
         <oldsource>Refaire l&apos;action prÃ©cÃ©demment annulÃ©e</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1086"/>
-        <location filename="dadaword.cpp" line="2796"/>
-        <location filename="dadaword.cpp" line="2802"/>
+        <location filename="dadaword.cpp" line="1087"/>
+        <location filename="dadaword.cpp" line="2852"/>
         <source>Couper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1087"/>
+        <location filename="dadaword.cpp" line="1088"/>
         <source>Couper la sélection</source>
         <oldsource>Couper la sÃ©lection</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1092"/>
-        <location filename="dadaword.cpp" line="2797"/>
-        <location filename="dadaword.cpp" line="2802"/>
+        <location filename="dadaword.cpp" line="1093"/>
+        <location filename="dadaword.cpp" line="2853"/>
         <source>Copier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1093"/>
+        <location filename="dadaword.cpp" line="1094"/>
         <source>Copier la sélection</source>
         <oldsource>Copier la sÃ©lection</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1098"/>
-        <location filename="dadaword.cpp" line="2798"/>
-        <location filename="dadaword.cpp" line="2802"/>
+        <location filename="dadaword.cpp" line="1099"/>
+        <location filename="dadaword.cpp" line="2854"/>
         <source>Coller</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1099"/>
+        <location filename="dadaword.cpp" line="1100"/>
         <source>Coller la sélection</source>
         <oldsource>Coller la sÃ©lection</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1105"/>
-        <location filename="dadaword.cpp" line="1439"/>
-        <location filename="dadaword.cpp" line="2049"/>
+        <location filename="dadaword.cpp" line="1106"/>
+        <location filename="dadaword.cpp" line="1452"/>
+        <location filename="dadaword.cpp" line="2091"/>
         <source>Rechercher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1106"/>
+        <location filename="dadaword.cpp" line="1107"/>
         <source>Recherche dans le document courant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1112"/>
-        <source>Alignement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="dadaword.cpp" line="1113"/>
-        <source>Gauche</source>
+        <source>Remplacer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="1114"/>
+        <source>Remplacer du texte</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="1120"/>
+        <source>Gérer les styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="1121"/>
+        <source>Gére les styles par défauts et vous permet de créer vos propres styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="1127"/>
+        <source>Alignement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="1128"/>
+        <source>Gauche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="1129"/>
         <source>Aligner le texte à gauche (écritures latines)</source>
         <oldsource>Aligner le texte Ã  gauche (Ã©critures latines)</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1122"/>
+        <location filename="dadaword.cpp" line="1137"/>
         <source>Centré</source>
         <oldsource>CentrÃ©</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1123"/>
+        <location filename="dadaword.cpp" line="1138"/>
         <source>Texte centré</source>
         <oldsource>Texte centrÃ©</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1130"/>
+        <location filename="dadaword.cpp" line="1145"/>
         <source>Droite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1131"/>
+        <location filename="dadaword.cpp" line="1146"/>
         <source>Alignement à droite (écritures orientales)</source>
         <oldsource>Alignement Ã  droite (Ã©critures orientales)</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1138"/>
+        <location filename="dadaword.cpp" line="1153"/>
         <source>Justifié</source>
         <oldsource>JustifiÃ©</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1139"/>
+        <location filename="dadaword.cpp" line="1154"/>
         <source>Justifié (sans marges)</source>
         <oldsource>JustifiÃ© (sans marges)</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1154"/>
+        <location filename="dadaword.cpp" line="1169"/>
         <source>Liste ordonnée</source>
         <oldsource>Liste ordonnÃ©e</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1155"/>
+        <location filename="dadaword.cpp" line="1170"/>
         <source>Insérer une liste ordonnée</source>
         <oldsource>InsÃ©rer une liste ordonnÃ©e</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1235"/>
+        <location filename="dadaword.cpp" line="1250"/>
         <source>Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2126"/>
-        <source>Malheureusement, votre recherche n&apos;a donné aucun résultat. 
- Peut-être devriez-vous affiner vos mots clés ou appliquer des paramètres de recherche moins restrictifs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2380"/>
-        <source>Changement vers un style inexistant : saut de l&apos;opération</source>
-        <oldsource>Changement vers un style inexistant : saut de l&apos;opÃ©ration</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2470"/>
+        <location filename="dadaword.cpp" line="2516"/>
         <source>Aucune suggestion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2488"/>
+        <location filename="dadaword.cpp" line="2534"/>
         <source>Terminé</source>
         <oldsource>TerminÃ©</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2488"/>
+        <location filename="dadaword.cpp" line="2534"/>
         <source>La vérification orthographique est terminée.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2580"/>
+        <location filename="dadaword.cpp" line="2629"/>
         <source>Aucun choix de remplacement n&apos;a pu être trouvé</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2580"/>
+        <location filename="dadaword.cpp" line="2629"/>
         <source>Impossible de remplacer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2585"/>
-        <location filename="dadaword.cpp" line="2650"/>
+        <location filename="dadaword.cpp" line="2634"/>
+        <location filename="dadaword.cpp" line="2704"/>
         <source>Valider</source>
         <translation type="unfinished">OK</translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2657"/>
+        <location filename="dadaword.cpp" line="2711"/>
         <source>Dictionnaire actuel : </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2658"/>
+        <location filename="dadaword.cpp" line="2712"/>
         <source>Nouvelle langue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2741"/>
+        <location filename="dadaword.cpp" line="2795"/>
         <source>RFP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1147"/>
+        <location filename="dadaword.cpp" line="1162"/>
         <source>Insérer</source>
         <oldsource>InsÃ©rer</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1149"/>
-        <location filename="dadaword.cpp" line="1226"/>
+        <location filename="dadaword.cpp" line="1164"/>
+        <location filename="dadaword.cpp" line="1241"/>
         <source>Puces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1150"/>
+        <location filename="dadaword.cpp" line="1165"/>
         <source>Insérer une liste à puces</source>
         <oldsource>InsÃ©rer une liste Ã  puces</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1162"/>
+        <location filename="dadaword.cpp" line="1177"/>
         <source>Incrémenter la puce</source>
         <oldsource>IncrÃ©menter la puce</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1166"/>
+        <location filename="dadaword.cpp" line="1181"/>
         <source>Désincrémente la puce</source>
         <oldsource>DÃ©sincrÃ©mente la puce</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1170"/>
-        <location filename="dadaword.cpp" line="1172"/>
+        <location filename="dadaword.cpp" line="1185"/>
+        <location filename="dadaword.cpp" line="1187"/>
         <source>Insérer une image</source>
         <oldsource>InsÃ©rer une image</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1175"/>
+        <location filename="dadaword.cpp" line="1190"/>
         <source>Tableau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1176"/>
+        <location filename="dadaword.cpp" line="1191"/>
         <source>Insérer un tableau</source>
         <oldsource>InsÃ©rer un tableau</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1178"/>
+        <location filename="dadaword.cpp" line="1193"/>
         <source>Insère un tableau</source>
         <oldsource>InsÃ¨re un tableau</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1181"/>
+        <location filename="dadaword.cpp" line="1196"/>
         <source>Ajouter une ligne</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1183"/>
+        <location filename="dadaword.cpp" line="1198"/>
         <source>Ajouter une ligne au tableau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1189"/>
+        <location filename="dadaword.cpp" line="1204"/>
         <source>Ajouter une colonne</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1191"/>
+        <location filename="dadaword.cpp" line="1206"/>
         <source>Ajoute une colonne au tableau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1197"/>
-        <location filename="dadaword.cpp" line="1908"/>
+        <location filename="dadaword.cpp" line="1212"/>
+        <location filename="dadaword.cpp" line="1934"/>
         <source>Supprimer une ligne</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1199"/>
+        <location filename="dadaword.cpp" line="1214"/>
         <source>Supprime une ligne précise du tableau</source>
         <oldsource>Supprime une ligne prÃ©cise du tableau</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1205"/>
-        <location filename="dadaword.cpp" line="1915"/>
+        <location filename="dadaword.cpp" line="1220"/>
+        <location filename="dadaword.cpp" line="1941"/>
         <source>Supprimer une colonne</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1207"/>
+        <location filename="dadaword.cpp" line="1222"/>
         <source>Supprime une colonne précise du tableau</source>
         <oldsource>Supprime une colonne prÃ©cise du tableau</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1215"/>
+        <location filename="dadaword.cpp" line="1230"/>
         <source>Outils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1218"/>
+        <location filename="dadaword.cpp" line="1233"/>
         <source>Barres d&apos;outils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1219"/>
+        <location filename="dadaword.cpp" line="1234"/>
         <source>Gère l&apos;affichage des barres d&apos;outils</source>
         <oldsource>GÃ¨re l&apos;affichage des barres d&apos;outils</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1229"/>
+        <location filename="dadaword.cpp" line="1244"/>
         <source>Tableaux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1232"/>
+        <location filename="dadaword.cpp" line="1247"/>
         <source>Recherche</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1262"/>
+        <location filename="dadaword.cpp" line="1277"/>
         <source>Lecture seule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1263"/>
+        <location filename="dadaword.cpp" line="1278"/>
         <source>Bloque l&apos;accès en écriture au document courant</source>
         <oldsource>Bloque l&apos;accÃ¨s en Ã©criture au document courant</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1269"/>
+        <location filename="dadaword.cpp" line="1284"/>
         <source>Vérification orthographique</source>
         <oldsource>VÃ©rification orthographique</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1271"/>
+        <location filename="dadaword.cpp" line="1286"/>
         <source>Vérifie l&apos;orthographe du document courant</source>
         <oldsource>VÃ©rifie l&apos;orthographe du document courant</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1276"/>
-        <location filename="dadaword.cpp" line="2647"/>
+        <location filename="dadaword.cpp" line="1291"/>
+        <location filename="dadaword.cpp" line="2701"/>
         <source>Langue du correcteur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1277"/>
+        <location filename="dadaword.cpp" line="1292"/>
         <source>Change la langue du correcteur orthographique</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1282"/>
+        <location filename="dadaword.cpp" line="1297"/>
         <source>Mode texte seul</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1284"/>
+        <location filename="dadaword.cpp" line="1299"/>
         <source>Afficher le fichier en mode texte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1290"/>
+        <location filename="dadaword.cpp" line="1305"/>
         <source>Mode plein écran</source>
         <oldsource>Mode plein Ã©cran</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1292"/>
+        <location filename="dadaword.cpp" line="1307"/>
         <source>Affiche DadaWord en mode plein écran</source>
         <oldsource>Affiche DadaWord en mode plein Ã©cran</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1299"/>
+        <location filename="dadaword.cpp" line="1314"/>
         <source>Colorer la syntaxe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1301"/>
+        <location filename="dadaword.cpp" line="1316"/>
         <source>Colore le code HTML</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1308"/>
+        <location filename="dadaword.cpp" line="1323"/>
         <source>Statistiques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1310"/>
+        <location filename="dadaword.cpp" line="1325"/>
         <source>Affiche les statistiques pour le document en cours</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1314"/>
+        <location filename="dadaword.cpp" line="1329"/>
         <source>Gestion du log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1321"/>
+        <location filename="dadaword.cpp" line="1336"/>
         <source>Préférences</source>
         <oldsource>PrÃ©fÃ©rences</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1323"/>
+        <location filename="dadaword.cpp" line="1338"/>
         <source>Préférences de DadaWord</source>
         <oldsource>PrÃ©fÃ©rences de DadaWord</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1324"/>
+        <location filename="dadaword.cpp" line="1339"/>
         <source>Configuration de DadaWord</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1329"/>
+        <location filename="dadaword.cpp" line="1344"/>
         <source>Aide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1331"/>
-        <location filename="dadaword.cpp" line="1332"/>
+        <location filename="dadaword.cpp" line="1346"/>
+        <location filename="dadaword.cpp" line="1347"/>
         <source>A propos de Dadaword</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1335"/>
+        <location filename="dadaword.cpp" line="1350"/>
         <source>À propos du créateur de ce génial programme</source>
         <oldsource>Ã propos du crÃ©ateur de ce gÃ©nial programme</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1340"/>
-        <location filename="dadaword.cpp" line="1343"/>
+        <location filename="dadaword.cpp" line="1355"/>
+        <location filename="dadaword.cpp" line="1358"/>
         <source>À propos de Qt</source>
         <oldsource>Ã propos de Qt</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1342"/>
+        <location filename="dadaword.cpp" line="1357"/>
         <source>Qt est la librairie utilisée par DadaWord</source>
         <oldsource>Qt est la librairie utilisÃ©e par DadaWord</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1399"/>
-        <source>Standard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1400"/>
-        <source>Titre 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1401"/>
-        <source>Titre 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1402"/>
-        <source>Titre 3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1403"/>
-        <source>Titre 4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1404"/>
-        <source>Titre 5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1405"/>
-        <source>Titre 6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="1476"/>
-        <location filename="dadaword.cpp" line="2790"/>
+        <location filename="dadaword.cpp" line="1489"/>
+        <location filename="dadaword.cpp" line="2846"/>
         <source>Ajouter au dictionnaire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1478"/>
+        <location filename="dadaword.cpp" line="1491"/>
+        <location filename="dadaword.cpp" line="2111"/>
         <source>Remplacer tout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1479"/>
+        <location filename="dadaword.cpp" line="1492"/>
         <source>Ignorer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1481"/>
-        <location filename="dadaword.cpp" line="2789"/>
+        <location filename="dadaword.cpp" line="1494"/>
+        <location filename="dadaword.cpp" line="2845"/>
         <source>Ignorer tout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1483"/>
+        <location filename="dadaword.cpp" line="1496"/>
         <source>Correction suivante</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1725"/>
+        <location filename="dadaword.cpp" line="1738"/>
         <source>Exception inconnue lors du choix de couleur.
  L&apos;option choisie n&apos;est pas valide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2005"/>
+        <location filename="dadaword.cpp" line="2031"/>
         <source>Exception lors de la gestion de la visibilité des barres d&apos;outils</source>
         <oldsource>Exception lors de la gestion de la visibilitÃ© des barres d&apos;outils</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2024"/>
+        <location filename="dadaword.cpp" line="2050"/>
         <source>Une erreur est survenue lors de la gestion du fullscreen. L&apos;état de la fenêtre et du menu ne sont pas en adéquation -&gt; skipping</source>
         <oldsource>Une erreur est survenue lors de la gestion du fullscreen. L&apos;Ã©tat de la fenÃªtre et du menu ne sont pas en adÃ©quation -&gt; skipping</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2034"/>
+        <location filename="dadaword.cpp" line="2061"/>
+        <source>Remplacer dans …</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2064"/>
         <source>Rechercher dans …</source>
         <oldsource>Rechercher dans â¦</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2039"/>
+        <location filename="dadaword.cpp" line="2072"/>
+        <source>&lt;h2&gt;Remplacer dans le document courant&lt;/h2&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2075"/>
         <source>&lt;h2&gt;Rechercher dans le document courant&lt;/h2&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2040"/>
+        <location filename="dadaword.cpp" line="2077"/>
         <source>Phrase à rechecher :</source>
         <oldsource>Phrase Ã  rechecher :</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2041"/>
+        <location filename="dadaword.cpp" line="2078"/>
         <source>Sensible à la casse</source>
         <oldsource>Sensible Ã  la casse</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2042"/>
+        <location filename="dadaword.cpp" line="2079"/>
         <source>Uniquement les mots entiers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2086"/>
-        <location filename="dadaword.cpp" line="2120"/>
+        <location filename="dadaword.cpp" line="2107"/>
+        <source>Remplacer par</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2148"/>
         <source>Tentative de recheche à partir d&apos;une chaine vide</source>
         <oldsource>Tentative de recheche Ã  partir d&apos;une chaine vide</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2126"/>
-        <source>Recherche infructueurse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2141"/>
+        <location filename="dadaword.cpp" line="2162"/>
         <source>Provenance de recherche non identifiée</source>
         <oldsource>Provenance de recherche non identifiÃ©e</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2175"/>
+        <location filename="dadaword.cpp" line="2238"/>
+        <source>Fin du document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2238"/>
+        <source>Le curseur a atteint la fin du document sans trouver de résultat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2256"/>
+        <source>Recherche infructueuse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2256"/>
+        <source>Malheureusement, votre recheche n&apos;a donné aucun résultat.
+Peut-être devriez-vous essayer avec des critères moins stricts?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dadaword.cpp" line="2313"/>
         <source>&lt;h1&gt;Statistiques
 &lt;/h1&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2176"/>
+        <location filename="dadaword.cpp" line="2314"/>
         <source>&lt;b&gt;Document actif:&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2177"/>
+        <location filename="dadaword.cpp" line="2315"/>
         <source>Lignes:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2178"/>
+        <location filename="dadaword.cpp" line="2316"/>
         <source>Mots:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2179"/>
+        <location filename="dadaword.cpp" line="2317"/>
         <source>Caractères
 (espaces exclus)</source>
         <oldsource>CaractÃ¨res
@@ -905,30 +908,30 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2180"/>
+        <location filename="dadaword.cpp" line="2318"/>
         <source>Caractères totaux:</source>
         <oldsource>CaractÃ¨res totaux:</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2200"/>
+        <location filename="dadaword.cpp" line="2338"/>
         <source>Statistiques du document courant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2206"/>
+        <location filename="dadaword.cpp" line="2344"/>
         <source>&lt;b&gt;Sélection:&lt;/b&gt;</source>
         <oldsource>&lt;b&gt;SÃ©lection:&lt;/b&gt;</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="2218"/>
+        <location filename="dadaword.cpp" line="2356"/>
         <source>N/A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1223"/>
-        <location filename="dadaword.cpp" line="1348"/>
+        <location filename="dadaword.cpp" line="1238"/>
+        <location filename="dadaword.cpp" line="1363"/>
         <source>Défaut</source>
         <oldsource>DÃ©faut</oldsource>
         <translation type="unfinished"></translation>
@@ -946,91 +949,91 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1364"/>
+        <location filename="dadaword.cpp" line="1379"/>
         <source>Gras</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1369"/>
+        <location filename="dadaword.cpp" line="1384"/>
         <source>Italique</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1374"/>
+        <location filename="dadaword.cpp" line="1389"/>
         <source>Souligné</source>
         <oldsource>SoulignÃ©</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1379"/>
+        <location filename="dadaword.cpp" line="1394"/>
         <source>Couleur du texte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1386"/>
+        <location filename="dadaword.cpp" line="1401"/>
         <source>Couleur de surlignage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1441"/>
+        <location filename="dadaword.cpp" line="1454"/>
         <source>Rechercher dans le document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1451"/>
+        <location filename="dadaword.cpp" line="1464"/>
         <source>Occurence précédente</source>
         <oldsource>Occurence prÃ©cÃ©dente</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1453"/>
+        <location filename="dadaword.cpp" line="1466"/>
         <source>Recherche l&apos;occurence précédente</source>
         <oldsource>Recherche l&apos;occurence prÃ©cÃ©dente</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1454"/>
+        <location filename="dadaword.cpp" line="1467"/>
         <source>Occurence suivante</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1456"/>
+        <location filename="dadaword.cpp" line="1469"/>
         <source>Recherche l&apos;occurence suivante</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1457"/>
+        <location filename="dadaword.cpp" line="1470"/>
         <source>Ferme la barre d&apos;outils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1459"/>
+        <location filename="dadaword.cpp" line="1472"/>
         <source>Ferme la barre d&apos;outils de recherche</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1516"/>
+        <location filename="dadaword.cpp" line="1529"/>
         <source>Titre du document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1516"/>
+        <location filename="dadaword.cpp" line="1529"/>
         <source>Quel est le titre du document?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1693"/>
+        <location filename="dadaword.cpp" line="1706"/>
         <source>Enregistrer le fichier?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1788"/>
+        <location filename="dadaword.cpp" line="1801"/>
         <source>Un alignement non présent a été demandé</source>
         <oldsource>Un alignement non prÃ©sent a Ã©tÃ© demandÃ©</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1800"/>
+        <location filename="dadaword.cpp" line="1813"/>
         <source>Malheureusement, votre document n&apos;accepte pas l&apos;insertion d&apos;image.
  Veuillez réessayer avec un format compatible comme &quot;.ddw&quot;</source>
         <oldsource>Malheureusement, votre document n&apos;accepte pas l&apos;insertion d&apos;image.
@@ -1038,45 +1041,45 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1841"/>
+        <location filename="dadaword.cpp" line="1859"/>
         <source>Largeur du tableau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1841"/>
+        <location filename="dadaword.cpp" line="1859"/>
         <source>Combien de colonnes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1842"/>
+        <location filename="dadaword.cpp" line="1864"/>
         <source>Longueur tableau</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1842"/>
+        <location filename="dadaword.cpp" line="1864"/>
         <source>Combien de lignes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1862"/>
-        <location filename="dadaword.cpp" line="1895"/>
+        <location filename="dadaword.cpp" line="1888"/>
+        <location filename="dadaword.cpp" line="1921"/>
         <source>Tentative d&apos;insertion de ligne dans un tableau inexistant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1883"/>
-        <location filename="dadaword.cpp" line="1922"/>
+        <location filename="dadaword.cpp" line="1909"/>
+        <location filename="dadaword.cpp" line="1948"/>
         <source>Opération illégale dans la modification de tableau!</source>
         <oldsource>OpÃ©ration illÃ©gale dans la modification de tableau!</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1908"/>
+        <location filename="dadaword.cpp" line="1934"/>
         <source>Quelle ligne voulez-vous supprimer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="1915"/>
+        <location filename="dadaword.cpp" line="1941"/>
         <source>Quelle colonne voulez-vous supprimer?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1489,6 +1492,203 @@ Por securidad, el programa va a cerrarse.</translation>
         <source>Dictionnaire utilisateur non défini.</source>
         <oldsource>Dictionnaire utilisateur non dÃ©fini.</oldsource>
         <translation>Diccionario personal indefinido.</translation>
+    </message>
+</context>
+<context>
+    <name>Style</name>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Défaut</source>
+        <translation>Defecto</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Titre 1</source>
+        <translation>Título 1</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Titre 2</source>
+        <translation>Título 2</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Titre 3</source>
+        <translation>Título 3</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Titre 4</source>
+        <translation>Título 4</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Titre 5</source>
+        <translation>Título 5</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="23"/>
+        <source>Titre 6</source>
+        <translation>Título 6</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="116"/>
+        <source>&lt;h1&gt;Gestion des styles&lt;/h1&gt;</source>
+        <translation>&lt;h1&gt;Gestionar los estilos&lt;/h1&gt;</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="122"/>
+        <source>Fermer</source>
+        <translation>Cerrar</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="123"/>
+        <source>Nouveau style</source>
+        <translation>Nuevo estilo</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="140"/>
+        <source>Modifier</source>
+        <translation>Modificar</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="147"/>
+        <source>Supprimer</source>
+        <translation>Suprimir</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="166"/>
+        <source>Gestion des styles - Dadaword</source>
+        <translation>Gestionar los estilos - Dadaword</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="178"/>
+        <source>Modifier un style - Dadaword</source>
+        <translation>Modificar un estilo - Dadaword</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="181"/>
+        <source>Ajouter un nouveau style - Dadaword</source>
+        <translation>Añadir un nuevo estilo - Dadaword</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="191"/>
+        <source>&lt;h3&gt;Modifier un style&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;Modificar un estilo&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="194"/>
+        <source>&lt;h3&gt;Créer un nouveau style&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;Crear un nuevo estilo&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="196"/>
+        <source>Nom du style</source>
+        <translation>Nombre del estilo</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="197"/>
+        <source>Police</source>
+        <translation>Tipo de letra</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="198"/>
+        <source>Taille</source>
+        <translation>Tamaño</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="199"/>
+        <source>Gras</source>
+        <translation>Negrita</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="200"/>
+        <source>Italique</source>
+        <translation>Cursiva</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="201"/>
+        <source>Souligné</source>
+        <translation>Subrayado</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="202"/>
+        <source>Couleur du texte</source>
+        <translation>Color de texto</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="203"/>
+        <source>Couleur d&apos;arrière-plan</source>
+        <translation>Color de fondo</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="213"/>
+        <location filename="style.cpp" line="236"/>
+        <location filename="style.cpp" line="346"/>
+        <source>Transparent</source>
+        <translation>Transparente</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="242"/>
+        <source>Style::Id de modification erronnée, annulation</source>
+        <translation>Style::Id de modificación falsa, salida</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="247"/>
+        <source>Valider</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="248"/>
+        <source>Annuler</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="300"/>
+        <source>Style:: Exception dans le changement de couleur : pas de bouton spécifié</source>
+        <translation>Style:: error durante el cambio de color : ningún botón especificado</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="311"/>
+        <source>Champs non-remplis</source>
+        <translation>Campos vacíos</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="311"/>
+        <source>Veuillez compléter les champs &quot;Titre&quot;, &quot;Police&quot; et &quot;Taille&quot; avant de poursuivre.
+Merci</source>
+        <translation>Por favor, rellene los campos &quot;Título&quot;, &quot;Tipo de letra&quot; y &quot;Tamaño&quot; antes de seguir.
+Gracias</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="329"/>
+        <source>Style::Impossible de modifier le style, le nom n&apos;a pas été reconnu</source>
+        <translation>Style::Imposible modificar el estilo : el nombre no es conocido</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="382"/>
+        <source>Style:: Tentative de suppression d&apos;un style par défaut</source>
+        <translation>Style:: Intento de supresión de un estilo por defecto</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="393"/>
+        <source>Style::ID de style incorrecte lors de la suppression</source>
+        <translation>Style::ID de estilo incorrecta durante la supresión</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="397"/>
+        <source>Supprimer un style</source>
+        <translation>Borrar un estilo</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="397"/>
+        <source>Êtes-vous sûr de vouloir supprimer le style %1 ?</source>
+        <translation>¿Esta seguro de querer borrar el estilo %1 ?</translation>
+    </message>
+    <message>
+        <location filename="style.cpp" line="419"/>
+        <source>Styles::Impossible de supprimer le style -&gt; Mauvaise réponse au QMessageBox</source>
+        <translation>Styles:: Imposible borrar el estilo -&gt; Respuesta falsa al QMessageBox</translation>
     </message>
 </context>
 <context>
