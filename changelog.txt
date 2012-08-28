@@ -5,6 +5,7 @@ Version 1.1.2 :
 - BUG : non annulation de la création de tableau lors du clic sur "Annuler"
 - BUG : lien "Ignorer tout" du menu contextuel non-opérant
 - Création d'un système de gestion de styles personnalisé
+- BUG : non-prise en compte de l'ajout de l'extention ".ddz" en cas d'extention manquante
 
 Version 1.1.1 :
 - BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.

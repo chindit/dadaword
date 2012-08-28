@@ -394,6 +394,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         QFileInfo nom_info(nom_fichier);
         if(nom_info.completeSuffix().isEmpty() || nom_info.completeSuffix().isNull()){
             nom_fichier.append(".ddz"); //Si pas extention -> DDZ!
+            nom_info.setFile(nom_fichier);
         }
 
         //---------------------
