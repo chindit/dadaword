@@ -2171,6 +2171,20 @@ void DadaWord::make_search(const int from){
             }
             if (!newCursor.isNull()){
                 newCursor.movePosition(QTextCursor::WordRight, QTextCursor::KeepAnchor);
+                QString word = newCursor.selectedText();
+
+                //Nettoyage de la ponctuation APRES le mot
+                while(!word.isEmpty() && !word.at(word.size()-1).isLetter()) {
+                    int cursorPos = newCursor.position();
+                    newCursor.setPosition(newCursor.position() - 1, QTextCursor::MoveAnchor);
+                    newCursor.setPosition((cursorPos-word.size()), QTextCursor::KeepAnchor);
+                    word = newCursor.selectedText();
+                    if(!word.at(word.size()-1).isLetter()){
+                        //Si on doit refaire un tour de boucle, on rebouge le curseur
+                        newCursor.setPosition(newCursor.anchor());
+                    }
+                }
+
                 //On surligne le mot
                 es.cursor = newCursor;
                 es.format = surligne;
