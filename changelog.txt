@@ -6,6 +6,7 @@ Version 1.1.2 :
 - BUG : lien "Ignorer tout" du menu contextuel non-opérant
 - Création d'un système de gestion de styles personnalisé
 - BUG : non-prise en compte de l'ajout de l'extention ".ddz" en cas d'extention manquante
+- Ajout d'une fonction de remplacement
 
 Version 1.1.1 :
 - BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.

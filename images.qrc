@@ -59,5 +59,6 @@
         <file>images/dadaword.gif</file>
         <file>images/edit.png</file>
         <file>images/ajouter.png</file>
+        <file>images/remplace.png</file>
     </qresource>
 </RCC>

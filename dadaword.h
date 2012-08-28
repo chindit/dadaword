@@ -100,7 +100,7 @@ private slots:
     void to_plain_text();
     void hide_toolbar(const int identifiant);
     void make_full_screen();
-    void recherche();
+    void recherche(bool remplacer = false);
     void make_search(const int from);
     void hide_searchbar(bool transfert = false);
     void statistiques();
@@ -109,7 +109,7 @@ private slots:
     void orth_ignore();
     void orth_dico();
     void orth_remplace(QString mot);
-    void orth_remplace_all();
+    void orth_remplace_all(QString remplace = "");
     void orth_langue();
     void orth_stop();
     void couper();
@@ -118,6 +118,8 @@ private slots:
     void mode_surecriture();
     void html_highlight();
     void affiche_menu_perso(const QPoint &position);
+    void remplace_all();
+    void call_remplace();
 
 private:
     void create_menus();
@@ -174,6 +176,7 @@ private:
     QList<QTextEdit::ExtraSelection> liste_erreurs;
     HighlighterHtml *instance;
     QTextCursor pos_recherche;
+    QLineEdit *le_remplace;
 
 };
 
