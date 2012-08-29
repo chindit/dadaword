@@ -7,6 +7,7 @@ Version 1.1.2 :
 - Création d'un système de gestion de styles personnalisé
 - BUG : non-prise en compte de l'ajout de l'extention ".ddz" en cas d'extention manquante
 - Ajout d'une fonction de remplacement
+- Simplification du calcul de nom de fichiers
 
 Version 1.1.1 :
 - BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.
