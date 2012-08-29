@@ -2396,7 +2396,9 @@ void DadaWord::change_style(int style){
         find_edit()->setFontItalic(settings.value("italique").toBool());
         find_edit()->setFontWeight(settings.value("gras").toInt());
         find_edit()->setTextColor(settings.value("foreground").value<QColor>());
-        find_edit()->setTextBackgroundColor(settings.value("background").value<QColor>());
+        if(settings.value("background").value<QColor>() != Qt::transparent){
+            find_edit()->setTextBackgroundColor(settings.value("background").value<QColor>());
+        }
         souligne->setChecked(settings.value("souligne").toBool());
         italique->setChecked(settings.value("italique").toBool());
         if(settings.value("gras").toInt() == QFont::Bold){
@@ -2415,7 +2417,9 @@ void DadaWord::change_style(int style){
         format.setFontUnderline(settings.value("souligne").toBool());
         format.setFontItalic(settings.value("italique").toBool());
         format.setFontWeight(settings.value("gras").toInt());
-        format.setBackground(QBrush(settings.value("background").value<QColor>()));
+        if(settings.value("background").value<QColor>() != Qt::transparent){
+            format.setBackground(QBrush(settings.value("background").value<QColor>()));
+        }
         format.setForeground(QBrush(settings.value("foreground").value<QColor>()));
         curseur.setCharFormat(format);
     }

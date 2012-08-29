@@ -66,7 +66,6 @@ QString DDZ::ouvre(QString nom){
     //Variables globales
     QString contenu;
     Erreur instance_erreur;
-    Outils instance_outils;
 
     //---------------------------------------------
     //Extraction de l'archive
@@ -83,7 +82,7 @@ QString DDZ::ouvre(QString nom){
     //---------------------------------------------
     QString nom_fichier = nom.split("/").last();
     nom_fichier.remove(nom_fichier.size()-4, nom_fichier.size()).append(".ddw").prepend(QDir::tempPath()+"/");
-    QFile file(nom);
+    QFile file(nom_fichier);
     if(file.open(QFile::ReadOnly)){
         QTextStream in(&file);
         while (!in.atEnd()) {
