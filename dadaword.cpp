@@ -119,9 +119,7 @@ void DadaWord::cree_iu(){
     //Initialisation des boutons
     //Langue du document en cours
     status_langue = new QPushButton(statusBar());
-    QString nom_dico = dictPath;
-    int nb_carac = instance_outils.compte_caracteres(dictPath);
-    nom_dico.remove(0, (nb_carac+1));
+    QString nom_dico = dictPath.split("/").last();
     status_langue->setText(nom_dico);
     status_langue->setToolTip(tr("Langue pour le document actuel"));
     status_langue->setFlat(true);
@@ -443,10 +441,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         //Opérations générales appliquées à la fenêtre
         //------------------------------------------------
         fenetre_temp->setAccessibleDescription(nom_fichier);
-        int nb_carac = instance_outils.compte_caracteres(nom_fichier);
-        QString nom_fichier_fenetre = nom_fichier;
-        nom_fichier_fenetre.remove(0, (nb_carac+1));
-        fenetre_temp->setWindowTitle(nom_fichier_fenetre);
+        fenetre_temp->setWindowTitle(nom_fichier.split("/").last());
 
         //Activation de la coloration syntaxique
         if(fenetre_temp->windowTitle().contains(".htm") || fenetre_temp->windowTitle().contains(".xml")){
@@ -540,10 +535,8 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         nom_fichier = fichier;
     }
 
-    QString titre = nom_fichier;
+    QString titre = nom_fichier.split("/").last();
     Outils instance_outils;
-    //Elimination des dossiers pour récupérer juste le titre
-    titre = titre.remove(0, (instance_outils.compte_caracteres(nom_fichier)+1));
 
     //On vérifie si le fichier n'est pas déjà ouvert
     QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
@@ -998,7 +991,7 @@ void DadaWord::create_menus(){
         for(int i=(recemment_ouverts.size()-1); i>0; i--){
             QString temp = recemment_ouverts.at(i);
             if(!temp.isEmpty() && !temp.isNull()){
-                action_ouverts[i] = menu_recents->addAction(temp.remove(0, (instance_outils.compte_caracteres(recemment_ouverts.at(0))+1)));
+                action_ouverts[i] = menu_recents->addAction(temp.split("/").last());
                 QSignalMapper *mappeur_string = new QSignalMapper;
                 connect(action_ouverts[i], SIGNAL(triggered()), mappeur_string, SLOT(map()));
                 mappeur_string->setMapping(action_ouverts[i], recemment_ouverts.at(i));
@@ -2704,10 +2697,7 @@ void DadaWord::orth_langue(){
     QPushButton *valider = new QPushButton(tr("Valider"));
     QComboBox *liste = new QComboBox;
     titre = new QLabel("<h1>Langue du correcteur<h1>");
-    Outils instance_outils;
-    int nb_carac = instance_outils.compte_caracteres(dictPath);
-    QString nom_dico = dictPath;
-    nom_dico.remove(0, (nb_carac+1));
+    QString nom_dico = dictPath.split("/").last();;
     actuelle = new QLabel(tr("Dictionnaire actuel : ")+nom_dico);
     choix = new QLabel(tr("Nouvelle langue"));
     QDir dossier;

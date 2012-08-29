@@ -941,8 +941,7 @@ bool QZipReader::extractOne(const QString &destinationDir, const QString &nomFic
                 //Extraction
                 QString clean_fichier = chemin_temp; //Nettoyage du chemin pour ne pas s'embrouiller dans les répertoires
                 if(clean_fichier.contains(QDir::separator())){
-                    Outils instance_outils;
-                    clean_fichier = clean_fichier.remove(0, (instance_outils.compte_caracteres(nomFichier)+1));
+                    clean_fichier = clean_fichier.split("/").last();
                 }
                 QString chemin = destinationDir + QDir::separator() + clean_fichier;
                 QFile f(chemin);

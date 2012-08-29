@@ -13,7 +13,7 @@ bool DDZ::enregistre(QString fichier, QString contenu){
 
 
     //On remplit le fichier avec le contenu
-    QString nom_fichier = fichier.remove(0, (instance_outils.compte_caracteres(fichier)+1));
+    QString nom_fichier = fichier.split("/").last();
     //Le nom du fichier est le même que le nom de l'archive globale si ce n'est que l'extention change
     nom_fichier.remove(nom_fichier.size()-4, nom_fichier.size()).append(".ddw");
 
@@ -47,7 +47,7 @@ bool DDZ::enregistre(QString fichier, QString contenu){
         //On ajoute les images détectées au zip
         for(int i=0; i<list.size(); i++){
             QString liste_temp = list.at(i);
-            QString nom_fichier = liste_temp.remove(0, (instance_outils.compte_caracteres(liste_temp)+1));
+            QString nom_fichier = liste_temp.split("/").last();
             //On récupère l'extention
             QString extention = list.at(i).section('.', -1);
             QImageReader image(list.at(i), extention.toUpper().toStdString().c_str());
@@ -81,8 +81,8 @@ QString DDZ::ouvre(QString nom){
     //---------------------------------------------
     //Ouverture du fichier principal (DDW)
     //---------------------------------------------
-    nom.remove(0, (instance_outils.compte_caracteres(nom)+1));
-    nom.remove(nom.size()-4, nom.size()).append(".ddw").prepend(QDir::tempPath()+QDir::separator());
+    QString nom_fichier = nom.split("/").last();
+    nom_fichier.remove(nom_fichier.size()-4, nom_fichier.size()).append(".ddw").prepend(QDir::tempPath()+"/");
     QFile file(nom);
     if(file.open(QFile::ReadOnly)){
         QTextStream in(&file);
@@ -122,8 +122,7 @@ QString DDZ::ouvre(QString nom){
 
         //On change le chemin des images
         for(int i=0; i<list.size(); i++){
-            QString liste_temp = list.at(i);
-            QString nom_image = liste_temp.remove(0, (instance_outils.compte_caracteres(liste_temp)+1));
+            QString nom_image = list.at(i).split("/").last();
             contenu.replace(list.at(i), QDir::tempPath()+QDir::separator()+nom_image);
         }
     }

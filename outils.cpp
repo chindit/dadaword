@@ -171,18 +171,6 @@ QVariant Outils::lire_config(QString nom){
     return settings.value(nom);
 }
 
-int Outils::compte_caracteres(QString chaine){
-    //On compte les caractères jusqu'au dernier "/"
-    int result = 0;
-    for(int i=0; i<chaine.size(); i++){
-        QChar carac = chaine.at(i);
-        if(carac == '/'){
-            result = i;
-        }
-    }
-    return result;
-}
-
 //Enregistre un fichier ouvert dans les «récemment ouverts»
 void Outils::enregistre_fichiers(QString fichier){
     //Lecture des préférences

@@ -957,7 +957,7 @@ bool OpenDocument::traite_image(QTextCursor &curseur, QDomElement e, QString nom
         QZipReader image(nom_odt, QIODevice::ReadOnly);
         Outils instance_outils;
         QString clean_fichier = e.attribute("xlink:href");
-        clean_fichier = clean_fichier.remove(0, (instance_outils.compte_caracteres(e.attribute("xlink:href")+1)));
+        clean_fichier = clean_fichier.split("/").last();
         image.extractOne(QDir::tempPath(), clean_fichier);
         image.close();
 

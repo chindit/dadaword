@@ -28,7 +28,6 @@ class Outils : public QObject{
     Q_OBJECT
 
 public:
-    int compte_caracteres(QString chaine);
 
 public slots:
     void fenetre_config();
