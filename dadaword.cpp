@@ -1750,6 +1750,7 @@ void DadaWord::change_couleur(const int &value){
     }
     else if(value == SURLIGNE){
         QTextCharFormat format_couleur;
+        format_couleur = find_edit()->currentCharFormat();
         format_couleur.setBackground(QBrush(couleur));
         find_edit()->setCurrentCharFormat(format_couleur);
     }
@@ -2445,9 +2446,7 @@ void DadaWord::change_style(int style){
         format.setFontUnderline(settings.value("souligne").toBool());
         format.setFontItalic(settings.value("italique").toBool());
         format.setFontWeight(settings.value("gras").toInt());
-        if(settings.value("background").value<QColor>() != QColor::Invalid){
-            format.setBackground(QBrush(settings.value("background").value<QColor>()));
-        }
+        format.setBackground(QBrush(settings.value("background").value<QColor>()));
         format.setForeground(QBrush(settings.value("foreground").value<QColor>()));
         curseur.setCharFormat(format);
     }
@@ -2924,6 +2923,9 @@ void DadaWord::curseur_change(){
     QTextCursor curseur;
     if(find_edit() != 0){ //Le signal est émis lors de la fermeture d'un document
         curseur = find_edit()->textCursor();
+    }
+    else{
+        return;
     }
 
     //Si le curseur est à la fin, on ne fait rien

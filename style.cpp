@@ -31,7 +31,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(QColor::Invalid));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
         //Titre 1
@@ -42,7 +42,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
         //Titre 2
@@ -53,7 +53,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", true);
         settings.setValue("souligne", false);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
         //Titre 3
@@ -64,7 +64,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", false);
         settings.setValue("souligne", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
         //Titre 4
@@ -75,7 +75,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", true);
         settings.setValue("souligne", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
         //Titre 5
@@ -86,7 +86,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", true);
         settings.setValue("souligne", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
         //Titre 6
@@ -97,7 +97,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", false);
         settings.setValue("souligne", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
     }
 }
@@ -229,12 +229,7 @@ void Style::ajoute_style(){
             checkbox_italique->setChecked(settings.value("italique").toBool());
             checkbox_souligne->setChecked(settings.value("souligne").toBool());
             color_foreground->setText(settings.value("foreground").value<QColor>().name());
-            if(settings.value("background").value<QColor>() != Qt::transparent){
-                color_background->setText(settings.value("background").value<QColor>().name());
-            }
-            else{
-                color_background->setText(tr("Transparent"));
-            }
+            color_background->setText(settings.value("background").value<QColor>().name());
             settings.endGroup();
         }
         else{
