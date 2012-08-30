@@ -31,7 +31,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("background", QColor(Qt::transparent));
+        settings.setValue("background", QColor(QColor::Invalid));
         settings.endGroup();
 
         //Titre 1

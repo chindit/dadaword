@@ -2445,7 +2445,7 @@ void DadaWord::change_style(int style){
         format.setFontUnderline(settings.value("souligne").toBool());
         format.setFontItalic(settings.value("italique").toBool());
         format.setFontWeight(settings.value("gras").toInt());
-        if(settings.value("background").value<QColor>() != Qt::transparent){
+        if(settings.value("background").value<QColor>() != QColor::Invalid){
             format.setBackground(QBrush(settings.value("background").value<QColor>()));
         }
         format.setForeground(QBrush(settings.value("foreground").value<QColor>()));
@@ -2921,7 +2921,10 @@ void DadaWord::call_remplace(){
 //Gére le déplacement du curseur
 void DadaWord::curseur_change(){
     //On récupère le curseur
-    QTextCursor curseur = find_edit()->textCursor();
+    QTextCursor curseur;
+    if(find_edit() != 0){ //Le signal est émis lors de la fermeture d'un document
+        curseur = find_edit()->textCursor();
+    }
 
     //Si le curseur est à la fin, on ne fait rien
     if(curseur.atEnd()){
