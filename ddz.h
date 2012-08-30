@@ -12,8 +12,8 @@ class DDZ
 {
 public:
     DDZ();
-    bool enregistre(QString fichier, QString contenu);
-    QString ouvre(QString nom);
+    bool enregistre(QString fichier, QString contenu, QStringList annexes);
+    QStringList ouvre(QString nom);
 };
 
 #endif // FICHIERSDDZ_H

@@ -86,6 +86,7 @@ DadaWord::~DadaWord()
     delete barre_recherche;
     delete affichage_recherche;
     delete barre_orthographe;
+    delete add_ddz_annexe;
 
 }
 
@@ -477,9 +478,11 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     //-----------------------------------------------------
     if(nom_fichier.contains(".ddz")){
         DDZ instance_ddz;
-        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier)){
+        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, edit_temp->property("annexes").toStringList())){
             instance_erreur.Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
+        add_ddz_annexe->setVisible(true);
+        ddz_annexes->setEnabled(true);
     }
     else{ //Pas de DDZ, fichier normal
         QFile file(nom_fichier);
@@ -505,9 +508,11 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
 void DadaWord::ouvrir_fichier(const QString &fichier){
     //Variables globales
     QString nom_fichier;
+    QStringList retour;
     QString contenu;
     bool style = false;
     bool texte = false;
+    bool annexes = false;
 
 
     //----------------------------------------------------------------
@@ -572,7 +577,8 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     //Gestion du DDZ
     else if(nom_fichier.endsWith(".ddz", Qt::CaseInsensitive)){
         DDZ instance_ddz;
-        contenu = instance_ddz.ouvre(nom_fichier);
+        retour = instance_ddz.ouvre(nom_fichier);
+        contenu = retour.at(0);
         //Erreur de lecture
         if(contenu.isEmpty() || contenu.isNull() || contenu == "NULL"){
             Erreur instance_erreur;
@@ -580,6 +586,11 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             return;
         }
         style = true; //Fichier de style
+        if(retour.size() > 1){
+            annexes = true;
+        }
+        add_ddz_annexe->setVisible(true);
+        ddz_annexes->setEnabled(true);
     }
     //Gestions des fichiers en mode texte simple
     else if(file.open(QFile::ReadOnly)){
@@ -665,6 +676,11 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         //Gestion des fichiers de style
         find_edit()->setAcceptRichText(true);
         find_edit()->insertHtml(contenu);
+        if(annexes){
+            retour.removeAt(0);
+            find_edit()->setProperty("annexes", retour);
+            show_annexes(); //Actualisation de la liste des annexes
+        }
     }
     else if(texte){
         //Gestion des fichiers de texte
@@ -1245,6 +1261,11 @@ void DadaWord::create_menus(){
     tableau4->setMapping(delete_colonne, COLL);
     connect(tableau4, SIGNAL(mapped(const int &)), this, SLOT(tableau_remove(const int &)));
 
+    add_ddz_annexe = menu_insertion->addAction(tr("Ajouter une annexe DDZ"));
+    add_ddz_annexe->setIcon(QIcon(":/menus/images/annexe.png"));
+    add_ddz_annexe->setVisible(false);
+    connect(add_ddz_annexe, SIGNAL(triggered()), this, SLOT(add_annexe()));
+
 
     //Création du menu "Outils"
     QMenu *menu_outils = menuBar()->addMenu(tr("Outils"));
@@ -1439,6 +1460,10 @@ void DadaWord::create_menus(){
     bar_format->addWidget(nom_format);
     //Connexion
     connect(nom_format, SIGNAL(activated(int)), this, SLOT(change_style(int)));
+    //Annexes (intégrée à la barre de format)
+    ddz_annexes = new QComboBox;
+    ddz_annexes->setEnabled(false);
+    bar_format->addWidget(ddz_annexes);
 
     //Création de la toolbar des puces
     puces = new QToolBar;
@@ -1701,6 +1726,15 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         }
         else{
             colore_html->setEnabled(false);
+        }
+        //Pièces jointes
+        if(find_onglet()->accessibleDescription().contains(".ddz", Qt::CaseInsensitive)){
+            add_ddz_annexe->setVisible(true);
+            ddz_annexes->setEnabled(true);
+        }
+        else{
+            add_ddz_annexe->setVisible(false);
+            ddz_annexes->setEnabled(false);
         }
     }//Fin du "if" fenêtre valide
     else{
@@ -2987,5 +3021,48 @@ void DadaWord::set_interligne(int interligne){
     //----------------------------------------------
     curseur.setBlockFormat(format);
 
+    return;
+}
+
+//Ajout d'une annexe DDZ
+void DadaWord::add_annexe(){
+    QString annexe = QFileDialog::getOpenFileName(this, "", QDir::homePath());
+    QFile fichier(annexe);
+    qint64 taille = fichier.size();
+    if(taille > 2500000){
+        QMessageBox::information(this, tr("Annexe trop volumineuse"), tr("L'annexe est trop volumineuse et ne sera pas insérée dans le document"));
+        return;
+    }
+    //Si on est ici, c'est que tout est bon
+    QStringList annexes = find_edit()->property("annexes").toStringList();
+    if(annexes.size() < 10){
+        annexes.append(annexe);
+        find_edit()->setProperty("annexes", annexes);
+    }
+    else{
+        QMessageBox::information(this, tr("Annexes trop nombreuses"), tr("Pour des raisons de portabililté, vous ne pouvez avoir plus de 10 annexes pour le même document.  Merci"));
+        return;
+    }
+
+    //Actualisation de la liste des annexes
+    show_annexes();
+    return;
+}
+
+//Affiche les annexes
+void DadaWord::show_annexes(){
+    QStringList annexes = find_edit()->property("annexes").toStringList();
+    if(annexes.size() > 0){
+        ddz_annexes->clear();
+        ddz_annexes->addItems(annexes);
+        ddz_annexes->setEnabled(true);
+    }
+    connect(ddz_annexes, SIGNAL(activated(QString)), this, SLOT(ouvre_programme(QString)));
+    return;
+}
+
+//Ouvre le fichier avec un programme système
+void DadaWord::ouvre_programme(QString fichier){
+    QDesktopServices::openUrl(QUrl(fichier));
     return;
 }

@@ -12,6 +12,7 @@
 #include <QBuffer>
 #include <QColorDialog>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
 #include <QFont>
@@ -122,6 +123,9 @@ private slots:
     void call_remplace();
     void curseur_change();
     void set_interligne(int interligne);
+    void add_annexe();
+    void show_annexes();
+    void ouvre_programme(QString fichier);
 
 private:
     void create_menus();
@@ -179,6 +183,8 @@ private:
     HighlighterHtml *instance;
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;
+    QAction *add_ddz_annexe;
+    QComboBox *ddz_annexes;
 
 };
 

@@ -4,10 +4,9 @@ DDZ::DDZ()
 {
 }
 
-bool DDZ::enregistre(QString fichier, QString contenu){
+bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
     //Paramètres de fonction
     Erreur instance_erreur;
-    Outils instance_outils;
 
     QZipWriter ddz_global(fichier, QIODevice::WriteOnly);
 
@@ -55,6 +54,24 @@ bool DDZ::enregistre(QString fichier, QString contenu){
         }
     }
 
+    if(annexes.size() > 0){
+        QString liste_annexes;
+        for(int i=0; i<annexes.size(); i++){
+            QFile fichier(annexes.at(i));
+            fichier.open(QFile::ReadOnly);
+            ddz_global.addFile(annexes.at(i).split("/").last(), fichier.readAll());
+            fichier.close();
+            liste_annexes+=annexes.at(i).split("/").last()+",";
+        }
+        liste_annexes = liste_annexes.left(liste_annexes.size()-1);
+        //On ajoute un fichier descriptif
+
+
+        QByteArray array_annexes;
+        array_annexes.append(liste_annexes);
+        ddz_global.addFile("annexes.txt", array_annexes);
+    }
+
     //On ferme tout
     ddz_global.close();
 
@@ -62,9 +79,10 @@ bool DDZ::enregistre(QString fichier, QString contenu){
     return true;
 }
 
-QString DDZ::ouvre(QString nom){
+QStringList DDZ::ouvre(QString nom){
     //Variables globales
     QString contenu;
+    QStringList retour;
     Erreur instance_erreur;
 
     //---------------------------------------------
@@ -90,10 +108,12 @@ QString DDZ::ouvre(QString nom){
             contenu = contenu + line + "\n";
         }
         file.close();
+        retour.append(contenu);
     }
     else{
         instance_erreur.Erreur_msg(QObject::tr("DDZ : Erreur lors de la lecture du contenu du document."), QMessageBox::Ignore);
-        return "NULL";
+        retour.append("NULL");
+        return retour;
     }
 
     //-----------------------------------------------------
@@ -116,7 +136,8 @@ QString DDZ::ouvre(QString nom){
         if(nb_images != list.size()){
             //On a pas trouvé toutes les images (ou on en a trouvé trop, ce qui est pire)
             instance_erreur.Erreur_msg(QObject::tr("Problème lors de la détection d'images -> annulation de l'ouverture"), QMessageBox::Ignore);
-            return "NULL";
+            retour.append("NULL");
+            return retour;
         }
 
         //On change le chemin des images
@@ -126,5 +147,26 @@ QString DDZ::ouvre(QString nom){
         }
     }
 
-    return contenu;
+    QFile index_annexes(QDir::tempPath()+"/annexes.txt");
+    if(index_annexes.exists()){
+        //Il y a des annexes
+        index_annexes.open(QFile::ReadOnly);
+        QString liste = index_annexes.readLine();
+        index_annexes.close();
+        QStringList liste_annexes = liste.split(",");
+        if(liste_annexes.size() > 0){
+            for(int i=0; i<liste_annexes.size(); i++){
+                QString temp = liste_annexes.at(i);
+                retour.append(temp.prepend(QDir::tempPath()+"/"));
+            }
+            return retour;
+        }
+        else{
+            instance_erreur.Erreur_msg(QObject::tr("Erreur lors de la détection des annexes"), QMessageBox::Ignore);
+            return retour;
+        }
+
+    }
+
+    return retour;
 }

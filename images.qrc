@@ -55,6 +55,7 @@
         <file>images/edit-paste.png</file>
         <file>images/coloration_syntaxique.png</file>
         <file>images/interligne.png</file>
+        <file>images/annexe.png</file>
     </qresource>
     <qresource prefix="/programme">
         <file>images/dadaword.gif</file>
