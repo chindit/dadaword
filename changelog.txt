@@ -2,6 +2,8 @@ DadaWord - Changelog
 
 Version 1.1.3 :
 - Mise à jour des boutons selon la position du curseur
+- BUG : pertu du formatage lors du surlignage
+- BUG : background noir lors du chargement de certains DDZ
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style

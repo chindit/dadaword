@@ -1703,6 +1703,10 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
             colore_html->setEnabled(false);
         }
     }//Fin du "if" fenêtre valide
+    else{
+        //On masque le bouton "Enregistrer"
+        enregistrer->setEnabled(false);
+    }
     return;
 }
 
@@ -1914,9 +1918,6 @@ void DadaWord::tableau_add(const int &pos){
     while(curseur.currentTable() == 0){
         curseur.movePosition(QTextCursor::PreviousBlock);
     }
-
-    //Emplacement dans les cases
-    //int emplacement_top = ((curseur.position() - curseur.currentTable()->firstPosition())+1)/tableau->columns();
 
     if(pos == ROW){
         //Insertion de la ligne
