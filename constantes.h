@@ -35,4 +35,7 @@ enum { FENETRE, QTOOLBAR };
 //Énumérations our le sens de la recherche
 enum { GAUCHE, DROITE };
 
+//Énumérations pour l'interligne
+enum { INT_AUTRE };
+
 #endif // CONSTANTES_H

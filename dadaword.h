@@ -121,6 +121,7 @@ private slots:
     void remplace_all();
     void call_remplace();
     void curseur_change();
+    void set_interligne(int interligne);
 
 private:
     void create_menus();

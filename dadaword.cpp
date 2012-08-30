@@ -1152,6 +1152,32 @@ void DadaWord::create_menus(){
     mappeur_alignement->setMapping(alignement_justifie, Qt::AlignJustify);
     connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
 
+    //Interligne
+    QMenu *edit_interligne = menu_edition->addMenu(tr("Interligne"));
+    edit_interligne->setIcon(QIcon(":/menus/images/interligne.png"));
+
+    //Sous-menu
+    QAction *int_simple = edit_interligne->addAction(tr("Simple (1)"));
+    QAction *int_medium = edit_interligne->addAction(tr("Moyen (1,5)"));
+    QAction *int_large = edit_interligne->addAction(tr("Large (2)"));
+    QAction *int_perso = edit_interligne->addAction(tr("Personnalisé"));
+    QSignalMapper *mappeur_interligne[4];
+    for(int i=0; i<4; i++){
+        mappeur_interligne[i] = new QSignalMapper;
+    }
+    connect(int_simple, SIGNAL(triggered()), mappeur_interligne[0], SLOT(map()));
+    connect(int_medium, SIGNAL(triggered()), mappeur_interligne[1], SLOT(map()));
+    connect(int_large, SIGNAL(triggered()), mappeur_interligne[2], SLOT(map()));
+    connect(int_perso, SIGNAL(triggered()), mappeur_interligne[3], SLOT(map()));
+    mappeur_interligne[0]->setMapping(int_simple, 1);
+    mappeur_interligne[1]->setMapping(int_medium, 150);
+    mappeur_interligne[2]->setMapping(int_large, 200);
+    mappeur_interligne[3]->setMapping(int_perso, INT_AUTRE);
+    for(int i=0; i<4; i++){
+        connect(mappeur_interligne[i], SIGNAL(mapped(int)), this, SLOT(set_interligne(int)));
+    }
+
+
     //Création de la barre de menu "Insertion"
     QMenu *menu_insertion = menuBar()->addMenu(tr("Insérer"));
 
@@ -2921,5 +2947,39 @@ void DadaWord::curseur_change(){
         }
 
     }
+    return;
+}
+
+//Change l'interligne
+void DadaWord::set_interligne(int interligne){
+    QTextBlockFormat format;
+    QTextCursor curseur = find_edit()->textCursor();
+
+    //----------------------------------------------
+    //Détection de l'interligne
+    //----------------------------------------------
+    if(interligne == 1){
+        format.setLineHeight(1, QTextBlockFormat::SingleHeight);
+    }
+    else if(interligne == INT_AUTRE){
+        bool annulation = true;
+        double val_interligne = QInputDialog::getDouble(this, tr("Interligne"), tr("Interligne"), 1, 0.25, 10, 1, &annulation);
+        if(!annulation){
+            return; //L'utilisateur a cliqué sur "Annuler"
+        }
+        else{
+            format.setLineHeight(val_interligne*100, QTextBlockFormat::ProportionalHeight);
+        }
+    }
+    else{
+        format.setLineHeight(interligne, QTextBlockFormat::ProportionalHeight);
+    }
+
+
+    //----------------------------------------------
+    //Application de l'interligne
+    //----------------------------------------------
+    curseur.setBlockFormat(format);
+
     return;
 }
