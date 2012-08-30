@@ -120,6 +120,7 @@ private slots:
     void affiche_menu_perso(const QPoint &position);
     void remplace_all();
     void call_remplace();
+    void curseur_change();
 
 private:
     void create_menus();

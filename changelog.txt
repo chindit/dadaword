@@ -1,5 +1,8 @@
 DadaWord - Changelog
 
+Version 1.1.3 :
+- Mise à jour des boutons selon la position du curseur
+
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style
 - BUG : non annulation de la création de tableau lors du clic sur "Annuler"

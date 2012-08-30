@@ -160,6 +160,7 @@ void DadaWord::cree_iu(){
     //Connection du QTextEdit à la correction
     document->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));
+    connect(document, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
 
     //Gestion des onglets Word ou non
     if(instance_outils.lire_config("word").toBool()){
@@ -1530,6 +1531,7 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
         document_onglet->installEventFilter(this);
         document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
         connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));//Connection au slot d'affichage du menu
+        connect(document_onglet, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
         QTextDocument *doc_principal_onglet = new QTextDocument;
         document_onglet->setDocument(doc_principal_onglet);
         Outils instance_outils;
@@ -2887,5 +2889,37 @@ void DadaWord::remplace_all(){
 //Appelle la fonction de recherche
 void DadaWord::call_remplace(){
     recherche(true);
+    return;
+}
+
+//Gére le déplacement du curseur
+void DadaWord::curseur_change(){
+    //On récupère le curseur
+    QTextCursor curseur = find_edit()->textCursor();
+
+    //Si le curseur est à la fin, on ne fait rien
+    if(curseur.atEnd()){
+        return;
+    }
+    else{
+        //On regrade les caractères
+        curseur.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        //On récupére le format
+        QTextCharFormat format = curseur.charFormat();
+        //On adapte les boutons selon le format
+        if(format.fontWeight() == QFont::Bold && !gras->isChecked()){
+            gras->setChecked(true);
+        }
+        if(format.fontWeight() == QFont::Normal && gras->isChecked()){
+            gras->setChecked(false);
+        }
+        if(format.fontItalic() != italique->isChecked()){
+            italique->setChecked(format.fontItalic());
+        }
+        if(format.fontUnderline() != souligne->isChecked()){
+            souligne->setChecked(format.fontUnderline());
+        }
+
+    }
     return;
 }
