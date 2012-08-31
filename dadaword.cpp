@@ -478,10 +478,19 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     //-----------------------------------------------------
     if(nom_fichier.contains(".ddz")){
         DDZ instance_ddz;
-        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, edit_temp->property("annexes").toStringList())){
+        QStringList envoi_ddz;
+        for(int i=0; i<liste_annexes.size(); i++){
+            if(liste_annexes.at(i).at(0) == fenetre_temp->accessibleName()){
+                envoi_ddz = liste_annexes.at(i);
+                envoi_ddz.removeFirst();
+                i = 100000;
+            }
+        }
+        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, envoi_ddz)){
             instance_erreur.Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
         add_ddz_annexe->setVisible(true);
+        rm_ddz_annexe->setVisible(true);
         ddz_annexes->setEnabled(true);
     }
     else{ //Pas de DDZ, fichier normal
@@ -590,6 +599,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
             annexes = true;
         }
         add_ddz_annexe->setVisible(true);
+        rm_ddz_annexe->setVisible(true);
         ddz_annexes->setEnabled(true);
     }
     //Gestions des fichiers en mode texte simple
@@ -678,7 +688,9 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         find_edit()->insertHtml(contenu);
         if(annexes){
             retour.removeAt(0);
-            find_edit()->setProperty("annexes", retour);
+            retour.prepend(titre);
+            liste_annexes.append(retour);
+            find_edit()->setFocus();
             show_annexes(); //Actualisation de la liste des annexes
         }
     }
@@ -1266,6 +1278,11 @@ void DadaWord::create_menus(){
     add_ddz_annexe->setVisible(false);
     connect(add_ddz_annexe, SIGNAL(triggered()), this, SLOT(add_annexe()));
 
+    rm_ddz_annexe = menu_insertion->addAction(tr("Supprimer un annexe DDZ"));
+    rm_ddz_annexe->setVisible(false);
+    rm_ddz_annexe->setIcon(QIcon(":/menus/images/close.png"));
+    connect(rm_ddz_annexe, SIGNAL(triggered()), this, SLOT(rm_annexe()));
+
 
     //Création du menu "Outils"
     QMenu *menu_outils = menuBar()->addMenu(tr("Outils"));
@@ -1730,10 +1747,12 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         //Pièces jointes
         if(find_onglet()->accessibleDescription().contains(".ddz", Qt::CaseInsensitive)){
             add_ddz_annexe->setVisible(true);
+            rm_ddz_annexe->setVisible(true);
             ddz_annexes->setEnabled(true);
         }
         else{
             add_ddz_annexe->setVisible(false);
+            rm_ddz_annexe->setVisible(false);
             ddz_annexes->setEnabled(false);
         }
     }//Fin du "if" fenêtre valide
@@ -1901,8 +1920,15 @@ void DadaWord::close_tab_button(int index){
         alerte_enregistrement(liste.at(index));
     }
 
+    //Suppression des annexes (s'il y en a)
+    for(int i=0; i<liste_annexes.size(); i++){
+        if(liste_annexes.at(i).at(0) == liste.at(index)->accessibleName()){
+            liste_annexes.removeAt(i);
+            i = 100000;
+        }
+    }
+
     liste.at(index)->close();
-    //}
     return;
 }
 
@@ -3034,10 +3060,17 @@ void DadaWord::add_annexe(){
         return;
     }
     //Si on est ici, c'est que tout est bon
-    QStringList annexes = find_edit()->property("annexes").toStringList();
-    if(annexes.size() < 10){
+    QStringList annexes;
+    for(int i=0; i<liste_annexes.size(); i++){
+        if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
+            annexes = liste_annexes.at(i);
+            liste_annexes.removeAt(i);
+            i = 100000;
+        }
+    }
+    if(annexes.size() < 11){
         annexes.append(annexe);
-        find_edit()->setProperty("annexes", annexes);
+        liste_annexes.append(annexes);
     }
     else{
         QMessageBox::information(this, tr("Annexes trop nombreuses"), tr("Pour des raisons de portabililté, vous ne pouvez avoir plus de 10 annexes pour le même document.  Merci"));
@@ -3051,7 +3084,14 @@ void DadaWord::add_annexe(){
 
 //Affiche les annexes
 void DadaWord::show_annexes(){
-    QStringList annexes = find_edit()->property("annexes").toStringList();
+    QStringList annexes;
+    for(int i=0; i<liste_annexes.size(); i++){
+        if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
+            annexes = liste_annexes.at(i);
+            annexes.removeFirst();
+            i = 100000;
+        }
+    }
     if(annexes.size() > 0){
         ddz_annexes->clear();
         ddz_annexes->addItems(annexes);
@@ -3064,5 +3104,81 @@ void DadaWord::show_annexes(){
 //Ouvre le fichier avec un programme système
 void DadaWord::ouvre_programme(QString fichier){
     QDesktopServices::openUrl(QUrl(fichier));
+    return;
+}
+
+//Supprime un annexe
+void DadaWord::rm_annexe(){
+
+    QStringList annexes;
+    for(int i=0; i<liste_annexes.size(); i++){
+        if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
+            annexes = liste_annexes.at(i);
+            annexes.removeFirst();
+            i = 100000;
+        }
+    }
+    if(annexes.size() > 0){ //S'il y a des annexes
+        QDialog *dialog_annexes = new QDialog;
+        connect(this, SIGNAL(delete_annexes()), dialog_annexes, SLOT(close()));
+        dialog_annexes->setAttribute(Qt::WA_DeleteOnClose);
+        QPushButton *rm_button[annexes.size()];
+        QPushButton *quit = new QPushButton(QIcon(":/menus/images/exit.png"), tr("Fermer la fenêtre"), dialog_annexes);
+        QGridLayout *layout = new QGridLayout(dialog_annexes);
+
+        QLabel *titre = new QLabel(tr("<h3>Cliquez sur l'annexe à supprimer</h3>"));
+        layout->addWidget(titre, 0, 0);
+
+        for(int i=0; i<annexes.size(); i++){
+            rm_button[i] = new QPushButton(dialog_annexes);
+            rm_button[i]->setFlat(true);
+            rm_button[i]->setIcon(QIcon(":/menus/images/sortir.png"));
+            rm_button[i]->setText(annexes.at(i));
+            QSignalMapper *mappeur = new QSignalMapper;
+            connect(rm_button[i], SIGNAL(clicked()), mappeur, SLOT(map()));
+            mappeur->setMapping(rm_button[i], annexes.at(i));
+            connect(mappeur, SIGNAL(mapped(QString)), this, SLOT(make_rm_annexe(QString)));
+            layout->addWidget(rm_button[i], i+1, 0, 1, 1, Qt::AlignLeft);
+        }
+
+        layout->addWidget(quit, annexes.size()+1, 0);
+        connect(quit, SIGNAL(clicked()), dialog_annexes, SLOT(close()));
+        dialog_annexes->setLayout(layout);
+        dialog_annexes->exec();
+    }
+    return;
+}
+
+//Delete l'annexe
+void DadaWord::make_rm_annexe(QString annexe){
+    Outils instance_outils;
+    int pos = -1;
+    for(int i=0; i<liste_annexes.size(); i++){
+        if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
+            pos = i;
+            i = 100000;
+        }
+    }
+    if(pos >= 0 && liste_annexes.at(pos).size() > 1){
+        for(int i=1; i<liste_annexes.at(pos).size(); i++){
+            if(liste_annexes.at(pos).at(i) == annexe){
+                QStringList temp = liste_annexes.at(pos);
+                liste_annexes.removeAt(pos);
+                temp.removeAt(i);
+                liste_annexes.append(temp);
+                i = 100000;
+            }
+        }
+        show_annexes();
+        if(instance_outils.lire_config("alertes") == HIGH){
+            QMessageBox::information(this, tr("Annexe supprimée"), tr("L'annexe a été supprimée"));
+        }
+        emit delete_annexes();
+    }
+    else{
+        if(instance_outils.lire_config("alertes") == HIGH){
+            QMessageBox::information(this, tr("Pas d'annexes"), tr("Ce document ne contient pas d'annexes, il est donc impossible de les supprimer. ;-)"));
+        }
+    }
     return;
 }

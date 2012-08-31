@@ -63,6 +63,9 @@ public:
 public slots:
     void recharge_styles();
 
+signals:
+    void delete_annexes();
+
 private slots:
     void affiche_about();
     void change_police(QFont nouvelle_police);
@@ -124,6 +127,8 @@ private slots:
     void curseur_change();
     void set_interligne(int interligne);
     void add_annexe();
+    void rm_annexe();
+    void make_rm_annexe(QString annexe);
     void show_annexes();
     void ouvre_programme(QString fichier);
 
@@ -184,7 +189,9 @@ private:
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;
     QAction *add_ddz_annexe;
+    QAction *rm_ddz_annexe;
     QComboBox *ddz_annexes;
+    QList< QStringList > liste_annexes;
 
 };
 

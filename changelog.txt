@@ -4,7 +4,7 @@ Version 1.1.3 :
 - Mise à jour des boutons selon la position du curseur
 - BUG : pertu du formatage lors du surlignage
 - BUG : background noir lors du chargement de certains DDZ
-- Ajout d'un système d'annexe pour les fichiers DDZ
+- Ajout d'un système d'annexe pour les fichiers DDZ (ajout/suppression/vue)
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style

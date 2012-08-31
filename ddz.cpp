@@ -159,13 +159,16 @@ QStringList DDZ::ouvre(QString nom){
                 QString temp = liste_annexes.at(i);
                 retour.append(temp.prepend(QDir::tempPath()+"/"));
             }
+            //Une fois qu'on a lu le fichier, on le supprime
+            if(!index_annexes.remove()){
+                instance_erreur.Erreur_msg(QObject::tr("Impossible de supprimer le fichier d'annexes.  Il se peut que le système soit inopérant."), QMessageBox::Warning);
+            }
             return retour;
         }
         else{
             instance_erreur.Erreur_msg(QObject::tr("Erreur lors de la détection des annexes"), QMessageBox::Ignore);
             return retour;
         }
-
     }
 
     return retour;
