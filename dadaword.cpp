@@ -244,6 +244,10 @@ void DadaWord::affiche_about(){
 
 //Changement de police
 void DadaWord::change_police(QFont nouvelle_police){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     int police = find_edit()->fontWeight();
     bool police_italique = find_edit()->fontItalic();
     int taille_police = find_edit()->fontPointSize();
@@ -261,6 +265,10 @@ void DadaWord::change_police(QFont nouvelle_police){
 
 //Mise en gras
 void DadaWord::graisse_police(bool etat){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     if(etat){
         QTextCursor curseur = find_edit()->textCursor();
         if(curseur.hasSelection()){
@@ -276,6 +284,10 @@ void DadaWord::graisse_police(bool etat){
 
 //Mise en italique
 void DadaWord::italique_police(bool etat){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QTextCursor curseur = find_edit()->textCursor();
     if(curseur.hasSelection()){
         italique->setChecked(false);
@@ -286,6 +298,10 @@ void DadaWord::italique_police(bool etat){
 
 //Soulignement
 void DadaWord::souligne_police(bool etat){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QTextCursor curseur = find_edit()->textCursor();
     if(curseur.hasSelection()){
         souligne->setChecked(false);
@@ -296,6 +312,10 @@ void DadaWord::souligne_police(bool etat){
 
 //Modification de la taille
 void DadaWord::change_taille(int taille){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     find_edit()->setFontPointSize(taille);
     find_edit()->setFocus();
     return;
@@ -303,6 +323,10 @@ void DadaWord::change_taille(int taille){
 
 //Aperçu avant impression
 void DadaWord::apercu_avant_impression(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QPrinter printer;
     printer.setPaperSize(QPrinter::A4);
     Outils instance;
@@ -325,6 +349,10 @@ void DadaWord::print(QPrinter *p)
 
 //Impression (réelle)
 void DadaWord::imprimer(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QPrinter printer(QPrinter::HighResolution);
     Outils instance;
     if(instance.lire_config("word").toBool()){
@@ -718,6 +746,10 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
 
 //Export en ODT
 void DadaWord::export_odt(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     //Enregistrement ODT
         QTextDocumentWriter *enregistrement_fichier;
         enregistrement_fichier = new QTextDocumentWriter;
@@ -742,6 +774,10 @@ void DadaWord::export_odt(){
 
 //Export en PDF
 void DadaWord::export_pdf(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QString nom_fichier = QFileDialog::getSaveFileName(this, tr("Exporter en PDF"), QDir::homePath(), tr("Documents PDF (*.pdf)"));
     if(!nom_fichier.isEmpty()){
         if(QFileInfo(nom_fichier).suffix().isEmpty()){
@@ -762,6 +798,10 @@ void DadaWord::export_pdf(){
 
 //Création des listes à puces
 void DadaWord::create_liste_puce(const int ordonne){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QTextCursor curseur = find_edit()->textCursor();
     QTextListFormat liste_puce;
     QTextList *liste_actuelle = curseur.currentList();
@@ -1780,6 +1820,10 @@ void DadaWord::alerte_enregistrement(QMdiSubWindow *fenetre){
 
 //Fonction qui gére le changement de couleur. Le paramètre indique si la couleur s'applique à l'arrière-plan ou au texte.
 void DadaWord::change_couleur(const int &value){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     //On récupère la couleur souhaitée :
     QColor couleur = QColorDialog::getColor(Qt::yellow, this);
 
@@ -1845,6 +1889,10 @@ void DadaWord::enregistrer_sous(){
 
 //Changement de l'alignement du texte
 void DadaWord::change_align(const int &value){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     if(value == Qt::AlignCenter){
         find_edit()->setAlignment(Qt::AlignCenter);
     }
@@ -1867,6 +1915,10 @@ void DadaWord::change_align(const int &value){
 
 //Insertion d'image (dans les fichiers DDW)
 void DadaWord::add_image(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     Outils instance_outils;
     if(!find_edit()->acceptRichText()){
         if(instance_outils.lire_config("alertes").toInt() != LOW){
@@ -1916,12 +1968,20 @@ void DadaWord::close_tab_button(int index){
 
 //(Dés)Active la lecture seule
 void DadaWord::slot_lecture_seule(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     find_edit()->setReadOnly(lecture_seule->isChecked());
     return;
 }
 
 //Crée un tableau en demandant la taille à l'utilisateur
 void DadaWord::creer_tableau(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     bool ok = true;
     //On demande quelle taille de tableau à l'utilisateur
     int largeur = QInputDialog::getInt(this, tr("Largeur du tableau"), tr("Combien de colonnes?"), 4, 1, 10000, 1, &ok);
@@ -2019,7 +2079,10 @@ void DadaWord::tableau_remove(const int &pos){
 
 //Affiche le fichier courant au mode texte OU html
 void DadaWord::to_plain_text(){
-
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     if(to_text->isChecked() && find_edit()->acceptRichText()){
         QString contenu = find_edit()->toHtml();
         find_edit()->clear();
@@ -2119,6 +2182,10 @@ void DadaWord::make_full_screen(){
 
 //Slot de recherche
 void DadaWord::recherche(bool remplacer){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     dialog_recherche = new QDialog;
     dialog_recherche->setWindowModality(Qt::ApplicationModal);
 
@@ -2194,6 +2261,10 @@ void DadaWord::recherche(bool remplacer){
 
 //Effectue la recherche
 void DadaWord::make_search(const int from){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     //Initialisations
     bool rebours = false;
     bool resultat = false;
@@ -2366,6 +2437,10 @@ void DadaWord::hide_searchbar(bool transfert){
 
 //Statistiques du document
 void DadaWord::statistiques(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     //Nouvelle fenêtre
     QDialog *fen_stats = new QDialog;
 
@@ -2452,6 +2527,10 @@ void DadaWord::statistiques(){
 
 //Change le format si sélection depuis la Toolbar
 void DadaWord::change_style(int style){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     //Préparation des variables
     QSettings settings("Dadaword", "dadaword");
     QStringList nom_styles = settings.value("noms_styles").toStringList();
@@ -2504,6 +2583,10 @@ void DadaWord::change_style(int style){
 
 //Orthographe : slot principal de vérification orthographique
 void DadaWord::verif_orthographe(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
     if(!QFile::exists(userDict)){
         userDict = QDir::homePath() + ".dadaword/perso.dic";
@@ -2835,24 +2918,40 @@ void DadaWord::orth_stop(){
 
 //Couper
 void DadaWord::couper(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     find_edit()->cut();
     return;
 }
 
 //Copier
 void DadaWord::copier(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     find_edit()->copy();
     return;
 }
 
 //Coller
 void DadaWord::coller(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     find_edit()->paste();
     return;
 }
 
 //Mode de sur-écriture
 void DadaWord::mode_surecriture(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     bool etat = find_edit()->overwriteMode();
     //Vu qu'il y a eu clic, on inverse le statut
     if(etat){
@@ -2868,6 +2967,10 @@ void DadaWord::mode_surecriture(){
 
 //Bouton de coloration syntaxique
 void DadaWord::html_highlight(){
+    //Si pas de document ouvert, on quitte
+    if(find_edit() == 0){
+        return;
+    }
     //Si on est ici, c'est que l'utilisateur a cliqué sur le bouton, donc que c'est possible de colorer (sinon le bouton n'apparaîtrait pas)
     if(colore_html->isChecked()){
         instance = new HighlighterHtml(find_edit()->document());
