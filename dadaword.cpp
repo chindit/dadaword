@@ -738,24 +738,6 @@ void DadaWord::export_odt(){
         QTextDocument *current_text_document = current_text_edit->document();
         enregistrement_fichier->write(current_text_document);
         return;
-    /*if(nom_fichier == "null" && find_edit()->accessibleDescription().isEmpty()){
-        Erreur instance;
-        instance.Erreur_msg(tr("Nom de fichier erroné -> annulation de l'enregistrement"), QMessageBox::Information);
-        return;
-    }
-    else if(nom_fichier == "null"){
-        nom_fichier = find_edit()->accessibleDescription();
-    }
-    else{
-        //On ne fait rien.
-    }
-    QTextDocumentWriter enregistrement_fichier;
-    enregistrement_fichier.setFormat("odf");
-    enregistrement_fichier.setFileName(nom_fichier.toAscii());
-    enregistrement_fichier.write(find_edit()->document());
-*/
-    //QMessageBox::information(this, "o", nom_fichier);
-   // return;
 }
 
 //Export en PDF
@@ -2361,6 +2343,9 @@ void DadaWord::make_search(const int from){
         }
     }
 
+    //Dans tous les cas, on laisse le curseur visible
+    find_edit()->ensureCursorVisible();
+
     return;
 }
 
@@ -2611,8 +2596,10 @@ void DadaWord::verif_orthographe(){
         pos_orth = cursor;
         cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
     }
+    //Dans tous les cas, on laisse le curseur visible
+    find_edit()->setTextCursor(cursor);
+    find_edit()->ensureCursorVisible();
 
-    find_edit()->setTextCursor(oldCursor);
     if(!erreur){//Si "erreur" est faux, c'est qu'on a atteint la fin du document
         Outils instance_outils;
         if(instance_outils.lire_config("alertes").toInt() == HIGH){
@@ -3013,6 +3000,9 @@ void DadaWord::curseur_change(){
         }
 
     }
+    //Dans tous les cas, on laisse le curseur visible
+    find_edit()->ensureCursorVisible();
+
     return;
 }
 

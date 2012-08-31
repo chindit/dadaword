@@ -5,6 +5,7 @@ Version 1.1.3 :
 - BUG : pertu du formatage lors du surlignage
 - BUG : background noir lors du chargement de certains DDZ
 - Ajout d'un système d'annexe pour les fichiers DDZ (ajout/suppression/vue)
+- BUG : curseur toujours visible, y compris pendent les corrections ou la recherche
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style
