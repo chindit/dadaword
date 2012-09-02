@@ -237,7 +237,7 @@ void DadaWord::cree_iu(){
 //A propos du programme
 void DadaWord::affiche_about(){
 
-    QString string_about = ("<h2>A propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString::fromAscii(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58@gmail.com'>littletiger58@gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/lgpl-3.0.fr.html'>LGPL 3</a>");
+    QString string_about = ("<h2>A propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString::fromAscii(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58@gmail.com'>littletiger58@gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/gpl-3.0.fr.html'>GPL 3</a>");
     QMessageBox::about(this, tr("À propos de DadaWord"), string_about);
     return;
 }
@@ -537,6 +537,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     temp_document->setModified(false);
     enregistrer->setEnabled(false);
     status_is_modified->setEnabled(false);
+    find_edit()->setFocus();
 
     return;
 }
@@ -943,6 +944,10 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
 void DadaWord::desincremente_puce(){
     QTextCursor curseur = find_edit()->textCursor();
     QTextListFormat liste_puce;
+    if(curseur.currentList() == 0){
+        //On est pas dans une liste, il y a eu un bug
+        return;
+    }
     QTextList *liste_actuelle = curseur.currentList();
     liste_puce = liste_actuelle->format();
     curseur.beginEditBlock();
