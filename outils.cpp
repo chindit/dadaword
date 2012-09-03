@@ -19,7 +19,7 @@ void Outils::fenetre_config(){
     configure_fen->setWindowTitle(tr("Configurer Dadaword"));
 
     //Contenu
-    QLabel *titre_config, *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe;
+    QLabel *titre_config, *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer;
     titre_config = new QLabel;
     affiche_outils = new QLabel;
     affiche_taille_police = new QLabel;
@@ -29,6 +29,7 @@ void Outils::fenetre_config(){
     label_orthographe = new QLabel;
     label_word = new QLabel;
     label_dicos = new QLabel;
+    label_timer = new QLabel;
     titre_config->setText(tr("<h2>Configuration de Dadaword</h2>"));
     affiche_outils->setText(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police->setText(tr("Taille de la police par défaut"));
@@ -42,6 +43,8 @@ void Outils::fenetre_config(){
     label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
     label_orthographe->setText(tr("Activer la correction orthographique"));
     label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
+    label_timer->setText(tr("Sauvegarde automatique (en secondes)"));
+    label_timer->setToolTip(tr("Intervalle de temps avant de lancer une sauvegarde automatique du document."));
 
     QPushButton *fermer = new QPushButton;
     fermer->setText(tr("Fermer la fenêtre"));
@@ -105,6 +108,10 @@ void Outils::fenetre_config(){
 
     taille_police_default = new QSpinBox;
     taille_police_default->setValue(lire_config("taille").toInt());
+    spinbox_timer = new QSpinBox;
+    spinbox_timer->setValue(lire_config("timer").toInt());
+    spinbox_timer->setMaximum(1000);
+    spinbox_timer->setMinimum(1);
     police_default = new QFontComboBox;
     police_default->setCurrentFont(lire_config("police").value<QFont>());
 
@@ -129,8 +136,10 @@ void Outils::fenetre_config(){
     layout_config->addWidget(alertes, 7, 1, 1, 1);
     layout_config->addWidget(label_dicos, 8, 0, 1, 1);
     layout_config->addWidget(liste_dicos, 8, 1, 1, 1);
-    layout_config->addWidget(valider, 9, 0, 1, 1);
-    layout_config->addWidget(fermer, 9, 1, 1, 1);
+    layout_config->addWidget(label_timer, 9, 0);
+    layout_config->addWidget(spinbox_timer, 9, 1);
+    layout_config->addWidget(valider, 10, 0, 1, 1);
+    layout_config->addWidget(fermer, 10, 1, 1, 1);
 
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
     configure_fen->show();
@@ -160,6 +169,7 @@ void Outils::enregistre_config(QString nom, int valeur){
     settings.setValue("orthographe", checkbox_orthographe->isChecked());
     settings.setValue("word", checkbox_word->isChecked());
     settings.setValue("dico", liste_dicos->currentText());
+    settings.setValue("timer", spinbox_timer->value());
 
     configure_fen->close();
     return;
@@ -168,6 +178,19 @@ void Outils::enregistre_config(QString nom, int valeur){
 //Lire une valeur booléenne dans la configuration
 QVariant Outils::lire_config(QString nom){
     QSettings settings("Dadaword", "dadaword");
+    //On teste la valeur
+    if(nom == "taille" || nom == "timer"){
+        bool ok = false;
+        settings.value(nom).toInt(&ok);
+        if(!ok){
+            if(nom == "taille"){
+                return QVariant(12);
+            }
+            else{
+                return QVariant(300);
+            }
+        }
+    }
     return settings.value(nom);
 }
 

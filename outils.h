@@ -44,7 +44,7 @@ private:
     QWidget *log_fen;
     QWidget *configure_fen;
     QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe;
-    QSpinBox *taille_police_default;
+    QSpinBox *taille_police_default, *spinbox_timer;
     QFontComboBox *police_default;
     QComboBox *alertes, *liste_dicos;
 
