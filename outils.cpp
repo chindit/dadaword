@@ -109,9 +109,9 @@ void Outils::fenetre_config(){
     taille_police_default = new QSpinBox;
     taille_police_default->setValue(lire_config("taille").toInt());
     spinbox_timer = new QSpinBox;
-    spinbox_timer->setValue(lire_config("timer").toInt());
     spinbox_timer->setMaximum(1000);
     spinbox_timer->setMinimum(1);
+    spinbox_timer->setValue(lire_config("timer").toInt());
     police_default = new QFontComboBox;
     police_default->setCurrentFont(lire_config("police").value<QFont>());
 
