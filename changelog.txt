@@ -5,6 +5,7 @@ Version 1.1.3 :
 - BUG : pertu du formatage lors du surlignage
 - BUG : background noir lors du chargement de certains DDZ
 - Ajout d'un système d'annexe pour les fichiers DDZ (ajout/suppression/vue)
+- Ajout de l'intervalle de sauvegarde dans les options de configuration
 - BUG : curseur toujours visible, y compris pendent les corrections ou la recherche
 - BUG : SIGSEGV si clic sur un bouton de style alors que le document est fermé
 - BUG : SIGSEGV si enter au début d'une liste à puces
