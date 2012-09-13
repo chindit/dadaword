@@ -18,34 +18,9 @@ void Outils::fenetre_config(){
     configure_fen->setWindowIcon(QIcon(":/menu/images/outils.png"));
     configure_fen->setWindowTitle(tr("Configurer Dadaword"));
 
-    //Contenu
-    QLabel *titre_config, *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer;
-    titre_config = new QLabel;
-    affiche_outils = new QLabel;
-    affiche_taille_police = new QLabel;
-    affiche_nom_police = new QLabel;
-    label_fichiers_vides = new QLabel;
-    label_alertes = new QLabel;
-    label_orthographe = new QLabel;
-    label_word = new QLabel;
-    label_dicos = new QLabel;
-    label_timer = new QLabel;
-    titre_config->setText(tr("<h2>Configuration de Dadaword</h2>"));
-    affiche_outils->setText(tr("Remplacer les onglets par des fenêtres"));
-    affiche_taille_police->setText(tr("Taille de la police par défaut"));
-    affiche_nom_police->setText(tr("Type de police par défaut"));
-    label_fichiers_vides->setText(tr("Autoriser l'ouverture de fichiers vides"));
-    label_alertes->setText(tr("Afficher les alertes"));
-    label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
-    label_word->setText(tr("Activer la mise en page type \"Word\""));
-    label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
-    label_dicos->setText(tr("Langue du dictionnaire"));
-    label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
-    label_orthographe->setText(tr("Activer la correction orthographique"));
-    label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
-    label_timer->setText(tr("Sauvegarde automatique (en secondes)"));
-    label_timer->setToolTip(tr("Intervalle de temps avant de lancer une sauvegarde automatique du document."));
-
+    QListWidget *settingsList = new QListWidget;
+    settingsList->setMaximumWidth(100);
+    QStackedWidget *settingsView = new QStackedWidget(configure_fen);
     QPushButton *fermer = new QPushButton;
     fermer->setText(tr("Fermer la fenêtre"));
     fermer->setIcon(QIcon(":/menus/images/exit.png"));
@@ -55,6 +30,37 @@ void Outils::fenetre_config(){
     valider->setIcon(QIcon(":/menus/images/ok.png"));
     valider->setToolTip(tr("Enregistrer la configuration"));
     connect(valider, SIGNAL(clicked()), this, SLOT(enregistre_config()));
+    QGridLayout *settingsWidgetLayout = new QGridLayout(configure_fen);
+
+    //Connect QStackedWidget to QListWidget
+    connect(settingsList, SIGNAL(currentRowChanged(int)), settingsView, SLOT(setCurrentIndex(int)));
+
+    QListWidgetItem *itemEdit = new QListWidgetItem(QIcon(":/programme/images/textedit.png"), tr("Édition"));
+    QListWidgetItem *itemGeneral = new QListWidgetItem(QIcon(":/programme/images/configure.png"), tr("Général"));
+    settingsList->addItem(itemEdit);
+    settingsList->addItem(itemGeneral);
+
+    settingsWidgetLayout->addWidget(settingsList, 0, 0, 1, 1);
+    settingsWidgetLayout->addWidget(settingsView, 0, 1, 1, 2);
+    settingsWidgetLayout->addWidget(valider, 1, 1);
+    settingsWidgetLayout->addWidget(fermer, 1, 2);
+
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving;
+    affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
+    affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
+    affiche_nom_police = new QLabel(tr("Type de police par défaut"));
+    label_fichiers_vides = new QLabel(tr("Autoriser l'ouverture de fichiers vides"));
+    label_alertes = new QLabel(tr("Afficher les alertes"));
+    label_orthographe = new QLabel(tr("Activer la correction orthographique"));
+    label_word = new QLabel(tr("Activer la mise en page type \"Word\""));
+    label_dicos = new QLabel(tr("Langue du dictionnaire"));
+    label_timer = new QLabel(tr("Sauvegarde automatique (en secondes)"));
+    label_saving = new QLabel(tr("Répertoire d'enregistrement par défaut"));
+    label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
+    label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
+    label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
+    label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
+    label_timer->setToolTip(tr("Intervalle de temps avant de lancer une sauvegarde automatique du document."));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
@@ -70,6 +76,13 @@ void Outils::fenetre_config(){
     alertes->addItem(tr("Aucunes"), LOW);
     alertes->addItem(tr("Indispensables"), MEDIUM);
     alertes->addItem(tr("Toutes"), HIGH);
+
+    saving_edit = new QLineEdit;
+    saving_edit->setText(lire_config("enregistrement").toString());
+    saving_edit->setEnabled(false);
+    QPushButton *changeSaving = new QPushButton("…");
+    changeSaving->setMaximumWidth(25);
+    connect(changeSaving, SIGNAL(clicked()), this, SLOT(returnDir()));
 
     liste_dicos = new QComboBox;
     QDir dossier;
@@ -115,31 +128,43 @@ void Outils::fenetre_config(){
     police_default = new QFontComboBox;
     police_default->setCurrentFont(lire_config("police").value<QFont>());
 
-    //Layout
-    QGridLayout *layout_config;
-    layout_config = new QGridLayout;
-    configure_fen->setLayout(layout_config);
-    layout_config->addWidget(titre_config, 0, 0, 1, 2, Qt::AlignCenter);
-    layout_config->addWidget(affiche_outils, 1, 0, 1, 1);
-    layout_config->addWidget(checkbox_onglets, 1, 1, 1, 1);
-    layout_config->addWidget(label_fichiers_vides, 2, 0, 1, 1);
-    layout_config->addWidget(checkbox_fichiers_vides, 2, 1, 1, 1);
-    layout_config->addWidget(label_word, 3, 0, 1, 1);
-    layout_config->addWidget(checkbox_word, 3, 1, 1, 1);
-    layout_config->addWidget(label_orthographe, 4, 0, 1, 1);
-    layout_config->addWidget(checkbox_orthographe, 4, 1, 1, 1);
-    layout_config->addWidget(affiche_nom_police, 5, 0, 1, 1);
-    layout_config->addWidget(police_default, 5, 1, 1, 1);
-    layout_config->addWidget(affiche_taille_police, 6, 0, 1, 1);
-    layout_config->addWidget(taille_police_default, 6, 1, 1, 1);
-    layout_config->addWidget(label_alertes, 7, 0, 1, 1);
-    layout_config->addWidget(alertes, 7, 1, 1, 1);
-    layout_config->addWidget(label_dicos, 8, 0, 1, 1);
-    layout_config->addWidget(liste_dicos, 8, 1, 1, 1);
-    layout_config->addWidget(label_timer, 9, 0);
-    layout_config->addWidget(spinbox_timer, 9, 1);
-    layout_config->addWidget(valider, 10, 0, 1, 1);
-    layout_config->addWidget(fermer, 10, 1, 1, 1);
+    //-------------------------------------------------
+    // Édition
+    //-------------------------------------------------
+    QWidget *fen_edition = new QWidget(settingsView);
+    settingsView->addWidget(fen_edition);
+    QGridLayout *layoutEdition = new QGridLayout(fen_edition);
+    layoutEdition->addWidget(affiche_nom_police, 0, 0);
+    layoutEdition->addWidget(police_default, 0, 1);
+    layoutEdition->addWidget(affiche_taille_police, 1, 0);
+    layoutEdition->addWidget(taille_police_default, 1, 1);
+    layoutEdition->addWidget(label_dicos, 2, 0);
+    layoutEdition->addWidget(liste_dicos, 2, 1);
+    layoutEdition->addWidget(label_word, 3, 0);
+    layoutEdition->addWidget(checkbox_word, 3, 1);
+    layoutEdition->addWidget(label_orthographe, 4, 0);
+    layoutEdition->addWidget(checkbox_orthographe, 4, 1);
+
+    //---------------------------------------------------
+    // Général
+    //---------------------------------------------------
+    QWidget *fen_general = new QWidget(settingsView);
+    settingsView->addWidget(fen_general);
+    QGridLayout *layoutGeneral = new QGridLayout(fen_general);
+    layoutGeneral->addWidget(label_fichiers_vides, 0, 0);
+    layoutGeneral->addWidget(checkbox_fichiers_vides, 0, 1);
+    layoutGeneral->addWidget(affiche_outils, 1, 0);
+    layoutGeneral->addWidget(checkbox_onglets, 1, 1);
+    layoutGeneral->addWidget(label_alertes, 2, 0);
+    layoutGeneral->addWidget(alertes, 2, 1);
+    layoutGeneral->addWidget(label_timer, 3, 0);
+    layoutGeneral->addWidget(spinbox_timer, 3, 1);
+    layoutGeneral->addWidget(label_saving, 4, 0);
+    QHBoxLayout *layoutSaving = new QHBoxLayout;
+    layoutSaving->addWidget(saving_edit);
+    layoutSaving->addWidget(changeSaving);
+    layoutGeneral->addWidget(label_saving, 4, 0);
+    layoutGeneral->addLayout(layoutSaving, 4, 1);
 
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
     configure_fen->show();
@@ -170,6 +195,7 @@ void Outils::enregistre_config(QString nom, int valeur){
     settings.setValue("word", checkbox_word->isChecked());
     settings.setValue("dico", liste_dicos->currentText());
     settings.setValue("timer", spinbox_timer->value());
+    settings.setValue("enregistrement", saving_edit->text());
 
     configure_fen->close();
     return;
@@ -324,4 +350,10 @@ bool Outils::clean_log(){
     }
 
     return true;
+}
+
+//Return a directory
+void Outils::returnDir(){
+    saving_edit->setText(QFileDialog::getExistingDirectory(0, tr("Dossier d'enregistrement"), QDir::homePath()));
+    return;
 }

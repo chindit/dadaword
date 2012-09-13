@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QStringList>
 #include <QDebug>
 
-#include "hunspell/hunspell.hxx"
+#include "hunspell.hxx"
 #include "erreur.h"
 
 SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDictionary)

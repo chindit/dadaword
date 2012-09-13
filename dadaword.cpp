@@ -551,6 +551,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     bool style = false;
     bool texte = false;
     bool annexes = false;
+    Outils instance_outils;
 
 
     //----------------------------------------------------------------
@@ -559,7 +560,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     //Récupération du nom de fichier
     QFile file(fichier);
     if(!file.exists()){
-        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", instance_outils.lire_config("enregistrement").toString(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
         //On vérifie que l'utilisateur n'a pas fait "Cancel"
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
             Erreur instance_erreur;
@@ -580,7 +581,6 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     }
 
     QString titre = nom_fichier.split("/").last();
-    Outils instance_outils;
 
     //On vérifie si le fichier n'est pas déjà ouvert
     QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
@@ -1934,7 +1934,7 @@ void DadaWord::add_image(){
         return;
     }
     //1)Sélectionne l'image
-    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", QDir::homePath(), "Images (*.png *.gif *.jpg *.jpeg *bmp)");
+    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", instance_outils.lire_config("enregistrement").toString(), "Images (*.png *.gif *.jpg *.jpeg *bmp)");
 
     //S'il n'y a pas d'image, on se casse
     if(chemin_image.isEmpty() || chemin_image.isNull()){

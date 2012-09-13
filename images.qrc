@@ -62,5 +62,7 @@
         <file>images/edit.png</file>
         <file>images/ajouter.png</file>
         <file>images/remplace.png</file>
+        <file>images/configure.png</file>
+        <file>images/textedit.png</file>
     </qresource>
 </RCC>

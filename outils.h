@@ -14,6 +14,8 @@
 #include <QDesktopWidget>
 #include <QGridLayout>
 #include <QLabel>
+#include <QListWidget>
+#include <QStackedWidget>
 #include <QPushButton>
 #include <QSettings>
 #include <QVariant>
@@ -39,11 +41,13 @@ public slots:
 
 private slots:
     bool clean_log();
+    void returnDir();
 
 private:
     QWidget *log_fen;
     QWidget *configure_fen;
     QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe;
+    QLineEdit *saving_edit;
     QSpinBox *taille_police_default, *spinbox_timer;
     QFontComboBox *police_default;
     QComboBox *alertes, *liste_dicos;

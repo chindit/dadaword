@@ -10,6 +10,8 @@ Version 1.1.3 :
 - BUG : SIGSEGV si clic sur un bouton de style alors que le document est fermé
 - BUG : SIGSEGV si enter au début d'une liste à puces
 - BUG : Impossible de passer du mode texte seul au mode rich text en DDZ
+- Réécriture de la fenêtre de configuration
+- Nouvelle configuration : emplacement par défaut pour l'enregistrement de fichiers
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style
