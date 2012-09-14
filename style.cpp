@@ -388,6 +388,9 @@ void Style::enregistre_style(){
     if(settings.value("alertes").toInt() == HIGH){
         QMessageBox::information(this, tr("Enregistrement effectué"), tr("L'enregistrement des styles s'est correctement effectué"));
     }
+    //On émet le signal
+    emit styles_changed();
+
     return;
 }
 
@@ -398,7 +401,16 @@ void Style::supprime_style(){
     int reponse = QMessageBox::question(this, tr("Supprimer un style"), tr("Voulez vous vraiment supprimer le style %1 ?").arg(liste_styles.at(activeWidget->currentIndex())), QMessageBox::Yes | QMessageBox::No);
     if(reponse == QMessageBox::Yes){
         if(activeWidget->currentIndex() > 6){
+
             QSettings settings("Dadaword", "dadaword");
+
+            //On vérifie que le style est enregistré
+            QStringList stylesSettingsList = settings.value("noms_styles").toStringList();
+            if(!stylesSettingsList.contains(liste_styles.at(activeWidget->currentIndex()))){
+                Erreur instance_erreur;
+                instance_erreur.Erreur_msg(tr("Impossible de supprimer le style, il n'est pas enregistré"), QMessageBox::Information);
+                return;
+            }
 
             //On supprime le style
             settings.beginGroup(liste_styles.at(activeWidget->currentIndex()));
