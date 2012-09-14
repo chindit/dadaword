@@ -35,10 +35,11 @@ private slots:
     void change_couleur(int bouton);
     void enregistre_style();
     void supprime_style();
+    void disableItem();
 
 private:
     QList<QPushButton* > color_foreground, color_background;
-    QList<QCheckBox* > boxGras, boxSouligne, boxItalique;
+    QList<QCheckBox* > boxGras, boxSouligne, boxItalique, boxSavePolice, boxSaveSize;
     QList<QFontComboBox* > boxPolice;
     QList<QSpinBox* > boxSize;
     QStringList liste_styles;

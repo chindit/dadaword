@@ -12,6 +12,8 @@ Version 1.1.3 :
 - BUG : Impossible de passer du mode texte seul au mode rich text en DDZ
 - Réécriture de la fenêtre de configuration
 - Nouvelle configuration : emplacement par défaut pour l'enregistrement de fichiers
+- Ajout : possibilité de ne pas modifier la police et la taille d'écriture lors de l'application d'un style
+- BUG : changement de style dans le documents en mode texte
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style

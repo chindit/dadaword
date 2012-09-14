@@ -2536,6 +2536,11 @@ void DadaWord::change_style(int style){
     if(find_edit() == 0){
         return;
     }
+
+    //Si on est en mode texte, on quitte
+    if(!find_edit()->acceptRichText()){
+        return;
+    }
     //Préparation des variables
     QSettings settings("Dadaword", "dadaword");
     QStringList nom_styles = settings.value("noms_styles").toStringList();
@@ -2549,8 +2554,12 @@ void DadaWord::change_style(int style){
     //Pas de sélection
     if(!curseur.hasSelection()){
         settings.beginGroup(nom_styles.at(style));
-        find_edit()->setCurrentFont(settings.value("police").value<QFont>());
-        find_edit()->setFontPointSize(settings.value("taille").toInt());
+        if(!settings.value("noFont").toBool()){
+            find_edit()->setCurrentFont(settings.value("police").value<QFont>());
+        }
+        if(!settings.value("noSize").toBool()){
+            find_edit()->setFontPointSize(settings.value("taille").toInt());
+        }
         find_edit()->setFontUnderline(settings.value("souligne").toBool());
         find_edit()->setFontItalic(settings.value("italique").toBool());
         find_edit()->setFontWeight(settings.value("gras").toInt());
