@@ -11,12 +11,16 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QTextCodec>
+#include <QSplashScreen>
 #include "dadaword.h"
 
 int main(int argc, char *argv[])
 {
 
     QApplication app(argc, argv);
+    QSplashScreen screen(QPixmap(":/images/chargement.png"));
+    screen.show();
+    app.processEvents();
 
     //UTF-8 natif
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
@@ -38,16 +42,13 @@ int main(int argc, char *argv[])
     // On vérifie à la création de cette zone mémoire si celle-ci existe
     if(sharedMemory.create(sizeof(int))==false){
         QMessageBox::warning(0, QObject::tr("Programme en cours d'exécution"), QObject::tr("Dadaword est déjà en cours d'exécution.  Veuillez fermer l'instance ouverte avant de le lance à nouveau."));
-        //exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
 
     DadaWord instance;
 
     //Création de l'interface utilisateur
     instance.cree_iu();
-    //Affichage
-    instance.show();
-
     //On crée le timer pour enregistrer automatiquement le fichier
     QTimer *timer_enregistrement = new QTimer;
     timer_enregistrement->setSingleShot(false); //Timer répétitif
@@ -55,6 +56,10 @@ int main(int argc, char *argv[])
     timer_enregistrement->setInterval(instance_outils.lire_config("timer").toInt()*1000); //On sauvegarde toutes les 5 minutes
     timer_enregistrement->start();
     QObject::connect(timer_enregistrement, SIGNAL(timeout()), &instance, SLOT(enregistrement()));
+
+    //Affichage
+    instance.show();
+    screen.finish(&instance);
 
     return app.exec();
 }

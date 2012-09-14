@@ -321,7 +321,7 @@ void Style::ajoute_style(){
     stackedWidget->addWidget(style);
     QGridLayout *layoutStyle = new QGridLayout(style);
     QLabel *nom = new QLabel("<h3>"+styleName+"</h3>");
-    QLabel *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background, *noBackground, *noForeground;
+    QLabel *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
     label_police = new QLabel(tr("Police"));
     label_taille = new QLabel(tr("Taille"));
     label_gras = new QLabel(tr("Gras"));

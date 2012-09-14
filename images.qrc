@@ -65,4 +65,7 @@
         <file>images/configure.png</file>
         <file>images/textedit.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>images/chargement.png</file>
+    </qresource>
 </RCC>
