@@ -14,6 +14,7 @@ Version 1.1.3 :
 - Nouvelle configuration : emplacement par défaut pour l'enregistrement de fichiers
 - Ajout : possibilité de ne pas modifier la police et la taille d'écriture lors de l'application d'un style
 - BUG : changement de style dans le documents en mode texte
+- Modification du layout du panel de styles
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style

@@ -31,7 +31,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -44,7 +46,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -57,7 +61,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", true);
         settings.setValue("souligne", false);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -70,7 +76,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", false);
         settings.setValue("souligne", true);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -83,7 +91,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", true);
         settings.setValue("souligne", true);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -96,7 +106,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", true);
         settings.setValue("souligne", true);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -109,7 +121,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", false);
         settings.setValue("souligne", true);
+        settings.setValue("noForeground", false);
         settings.setValue("foreground", QColor(Qt::black));
+        settings.setValue("noBackground", false);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
     }
@@ -170,7 +184,7 @@ void Style::affiche_fen(){
         stylesView->addWidget(style);
         QGridLayout *layoutStyle = new QGridLayout(style);
         QLabel *nom = new QLabel("<h3>"+liste_styles.at(i)+"</h3>");
-        QLabel *label_police, *label_taille, *noFont, *noSize, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
+        QLabel *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
         label_police = new QLabel(tr("Police"));
         label_taille = new QLabel(tr("Taille"));
         label_gras = new QLabel(tr("Gras"));
@@ -178,8 +192,6 @@ void Style::affiche_fen(){
         label_souligne = new QLabel(tr("Souligné"));
         label_foreground = new QLabel(tr("Couleur du texte"));
         label_background = new QLabel(tr("Couleur d'arrière-plan"));
-        noFont = new QLabel(tr("Conserver la police en vigueur lors de l'application"));
-        noSize = new QLabel(tr("Conserver la taille en vigueur lors de l'application"));
 
         QPushButton *buttonForeground = new QPushButton;
         QPushButton *buttonBackground = new QPushButton;
@@ -202,17 +214,23 @@ void Style::affiche_fen(){
         QCheckBox *boxUnderline = new QCheckBox;
         QCheckBox *boxNoFont = new QCheckBox;
         QCheckBox *boxNoSize = new QCheckBox;
+        QCheckBox *boxNoForeground = new QCheckBox;
+        QCheckBox *boxNoBackground = new QCheckBox;
         boxGras.append(boxBold);
         boxSouligne.append(boxUnderline);
         boxItalique.append(boxItalic);
         boxSavePolice.append(boxNoFont);
         boxSaveSize.append(boxNoSize);
+        boxSaveForeground.append(boxNoForeground);
+        boxSaveBackground.append(boxNoBackground);
         QFontComboBox *comboPolice = new QFontComboBox;
         boxPolice.append(comboPolice);
         QSpinBox *spinSize = new QSpinBox;
         boxSize.append(spinSize);
         connect(boxNoFont, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
         connect(boxNoSize, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
+        connect(boxNoForeground, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
+        connect(boxNoBackground, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
 
 
         settings.beginGroup(liste_styles.at(i));
@@ -235,38 +253,34 @@ void Style::affiche_fen(){
         if(boxSaveSize.at(i)->isChecked()){
             boxSize.at(i)->setEnabled(false);
         }
+        if(boxSaveForeground.at(i)->isChecked()){
+            buttonForeground->setEnabled(false);
+        }
+        if(boxSaveBackground.at(i)->isChecked()){
+            buttonBackground->setEnabled(false);
+        }
 
         //Ajout dans le layout
-        layoutStyle->addWidget(nom, 0, 0, 1, 2, Qt::AlignHCenter);
-        QHBoxLayout *hboxNameFont = new QHBoxLayout;
-        hboxNameFont->addWidget(boxSavePolice.at(i), 0, Qt::AlignLeft);
-        hboxNameFont->addWidget(noFont, 0, Qt::AlignLeft);
-        layoutStyle->addLayout(hboxNameFont, 1, 0, 1, 2, Qt::AlignLeft);
-        QHBoxLayout *hboxFont = new QHBoxLayout;
-        hboxFont->insertSpacing(0, 50);
-        hboxFont->addWidget(label_police, 0, Qt::AlignRight);
-        hboxFont->addWidget(boxPolice.at(i), 0, Qt::AlignLeft);
-        layoutStyle->addLayout(hboxFont, 2, 0, 1, 2);
-        QHBoxLayout *hboxNameSize = new QHBoxLayout;
-        hboxNameSize->addWidget(boxSaveSize.at(i), 0, Qt::AlignLeft);
-        hboxNameSize->addWidget(noSize, 0, Qt::AlignLeft);
-        layoutStyle->addLayout(hboxNameSize, 3, 0, 1, 2, Qt::AlignLeft);
-        QHBoxLayout *hboxSize = new QHBoxLayout;
-        hboxSize->insertSpacing(0, 50);
-        hboxSize->addWidget(label_taille, 0, Qt::AlignRight);
-        hboxSize->addWidget(boxSize.at(i), 0, Qt::AlignLeft);
-        layoutStyle->addLayout(hboxSize, 4, 0, 1, 2);
-        layoutStyle->addWidget(label_gras, 5, 0);
-        layoutStyle->addWidget(boxGras.at(i), 5, 1);
-        layoutStyle->addWidget(label_souligne, 6, 0);
-        layoutStyle->addWidget(boxSouligne.at(i), 6, 1);
-        layoutStyle->addWidget(label_italique, 7, 0);
-        layoutStyle->addWidget(boxItalique.at(i), 7, 1);
-        layoutStyle->addWidget(label_foreground, 8, 0);
-        layoutStyle->addWidget(color_foreground.at(i), 8, 1);
-        layoutStyle->addWidget(label_background, 9, 0);
-        layoutStyle->addWidget(color_background.at(i), 9, 1);
-
+        layoutStyle->addWidget(nom, 0, 0, 1, 3, Qt::AlignHCenter);
+        layoutStyle->setHorizontalSpacing(0);
+        layoutStyle->addWidget(boxSavePolice.at(i), 1, 0);
+        layoutStyle->addWidget(label_police, 1, 1);
+        layoutStyle->addWidget(boxPolice.at(i), 1, 2);
+        layoutStyle->addWidget(boxSaveSize.at(i), 2, 0);
+        layoutStyle->addWidget(label_taille, 2, 1);
+        layoutStyle->addWidget(boxSize.at(i), 2, 2);
+        layoutStyle->addWidget(boxSaveForeground.at(i), 3, 0);
+        layoutStyle->addWidget(label_foreground, 3, 1);
+        layoutStyle->addWidget(color_foreground.at(i), 3, 2);
+        layoutStyle->addWidget(boxSaveBackground.at(i), 4, 0);
+        layoutStyle->addWidget(label_background, 4, 1);
+        layoutStyle->addWidget(color_background.at(i), 4, 2);
+        layoutStyle->addWidget(label_gras, 5, 0, 1, 2);
+        layoutStyle->addWidget(boxGras.at(i), 5, 2);
+        layoutStyle->addWidget(label_italique, 6, 0, 1, 2);
+        layoutStyle->addWidget(boxItalique.at(i), 6, 2);
+        layoutStyle->addWidget(label_souligne, 7, 0, 1, 2);
+        layoutStyle->addWidget(boxSouligne.at(i), 7, 2);
     }
 
     exec();
@@ -307,7 +321,7 @@ void Style::ajoute_style(){
     stackedWidget->addWidget(style);
     QGridLayout *layoutStyle = new QGridLayout(style);
     QLabel *nom = new QLabel("<h3>"+styleName+"</h3>");
-    QLabel *label_police, *label_taille, *noFont, *noSize, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
+    QLabel *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background, *noBackground, *noForeground;
     label_police = new QLabel(tr("Police"));
     label_taille = new QLabel(tr("Taille"));
     label_gras = new QLabel(tr("Gras"));
@@ -315,8 +329,6 @@ void Style::ajoute_style(){
     label_souligne = new QLabel(tr("Souligné"));
     label_foreground = new QLabel(tr("Couleur du texte"));
     label_background = new QLabel(tr("Couleur d'arrière-plan"));
-    noFont = new QLabel(tr("Conserver la police en vigueur lors de l'application"));
-    noSize = new QLabel(tr("Conserver la taille en vigueur lors de l'application"));
 
     QPushButton *buttonForeground = new QPushButton;
     QPushButton *buttonBackground = new QPushButton;
@@ -339,48 +351,45 @@ void Style::ajoute_style(){
     QCheckBox *boxUnderline = new QCheckBox;
     QCheckBox *boxNoFont = new QCheckBox;
     QCheckBox *boxNoSize = new QCheckBox;
+    QCheckBox *boxNoForeground = new QCheckBox;
+    QCheckBox *boxNoBackground = new QCheckBox;
     boxGras.append(boxBold);
     boxSouligne.append(boxUnderline);
     boxItalique.append(boxItalic);
     boxSavePolice.append(boxNoFont);
     boxSaveSize.append(boxNoSize);
+    boxSaveForeground.append(boxNoForeground);
+    boxSaveBackground.append(boxNoBackground);
     QFontComboBox *comboPolice = new QFontComboBox;
     boxPolice.append(comboPolice);
     QSpinBox *spinSize = new QSpinBox;
     boxSize.append(spinSize);
     connect(boxNoFont, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
     connect(boxNoSize, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
+    connect(boxNoForeground, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
+    connect(boxNoBackground, SIGNAL(stateChanged(int)), this, SLOT(disableItem()));
 
     //Ajout dans le layout
-    layoutStyle->addWidget(nom, 0, 0, 1, 2, Qt::AlignHCenter);
-    QHBoxLayout *hboxNameFont = new QHBoxLayout;
-    hboxNameFont->addWidget(boxSavePolice.at(nb_styles-1), 0, Qt::AlignLeft);
-    hboxNameFont->addWidget(noFont, 0, Qt::AlignLeft);
-    layoutStyle->addLayout(hboxNameFont, 1, 0, 1, 2, Qt::AlignLeft);
-    QHBoxLayout *hboxFont = new QHBoxLayout;
-    hboxFont->insertSpacing(0, 50);
-    hboxFont->addWidget(label_police, 0, Qt::AlignRight);
-    hboxFont->addWidget(boxPolice.at(nb_styles-1), 0, Qt::AlignLeft);
-    layoutStyle->addLayout(hboxFont, 2, 0, 1, 2);
-    QHBoxLayout *hboxNameSize = new QHBoxLayout;
-    hboxNameSize->addWidget(boxSaveSize.at(nb_styles-1), 0, Qt::AlignLeft);
-    hboxNameSize->addWidget(noSize, 0, Qt::AlignLeft);
-    layoutStyle->addLayout(hboxNameSize, 3, 0, 1, 2, Qt::AlignLeft);
-    QHBoxLayout *hboxSize = new QHBoxLayout;
-    hboxSize->insertSpacing(0, 50);
-    hboxSize->addWidget(label_taille, 0, Qt::AlignRight);
-    hboxSize->addWidget(boxSize.at(nb_styles-1), 0, Qt::AlignLeft);
-    layoutStyle->addLayout(hboxSize, 4, 0, 1, 2);
-    layoutStyle->addWidget(label_gras, 5, 0);
-    layoutStyle->addWidget(boxGras.at(nb_styles-1), 5, 1);
-    layoutStyle->addWidget(label_souligne, 6, 0);
-    layoutStyle->addWidget(boxSouligne.at(nb_styles-1), 6, 1);
-    layoutStyle->addWidget(label_italique, 7, 0);
-    layoutStyle->addWidget(boxItalique.at(nb_styles-1), 7, 1);
-    layoutStyle->addWidget(label_foreground, 8, 0);
-    layoutStyle->addWidget(color_foreground.at(nb_styles-1), 8, 1);
-    layoutStyle->addWidget(label_background, 9, 0);
-    layoutStyle->addWidget(color_background.at(nb_styles-1), 9, 1);
+    layoutStyle->addWidget(nom, 0, 0, 1, 3, Qt::AlignHCenter);
+    layoutStyle->setHorizontalSpacing(0);
+    layoutStyle->addWidget(boxSavePolice.at(nb_styles-1), 1, 0);
+    layoutStyle->addWidget(label_police, 1, 1);
+    layoutStyle->addWidget(boxPolice.at(nb_styles-1), 1, 2);
+    layoutStyle->addWidget(boxSaveSize.at(nb_styles-1), 2, 0);
+    layoutStyle->addWidget(label_taille, 2, 1);
+    layoutStyle->addWidget(boxSize.at(nb_styles-1), 2, 2);
+    layoutStyle->addWidget(boxSaveForeground.at(nb_styles-1), 3, 0);
+    layoutStyle->addWidget(label_foreground, 3, 1);
+    layoutStyle->addWidget(color_foreground.at(nb_styles-1), 3, 2);
+    layoutStyle->addWidget(boxSaveBackground.at(nb_styles-1), 4, 0);
+    layoutStyle->addWidget(label_background, 4, 1);
+    layoutStyle->addWidget(color_background.at(nb_styles-1), 4, 2);
+    layoutStyle->addWidget(label_gras, 5, 0, 1, 2);
+    layoutStyle->addWidget(boxGras.at(nb_styles-1), 5, 2);
+    layoutStyle->addWidget(label_italique, 6, 0, 1, 2);
+    layoutStyle->addWidget(boxItalique.at(nb_styles-1), 6, 2);
+    layoutStyle->addWidget(label_souligne, 7, 0, 1, 2);
+    layoutStyle->addWidget(boxSouligne.at(nb_styles-1), 7, 2);
 
     //On affiche le style nouvellement créé
     stackedWidget->setCurrentWidget(style);
@@ -444,13 +453,10 @@ void Style::enregistre_style(){
         }
         settings.setValue("italique", boxItalique.at(i)->isChecked());
         settings.setValue("souligne", boxSouligne.at(i)->isChecked());
+        settings.setValue("noForeground", boxSaveForeground.at(i)->isChecked());
         settings.setValue("foreground", QColor(color_foreground.at(i)->text()));
-        if(color_background.at(i)->text() == tr("Transparent")){
-            settings.setValue("background", QColor(Qt::transparent));
-        }
-        else{
-            settings.setValue("background", QColor(color_background.at(i)->text()));
-        }
+        settings.setValue("noBackground", boxSaveBackground.at(i)->isChecked());
+        settings.setValue("background", QColor(color_background.at(i)->text()));
         settings.endGroup();
     }
 
@@ -540,6 +546,18 @@ void Style::disableItem(){
     }
     else if(!boxSaveSize.at(numStyle)->isChecked() && !boxSize.at(numStyle)->isEnabled()){
         boxSize.at(numStyle)->setEnabled(true);
+    }
+    else if(boxSaveForeground.at(numStyle)->isChecked() && color_foreground.at(numStyle)->isEnabled()){
+        color_foreground.at(numStyle)->setEnabled(false);
+    }
+    else if(!boxSaveForeground.at(numStyle)->isChecked() && !color_foreground.at(numStyle)->isEnabled()){
+        color_foreground.at(numStyle)->setEnabled(true);
+    }
+    else if(boxSaveBackground.at(numStyle)->isChecked() && color_background.at(numStyle)->isEnabled()){
+        color_background.at(numStyle)->setEnabled(false);
+    }
+    else if(!boxSaveBackground.at(numStyle)->isChecked() && !color_background.at(numStyle)->isEnabled()){
+        color_background.at(numStyle)->setEnabled(true);
     }
     else{
         Erreur instance_erreur;

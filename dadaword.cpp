@@ -2563,8 +2563,10 @@ void DadaWord::change_style(int style){
         find_edit()->setFontUnderline(settings.value("souligne").toBool());
         find_edit()->setFontItalic(settings.value("italique").toBool());
         find_edit()->setFontWeight(settings.value("gras").toInt());
-        find_edit()->setTextColor(settings.value("foreground").value<QColor>());
-        if(settings.value("background").value<QColor>() != Qt::transparent){
+        if(!settings.value("noForeground").toBool()){
+            find_edit()->setTextColor(settings.value("foreground").value<QColor>());
+        }
+        if(!settings.value("noBackground").toBool()){
             find_edit()->setTextBackgroundColor(settings.value("background").value<QColor>());
         }
         souligne->setChecked(settings.value("souligne").toBool());

@@ -39,7 +39,7 @@ private slots:
 
 private:
     QList<QPushButton* > color_foreground, color_background;
-    QList<QCheckBox* > boxGras, boxSouligne, boxItalique, boxSavePolice, boxSaveSize;
+    QList<QCheckBox* > boxGras, boxSouligne, boxItalique, boxSavePolice, boxSaveSize, boxSaveForeground, boxSaveBackground;
     QList<QFontComboBox* > boxPolice;
     QList<QSpinBox* > boxSize;
     QStringList liste_styles;
