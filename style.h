@@ -31,20 +31,18 @@ public slots:
     void affiche_fen();
 
 private slots:
-    void ajoute_style();
+    void ajoute_style(); //À RÉÉCRIRE
     void change_couleur(int bouton);
     void enregistre_style();
-    void modifie(int style);
-    void supprime_style(int style);
+    void supprime_style();
 
 private:
-    QDialog *add_style;
-    QLineEdit *line_edite_nom_style;
-    QFontComboBox *combo_police;
-    QSpinBox *box_taille;
-    QCheckBox *checkbox_gras, *checkbox_souligne, *checkbox_italique;
-    QPushButton *color_foreground, *color_background;
-    int id_modif;
+    QList<QPushButton* > color_foreground, color_background;
+    QList<QCheckBox* > boxGras, boxSouligne, boxItalique;
+    QList<QFontComboBox* > boxPolice;
+    QList<QSpinBox* > boxSize;
+    QStringList liste_styles;
+    int id_modif, nb_styles;
     
 };
 

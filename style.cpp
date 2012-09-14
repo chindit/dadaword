@@ -7,9 +7,8 @@ Style::Style(QWidget *parent) :
     //On initialise les styles s'ils n'existent pas
 
     bool conversion = false;
-    QStringList liste_noms;
     QSettings settings("Dadaword", "dadaword");
-    int nb_styles = settings.value("nb_styles").toInt(&conversion);
+    nb_styles = settings.value("nb_styles").toInt(&conversion);
     id_modif = -225;
 
     if(!conversion || nb_styles < 7){
@@ -20,8 +19,8 @@ Style::Style(QWidget *parent) :
         //Nombre de styles
         settings.setValue("nb_styles", 7);
         //Nom des styles
-        liste_noms << tr("Défaut") << tr("Titre 1") << tr("Titre 2") << tr("Titre 3") << tr("Titre 4") << tr("Titre 5") << tr("Titre 6");
-        settings.setValue("noms_styles", liste_noms);
+        liste_styles << tr("Défaut") << tr("Titre 1") << tr("Titre 2") << tr("Titre 3") << tr("Titre 4") << tr("Titre 5") << tr("Titre 6");
+        settings.setValue("noms_styles", liste_styles);
 
         //Défaut
         settings.beginGroup("Défaut");
@@ -100,71 +99,131 @@ Style::Style(QWidget *parent) :
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
     }
+    else{
+        liste_styles = settings.value("noms_styles").toStringList();
+    }
 }
 
 //Affiche la fenêtre du style
 void Style::affiche_fen(){
-    QSettings settings("Dadaword", "dadaword");
-
-
-    int nb_styles = settings.value("nb_styles").toInt();
-    QStringList liste_noms = settings.value("noms_styles").toStringList();
-
-    //Création des éléments de la fenêtre
-    QGridLayout *layout = new QGridLayout;
-    setLayout(layout);
-    QLabel *titre = new QLabel(tr("<h1>Gestion des styles</h1>"));    titre->setMargin(25);
-    QLabel *noms[nb_styles], *titre_nom, *titre_modifier, *titre_supprimer;
-    titre_nom = new QLabel("<b>Nom</b>");
-    titre_modifier = new QLabel("<b>Modifier</b>");
-    titre_supprimer = new QLabel("<b>Supprimer</b>");
-    QPushButton *modifier[nb_styles], *supprimer[nb_styles], *this_exit, *this_add;
-    this_exit = new QPushButton(QIcon(":/menus/images/exit.png"), tr("Fermer"));
-    this_add = new QPushButton(QIcon(":/programme/images/ajouter.png"), tr("Nouveau style"));
-    QSignalMapper *edit_buttons[nb_styles], *delete_buttons[nb_styles];
-
-    connect(this_exit, SIGNAL(clicked()), this, SLOT(close()));
-    connect(this_add, SIGNAL(clicked()), this, SLOT(ajoute_style()));
-
-    layout->addWidget(titre, 0, 0, 1, 3, Qt::AlignHCenter);
-    layout->addWidget(titre_nom, 1, 0);
-    layout->addWidget(titre_modifier, 1, 1);
-    layout->addWidget(titre_supprimer, 1, 2);
-
-    //Initialisations
-    for(int i=0; i<nb_styles; i++){
-        noms[i] = new QLabel;
-        noms[i]->setText(liste_noms.at(i));
-        modifier[i] = new QPushButton;
-        modifier[i]->setIcon(QIcon(":/programme/images/edit.png"));
-        modifier[i]->setText(tr("Modifier"));
-        edit_buttons[i] = new QSignalMapper;
-        connect(modifier[i], SIGNAL(clicked()), edit_buttons[i], SLOT(map()));
-        edit_buttons[i]->setMapping(modifier[i], i);
-        connect(edit_buttons[i], SIGNAL(mapped(int)), this, SLOT(modifie(int)));
-        supprimer[i] = new QPushButton;
-        supprimer[i]->setIcon(QIcon(":/menus/images/sortir.png"));
-        supprimer[i]->setText(tr("Supprimer"));
-        delete_buttons[i] = new QSignalMapper;
-        connect(supprimer[i], SIGNAL(clicked()), delete_buttons[i], SLOT(map()));
-        delete_buttons[i]->setMapping(supprimer[i], i);
-        connect(delete_buttons[i], SIGNAL(mapped(int)), this, SLOT(supprime_style(int)));
-
-        if(i < 7){
-            //Interdiction de supprimer les styles par défaut
-            supprimer[i]->setEnabled(false);
-        }
-        //On ajoute au layout
-        layout->addWidget(noms[i], i+2, 0);
-        layout->addWidget(modifier[i], i+2, 1);
-        layout->addWidget(supprimer[i], i+2, 2);
+    //On vérifie si la fenêtre est déjà initialisée
+    if(this->layout() != 0){
+        show();
+        return;
     }
-    //Ajout des boutons
-    layout->addWidget(this_add, nb_styles+2, 1, 1, 2, Qt::AlignHCenter);
-    layout->addWidget(this_exit, nb_styles+3, 1, 1, 2, Qt::AlignHCenter);
 
+    //Sinon on la crée
     setWindowTitle(tr("Gestion des styles - Dadaword"));
     setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+
+    QSettings settings("Dadaword", "dadaword");
+
+    QListWidget *stylesList = new QListWidget(this);
+    stylesList->setMaximumWidth(100);
+    QStackedWidget *stylesView = new QStackedWidget(this);
+    QPushButton *closeStyle = new QPushButton(QIcon(":/menus/images/exit.png"), tr("Fermer la fenêtre"));
+    connect(closeStyle, SIGNAL(clicked()), this, SLOT(close()));
+    QPushButton *saveStyle = new QPushButton(QIcon(":/menus/images/filesave.png"), tr("Enregistrer"));
+    saveStyle->setToolTip(tr("Enregistrer les styles"));
+    connect(saveStyle, SIGNAL(clicked()), this, SLOT(enregistre_style()));
+    QPushButton *newStyle = new QPushButton(QIcon(":/programme/images/ajouter.png"), tr("Nouveau style"));
+    QPushButton *deleteStyle = new QPushButton(QIcon(":/menus/images/sortir.png"), tr("Supprimer"));
+    deleteStyle->setToolTip(tr("Supprime le style actuel"));
+    QGridLayout *stylesWidgetLayout = new QGridLayout(this);
+    stylesWidgetLayout->addWidget(stylesList, 0, 0);
+    stylesWidgetLayout->addWidget(stylesView, 0, 1);
+    QHBoxLayout *underLayout = new QHBoxLayout;
+    underLayout->addWidget(newStyle);
+    underLayout->addWidget(saveStyle);
+    underLayout->addWidget(deleteStyle);
+    underLayout->addWidget(closeStyle);
+    stylesWidgetLayout->addLayout(underLayout, 1, 0, 1, 2, Qt::AlignHCenter);
+    //Connect QStackedWidget to QListWidget
+    connect(stylesList, SIGNAL(currentRowChanged(int)), stylesView, SLOT(setCurrentIndex(int)));
+    connect(deleteStyle, SIGNAL(clicked()), this, SLOT(supprime_style()));
+    connect(newStyle, SIGNAL(clicked()), this, SLOT(ajoute_style()));
+
+    //-------------------------------------------------
+    // Boucle d'initialisations
+    //-------------------------------------------------
+    for(int i=0; i<nb_styles; i++){
+        //Création de l'item
+        QListWidgetItem *itemEdit = new QListWidgetItem(liste_styles.at(i));
+        stylesList->addItem(itemEdit);
+
+        //Création du contenu
+        QWidget *style = new QWidget(stylesView);
+        stylesView->addWidget(style);
+        QGridLayout *layoutStyle = new QGridLayout(style);
+        QLabel *nom = new QLabel("<h3>"+liste_styles.at(i)+"</h3>");
+        QLabel *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
+        label_police = new QLabel(tr("Police"));
+        label_taille = new QLabel(tr("Taille"));
+        label_gras = new QLabel(tr("Gras"));
+        label_italique = new QLabel(tr("Italique"));
+        label_souligne = new QLabel(tr("Souligné"));
+        label_foreground = new QLabel(tr("Couleur du texte"));
+        label_background = new QLabel(tr("Couleur d'arrière-plan"));
+
+        QPushButton *buttonForeground = new QPushButton;
+        QPushButton *buttonBackground = new QPushButton;
+        color_foreground.append(buttonForeground);
+        color_background.append(buttonBackground);
+        color_background.at(i)->setText(tr("Transparent"));
+        color_foreground.at(i)->setText("#000000");
+
+        QSignalMapper *mappeur = new QSignalMapper;
+        QSignalMapper *mappeur2 = new QSignalMapper;
+        connect(buttonForeground, SIGNAL(clicked()), mappeur, SLOT(map()));
+        mappeur->setMapping(buttonForeground, 0);
+        connect(mappeur, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
+        connect(buttonBackground, SIGNAL(clicked()), mappeur2, SLOT(map()));
+        mappeur2->setMapping(buttonBackground, 1);
+        connect(mappeur2, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
+
+        QCheckBox *boxBold = new QCheckBox;
+        QCheckBox *boxItalic = new QCheckBox;
+        QCheckBox *boxUnderline = new QCheckBox;
+        boxGras.append(boxBold);
+        boxSouligne.append(boxUnderline);
+        boxItalique.append(boxItalic);
+        QFontComboBox *comboPolice = new QFontComboBox;
+        boxPolice.append(comboPolice);
+        QSpinBox *spinSize = new QSpinBox;
+        boxSize.append(spinSize);
+
+
+        settings.beginGroup(liste_styles.at(i));
+        boxPolice.at(i)->setCurrentFont(settings.value("police").value<QFont>());
+        boxSize.at(i)->setValue(settings.value("taille").toInt());
+        if(settings.value("gras").toInt() == QFont::Bold){
+            boxGras.at(i)->setChecked(true);
+        }
+        boxItalique.at(i)->setChecked(settings.value("italique").toBool());
+        boxSouligne.at(i)->setChecked(settings.value("souligne").toBool());
+        color_foreground.at(i)->setText(settings.value("foreground").value<QColor>().name());
+        color_background.at(i)->setText(settings.value("background").value<QColor>().name());
+        settings.endGroup();
+
+        //Ajout dans le layout
+        layoutStyle->addWidget(nom, 0, 0, 1, 2, Qt::AlignHCenter);
+        layoutStyle->addWidget(label_police, 1, 0);
+        layoutStyle->addWidget(boxPolice.at(i), 1, 1);
+        layoutStyle->addWidget(label_taille, 2, 0);
+        layoutStyle->addWidget(boxSize.at(i), 2, 1);
+        layoutStyle->addWidget(label_gras, 3, 0);
+        layoutStyle->addWidget(boxGras.at(i), 3, 1);
+        layoutStyle->addWidget(label_souligne, 4, 0);
+        layoutStyle->addWidget(boxSouligne.at(i), 4, 1);
+        layoutStyle->addWidget(label_italique, 5, 0);
+        layoutStyle->addWidget(boxItalique.at(i), 5, 1);
+        layoutStyle->addWidget(label_foreground, 6, 0);
+        layoutStyle->addWidget(color_foreground.at(i), 6, 1);
+        layoutStyle->addWidget(label_background, 7, 0);
+        layoutStyle->addWidget(color_background.at(i), 7, 1);
+
+    }
+
     exec();
 
     return;
@@ -172,28 +231,38 @@ void Style::affiche_fen(){
 
 //Crée un nouveau style
 void Style::ajoute_style(){
-    add_style = new QDialog(this);
-    add_style->setWindowIcon(QIcon(":/programme/dadaword.gif"));
-    if(id_modif >= 0){
-        add_style->setWindowTitle(tr("Modifier un style - Dadaword"));
-    }
-    else{
-        add_style->setWindowTitle(tr("Ajouter un nouveau style - Dadaword"));
-    }
-    add_style->setWindowModality(Qt::ApplicationModal);
+    Erreur instance_erreur;
 
-    QGridLayout *layout = new QGridLayout;
-    add_style->setLayout(layout);
+    QString styleName = QInputDialog::getText(this, tr("Nom du style"), tr("Nom du style : "));
+    if(styleName.isEmpty()){
+        instance_erreur.Erreur_msg(tr("Vous devez fournir un nom de style.\nAnnulation."), QMessageBox::Information);
+        return;
+    }
+    //Ajout à la liste des styles
+    liste_styles.append(styleName);
 
-    //Initialisations
-    QLabel *titre, *label_nom, *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
-    if(id_modif >= 0){
-        titre = new QLabel(tr("<h3>Modifier un style</h3>"));
+    //On ajoute au QListWidget et au QStackedWidget
+    QStackedWidget *stackedWidget = this->findChild<QStackedWidget* >();
+    QListWidget *listWidget = this->findChild<QListWidget* >();
+
+    //Si on les détecte pas, on se casse
+    if(listWidget == 0 || stackedWidget == 0){
+        instance_erreur.Erreur_msg(tr("Impossible de récupérer le contenu de la fenêtre de style"), QMessageBox::Critical);
+        return;
     }
-    else{
-        titre = new QLabel(tr("<h3>Créer un nouveau style</h3>"));
-    }
-    label_nom = new QLabel(tr("Nom du style"));
+
+    nb_styles++;
+
+    //Ajout au QListWidget
+    QListWidgetItem *itemEdit = new QListWidgetItem(styleName);
+    listWidget->addItem(itemEdit);
+
+    //Ajout au QStackedWidget
+    QWidget *style = new QWidget(stackedWidget);
+    stackedWidget->addWidget(style);
+    QGridLayout *layoutStyle = new QGridLayout(style);
+    QLabel *nom = new QLabel("<h3>"+styleName+"</h3>");
+    QLabel *label_police, *label_taille, *label_gras, *label_italique, *label_souligne, *label_foreground, *label_background;
     label_police = new QLabel(tr("Police"));
     label_taille = new QLabel(tr("Taille"));
     label_gras = new QLabel(tr("Gras"));
@@ -202,79 +271,52 @@ void Style::ajoute_style(){
     label_foreground = new QLabel(tr("Couleur du texte"));
     label_background = new QLabel(tr("Couleur d'arrière-plan"));
 
-    line_edite_nom_style = new QLineEdit;
-    combo_police = new QFontComboBox;
-    box_taille = new QSpinBox;
-    checkbox_gras = new QCheckBox;
-    checkbox_souligne = new QCheckBox;
-    checkbox_italique = new QCheckBox;
-    color_foreground = new QPushButton;
-    color_background = new QPushButton;
-    color_background->setText(tr("Transparent"));
-    color_foreground->setText("#000000");
+    QPushButton *buttonForeground = new QPushButton;
+    QPushButton *buttonBackground = new QPushButton;
+    color_foreground.append(buttonForeground);
+    color_background.append(buttonBackground);
+    color_background.at(nb_styles-1)->setText("#FFFFFF");
+    color_foreground.at(nb_styles-1)->setText("#000000");
 
-    //Si on modifie un style, on précharge les valeurs
-    if(id_modif >= 0){
-        QSettings settings("Dadaword", "dadaword");
-        QStringList styles = settings.value("noms_styles").toStringList();
-        if(id_modif < styles.count()){
-            settings.beginGroup(styles.at(id_modif));
-            line_edite_nom_style->setText(styles.at(id_modif));
-            line_edite_nom_style->setEnabled(false);
-            combo_police->setCurrentFont(settings.value("police").value<QFont>());
-            box_taille->setValue(settings.value("taille").toInt());
-            if(settings.value("gras").toInt() == QFont::Bold){
-                checkbox_gras->setChecked(true);
-            }
-            checkbox_italique->setChecked(settings.value("italique").toBool());
-            checkbox_souligne->setChecked(settings.value("souligne").toBool());
-            color_foreground->setText(settings.value("foreground").value<QColor>().name());
-            color_background->setText(settings.value("background").value<QColor>().name());
-            settings.endGroup();
-        }
-        else{
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Style::Id de modification erronnée, annulation"), QMessageBox::Warning);
-            return;
-        }
-    }
-
-    QPushButton *valider = new QPushButton(QIcon(":/menus/images/ok.png"), tr("Valider"));
-    QPushButton *annuler = new QPushButton(QIcon(":/menus/images/sortir.png"), tr("Annuler"));
-    connect(valider, SIGNAL(clicked()), this, SLOT(enregistre_style()));
-    connect(annuler, SIGNAL(clicked()), add_style, SLOT(close()));
     QSignalMapper *mappeur = new QSignalMapper;
     QSignalMapper *mappeur2 = new QSignalMapper;
-    connect(color_foreground, SIGNAL(clicked()), mappeur, SLOT(map()));
-    mappeur->setMapping(color_foreground, 0);
+    connect(buttonForeground, SIGNAL(clicked()), mappeur, SLOT(map()));
+    mappeur->setMapping(buttonForeground, 0);
     connect(mappeur, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
-    connect(color_background, SIGNAL(clicked()), mappeur2, SLOT(map()));
-    mappeur2->setMapping(color_background, 1);
+    connect(buttonBackground, SIGNAL(clicked()), mappeur2, SLOT(map()));
+    mappeur2->setMapping(buttonBackground, 1);
     connect(mappeur2, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
 
-    //On ajoute tout au layout
-    layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
-    layout->addWidget(label_nom, 1, 0);
-    layout->addWidget(line_edite_nom_style, 1, 1);
-    layout->addWidget(label_police, 2, 0);
-    layout->addWidget(combo_police, 2, 1);
-    layout->addWidget(label_taille, 3, 0);
-    layout->addWidget(box_taille, 3, 1);
-    layout->addWidget(label_gras, 4, 0);
-    layout->addWidget(checkbox_gras, 4, 1);
-    layout->addWidget(label_souligne, 5, 0);
-    layout->addWidget(checkbox_souligne, 5, 1);
-    layout->addWidget(label_italique, 6, 0);
-    layout->addWidget(checkbox_italique, 6, 1);
-    layout->addWidget(label_foreground, 7, 0);
-    layout->addWidget(color_foreground, 7, 1);
-    layout->addWidget(label_background, 8, 0);
-    layout->addWidget(color_background, 8, 1);
-    layout->addWidget(valider, 9, 0);
-    layout->addWidget(annuler, 9, 1);
+    QCheckBox *boxBold = new QCheckBox;
+    QCheckBox *boxItalic = new QCheckBox;
+    QCheckBox *boxUnderline = new QCheckBox;
+    boxGras.append(boxBold);
+    boxSouligne.append(boxUnderline);
+    boxItalique.append(boxItalic);
+    QFontComboBox *comboPolice = new QFontComboBox;
+    boxPolice.append(comboPolice);
+    QSpinBox *spinSize = new QSpinBox;
+    boxSize.append(spinSize);
 
-    //Exécution
-    add_style->exec();
+    //Ajout dans le layout
+    layoutStyle->addWidget(nom, 0, 0, 1, 2, Qt::AlignHCenter);
+    layoutStyle->addWidget(label_police, 1, 0);
+    layoutStyle->addWidget(boxPolice.at(nb_styles-1), 1, 1);
+    layoutStyle->addWidget(label_taille, 2, 0);
+    layoutStyle->addWidget(boxSize.at(nb_styles-1), 2, 1);
+    layoutStyle->addWidget(label_gras, 3, 0);
+    layoutStyle->addWidget(boxGras.at(nb_styles-1), 3, 1);
+    layoutStyle->addWidget(label_souligne, 4, 0);
+    layoutStyle->addWidget(boxSouligne.at(nb_styles-1), 4, 1);
+    layoutStyle->addWidget(label_italique, 5, 0);
+    layoutStyle->addWidget(boxItalique.at(nb_styles-1), 5, 1);
+    layoutStyle->addWidget(label_foreground, 6, 0);
+    layoutStyle->addWidget(color_foreground.at(nb_styles-1), 6, 1);
+    layoutStyle->addWidget(label_background, 7, 0);
+    layoutStyle->addWidget(color_background.at(nb_styles-1), 7, 1);
+
+    //On affiche le style nouvellement créé
+    stackedWidget->setCurrentWidget(style);
 
     return;
 }
@@ -283,12 +325,13 @@ void Style::ajoute_style(){
 void Style::change_couleur(int bouton){
 
     QColor couleur = QColorDialog::getColor();
+    QStackedWidget *stackedWidget = this->findChild<QStackedWidget* >();
 
     if(bouton == 0){
-        color_foreground->setText(couleur.name());
+        color_foreground.at(stackedWidget->currentIndex())->setText(couleur.name());
     }
     else if(bouton == 1){
-        color_background->setText(couleur.name());
+        color_background.at(stackedWidget->currentIndex())->setText(couleur.name());
     }
     else{
         Erreur instance_erreur;
@@ -302,119 +345,99 @@ void Style::change_couleur(int bouton){
 void Style::enregistre_style(){
 
     //S'il y a un champ vide, on arrête
-    if(line_edite_nom_style->text().isEmpty() || line_edite_nom_style->text().isNull() || combo_police->currentText().isEmpty() || combo_police->currentText().isNull() || box_taille->value() <= 0){
-        QMessageBox::warning(this, tr("Champs non-remplis"), tr("Veuillez compléter les champs \"Titre\", \"Police\" et \"Taille\" avant de poursuivre.\nMerci"));
-        return;
-    }
-
-    QSettings settings("Dadaword", "dadaword");
-    QStringList liste_styles = settings.value("noms_styles").toStringList();
-    int nb_styles = settings.value("nb_styles").toInt();
-
-    if(id_modif < 0){
-        liste_styles.append(line_edite_nom_style->text());
-        nb_styles++;
-        //On remplit les settings
-        settings.setValue("nb_styles", nb_styles);
-        settings.setValue("noms_styles", liste_styles);
-    }
-    else{
-        if(liste_styles.at(id_modif) != line_edite_nom_style->text()){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Style::Impossible de modifier le style, le nom n'a pas été reconnu"), QMessageBox::Information);
+    for(int i=0; i<nb_styles; i++){
+        if(boxPolice.at(i)->currentText().isEmpty() || boxPolice.at(i)->currentText().isNull() || boxSize.at(i)->value() <= 0){
+            QMessageBox::warning(this, tr("Champs non-remplis"), tr("Veuillez compléter les champs \"Police\" et \"Taille\" avant de poursuivre.\nMerci"));
             return;
         }
     }
 
-    settings.beginGroup(line_edite_nom_style->text());
-    settings.setValue("police", combo_police->currentFont());
-    settings.setValue("taille", box_taille->value());
-    if(checkbox_gras->isChecked()){
-        settings.setValue("gras", QFont::Bold);
-    }
-    else{
-        settings.setValue("gras", QFont::Normal);
-    }
-    settings.setValue("italique", checkbox_italique->isChecked());
-    settings.setValue("souligne", checkbox_souligne->isChecked());
-    settings.setValue("foreground", QColor(color_foreground->text()));
-    if(color_background->text() == tr("Transparent")){
-        settings.setValue("background", QColor(Qt::transparent));
-    }
-    else{
-        settings.setValue("background", QColor(color_background->text()));
-    }
-    settings.endGroup();
-
-    if(id_modif >= 0){
-        //La modification est effectuée, on annule l'ID pour ne pas avoir de problèmes par la suite.
-        id_modif = -255;
-    }
-    else{
-        //On émet le signal si on a ajouté un nouveau style
-        emit styles_changed();
-    }
-
-    //On ferme la fenêtre
-    add_style->close();
-    delete add_style;
-
-    return;
-}
-
-//Modifie un style
-void Style::modifie(int style){
-    id_modif = style;
-    ajoute_style();
-    return;
-}
-
-//Supprime un style
-void Style::supprime_style(int style){
-    if(style < 7){
-        //On ne peut pas supprimer les styles par défaut
+    //S'il y a un bug, on arrête
+    if(liste_styles.count() != nb_styles){
         Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Style:: Tentative de suppression d'un style par défaut"), QMessageBox::Ignore);
+        instance_erreur.Erreur_msg(tr("Une erreur est survenue lors de l'enregistrement des styles, une valeur erronée de l'index a sans doute été fournie."), QMessageBox::Warning);
         return;
     }
 
     QSettings settings("Dadaword", "dadaword");
-    QStringList styles = settings.value("noms_styles").toStringList();
-    int nb_styles = settings.value("nb_styles").toInt();
+    settings.setValue("nb_styles", nb_styles);
+    settings.setValue("noms_styles", liste_styles);
 
-    //Si l'ID est fausse, on part
-    if(nb_styles != styles.count() || style >= styles.count()){
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Style::ID de style incorrecte lors de la suppression"), QMessageBox::Ignore);
-        return;
-    }
-
-    int reponse = QMessageBox::question(this, tr("Supprimer un style"), tr("Êtes-vous sûr de vouloir supprimer le style %1 ?").arg(styles.at(style)), QMessageBox::Yes, QMessageBox::No);
-    if(reponse == QMessageBox::No){
-        return;
-    }
-    else if(reponse == QMessageBox::Yes){
-        //Si on est ici, c'est que tout roule
-        settings.beginGroup(styles.at(style));
-        settings.remove("");
+    for(int i=0; i<nb_styles; i++){
+        settings.beginGroup(liste_styles.at(i));
+        settings.setValue("police", boxPolice.at(i)->currentFont());
+        settings.setValue("taille", boxSize.at(i)->value());
+        if(boxGras.at(i)->isChecked()){
+            settings.setValue("gras", QFont::Bold);
+        }
+        else{
+            settings.setValue("gras", QFont::Normal);
+        }
+        settings.setValue("italique", boxItalique.at(i)->isChecked());
+        settings.setValue("souligne", boxSouligne.at(i)->isChecked());
+        settings.setValue("foreground", QColor(color_foreground.at(i)->text()));
+        if(color_background.at(i)->text() == tr("Transparent")){
+            settings.setValue("background", QColor(Qt::transparent));
+        }
+        else{
+            settings.setValue("background", QColor(color_background.at(i)->text()));
+        }
         settings.endGroup();
+    }
 
-        styles.removeAt(style);
-        nb_styles--;
+    if(settings.value("alertes").toInt() == HIGH){
+        QMessageBox::information(this, tr("Enregistrement effectué"), tr("L'enregistrement des styles s'est correctement effectué"));
+    }
+    return;
+}
 
-        //Mise à jour des settings
-        settings.setValue("nb_styles", nb_styles);
-        settings.setValue("noms_styles", styles);
+//Supprime un style
+void Style::supprime_style(){
 
-        //On émet le signal
-        emit styles_changed();
+    QStackedWidget *activeWidget = this->findChild<QStackedWidget* >();
+    int reponse = QMessageBox::question(this, tr("Supprimer un style"), tr("Voulez vous vraiment supprimer le style %1 ?").arg(liste_styles.at(activeWidget->currentIndex())), QMessageBox::Yes | QMessageBox::No);
+    if(reponse == QMessageBox::Yes){
+        if(activeWidget->currentIndex() > 6){
+            QSettings settings("Dadaword", "dadaword");
+
+            //On supprime le style
+            settings.beginGroup(liste_styles.at(activeWidget->currentIndex()));
+            settings.remove("");
+            settings.endGroup();
+
+            liste_styles.removeAt(activeWidget->currentIndex());
+            nb_styles--;
+
+            //Mise à jour des settings
+            settings.setValue("nb_styles", nb_styles);
+            settings.setValue("noms_styles", liste_styles);
+
+            //Suppression du QStackedWidget
+            activeWidget->removeWidget(activeWidget->currentWidget());
+            QListWidget *listWidget = this->findChild<QListWidget* >();
+            listWidget->removeItemWidget(listWidget->currentItem());
+            //On affiche le style par défaut
+            activeWidget->setCurrentIndex(0);
+            listWidget->setCurrentRow(0);
+
+        }
+        else{
+            Outils instance_outils;
+            if(instance_outils.lire_config("alertes").toInt() == HIGH){
+                QMessageBox::warning(this, tr("Impossible de supprimer le style"), tr("Il s'agit d'un style par défaut, vous ne pouvez pas le supprimer.\nPar contre, vous pouvez le modifier comme vous le souhaitez."));
+                return;
+            }
+        }
+    }
+    else if(reponse == QMessageBox::No){
+        //Annulation du processus
+        return;
     }
     else{
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Styles::Impossible de supprimer le style -> Mauvaise réponse au QMessageBox"), QMessageBox::Ignore);
+        Erreur instance;
+        instance.Erreur_msg(tr("Exception dans la boite de confirmation de la suppression de style"), QMessageBox::Critical);
         return;
     }
-
 
     return;
 }

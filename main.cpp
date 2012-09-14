@@ -18,6 +18,11 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    //UTF-8 natif
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
     //Traduction des boutons
     QString locale = QLocale::system().name().section('_', 0, 0);
     QTranslator translator;
@@ -37,10 +42,6 @@ int main(int argc, char *argv[])
     }
 
     DadaWord instance;
-    //UTF-8 natif
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
     //Création de l'interface utilisateur
     instance.cree_iu();
