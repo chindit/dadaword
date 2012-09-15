@@ -486,12 +486,7 @@ int HashMgr::hash(const char * word) const
       ROTATE(hv,ROTATE_LEN);
       hv ^= (*word++);
     }
-    if(tablesize == 0){
-      return (unsigned long) 0;
-    }
-    else{
-      return (unsigned long) hv % tablesize;
-    }
+    return (unsigned long) hv % tablesize;
 }
 
 int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) {

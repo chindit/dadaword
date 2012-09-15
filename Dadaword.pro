@@ -42,7 +42,7 @@ RESOURCES += \
 
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
-LIBS += /home/david/Documents/dada/Prog\ H.N/dadaword/hunspell/src/hunspell/.libs/libhunspell-1.3.a
+LIBS += /home/david/Descargas/dadaword/hunspell/src/hunspell/.libs/libhunspell-1.3.a
 
 #Zlib
 INCLUDEPATH += zlib
