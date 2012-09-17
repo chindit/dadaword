@@ -3107,15 +3107,19 @@ void DadaWord::curseur_change(){
         //On adapte les boutons selon le format
         if(format.fontWeight() == QFont::Bold && !gras->isChecked()){
             gras->setChecked(true);
+            find_edit()->setFontWeight(QFont::Bold);
         }
         if(format.fontWeight() == QFont::Normal && gras->isChecked()){
             gras->setChecked(false);
+            find_edit()->setFontWeight(QFont::Normal);
         }
         if(format.fontItalic() != italique->isChecked()){
             italique->setChecked(format.fontItalic());
+            find_edit()->setFontItalic(format.fontItalic());
         }
         if(format.fontUnderline() != souligne->isChecked()){
             souligne->setChecked(format.fontUnderline());
+            find_edit()->setFontUnderline(format.fontUnderline());
         }
 
     }
