@@ -1,5 +1,9 @@
 DadaWord - Changelog
 
+Version 1.1.4 :
+- BUG : Décalage de la ligne suivante dans les puces
+- Ajout d'un style de puces différent selon le niveau
+
 Version 1.1.3 :
 - Mise à jour des boutons selon la position du curseur
 - BUG : pertu du formatage lors du surlignage

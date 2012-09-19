@@ -38,7 +38,7 @@ DadaWord::DadaWord(QWidget *parent)
             }
             else{
                 Erreur instance;
-                instance.Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Information);
+                instance.Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Critical);
             }
         }
     }
@@ -950,6 +950,9 @@ void DadaWord::desincremente_puce(){
     }
     QTextList *liste_actuelle = curseur.currentList();
     liste_puce = liste_actuelle->format();
+    if(!curseur.movePosition(QTextCursor::PreviousBlock)){ //Parce qu'on est au début du document
+        curseur.movePosition(QTextCursor::Start);
+    }
     curseur.beginEditBlock();
     curseur.movePosition(QTextCursor::NextBlock);
 
@@ -970,7 +973,15 @@ void DadaWord::desincremente_puce(){
         liste_puce.setStyle(QTextListFormat::ListUpperRoman);
     }
     else{
-        liste_puce.setStyle(QTextListFormat::ListDisc);
+        if(liste_puce.indent()%3 == 0){
+            liste_puce.setStyle(QTextListFormat::ListDisc);
+        }
+        else if(liste_puce.indent()%3 == 1){
+            liste_puce.setStyle(QTextListFormat::ListCircle);
+        }
+        else{
+            liste_puce.setStyle(QTextListFormat::ListSquare);
+        }
     }
 
     if(liste_puce.indent() > 1){
@@ -990,6 +1001,7 @@ void DadaWord::incremente_puce(){
     QTextListFormat liste_puce;
     QTextList *liste_actuelle = curseur.currentList();
     liste_puce = liste_actuelle->format();
+    curseur.movePosition(QTextCursor::PreviousBlock);
     curseur.beginEditBlock();
     curseur.movePosition(QTextCursor::NextBlock);
 
@@ -1009,7 +1021,15 @@ void DadaWord::incremente_puce(){
         liste_puce.setStyle(QTextListFormat::ListUpperRoman);
     }
     else{
-        liste_puce.setStyle(QTextListFormat::ListDisc);
+        if(liste_puce.indent()%3 == 0){
+            liste_puce.setStyle(QTextListFormat::ListDisc);
+        }
+        else if(liste_puce.indent()%3 == 1){
+            liste_puce.setStyle(QTextListFormat::ListCircle);
+        }
+        else{
+            liste_puce.setStyle(QTextListFormat::ListSquare);
+        }
     }
 
     liste_puce.setIndent(liste_puce.indent() +1);
