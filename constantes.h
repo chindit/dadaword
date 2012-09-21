@@ -38,4 +38,7 @@ enum { GAUCHE, DROITE };
 //Énumérations pour l'interligne
 enum { INT_AUTRE };
 
+//Énumération pour les settings
+enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement };
+
 #endif // CONSTANTES_H

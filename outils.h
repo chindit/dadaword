@@ -24,16 +24,18 @@
 #include <iostream>
 
 #include "dadaword.h"
+#include "settingsManager.h"
 
 class Outils : public QObject{
 
     Q_OBJECT
 
 public:
+    explicit Outils();
 
 public slots:
     void fenetre_config();
-    QVariant lire_config(QString nom);
+    //QVariant lire_config(QString nom);
     void enregistre_config(QString nom = "null", int valeur = 0);
     void enregistre_fichiers(QString fichier);
     QStringList fichiers_recents();
@@ -44,6 +46,7 @@ private slots:
     void returnDir();
 
 private:
+    SettingsManager *settings;
     QWidget *log_fen;
     QWidget *configure_fen;
     QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe;

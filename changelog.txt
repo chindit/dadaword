@@ -1,8 +1,9 @@
 DadaWord - Changelog
 
-Version 1.1.4 :
-- BUG : Décalage de la ligne suivante dans les puces
-- Ajout d'un style de puces différent selon le niveau
+Version 1.2.0 :
+- Externalisation des options dans une classe dédiée pour réduire les lectures disque
+- BUG : dictionnaire personnel mal placé selon certaine configuration
+- BUG : paramètre non utilisé : QPoint.
 
 Version 1.1.3 :
 - Mise à jour des boutons selon la position du curseur
@@ -20,6 +21,8 @@ Version 1.1.3 :
 - BUG : changement de style dans le documents en mode texte
 - Modification du layout du panel de styles
 - Ajout d'une image de chargement
+- BUG : Décalage de la ligne suivante dans les puces
+- Ajout d'un style de puces différent selon le niveau
 
 Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style

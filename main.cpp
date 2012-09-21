@@ -49,13 +49,6 @@ int main(int argc, char *argv[])
 
     //Création de l'interface utilisateur
     instance.cree_iu();
-    //On crée le timer pour enregistrer automatiquement le fichier
-    QTimer *timer_enregistrement = new QTimer;
-    timer_enregistrement->setSingleShot(false); //Timer répétitif
-    Outils instance_outils;
-    timer_enregistrement->setInterval(instance_outils.lire_config("timer").toInt()*1000); //On sauvegarde toutes les 5 minutes
-    timer_enregistrement->start();
-    QObject::connect(timer_enregistrement, SIGNAL(timeout()), &instance, SLOT(enregistrement()));
 
     //Affichage
     instance.show();

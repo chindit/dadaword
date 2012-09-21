@@ -67,7 +67,7 @@ const QString fen_puces::get_radio(){
         return "QTextListFormat::ListUpperRoman";
     }
     else{
-        Erreur instance_erreur;
+        ErrorManager instance_erreur;
         instance_erreur.Erreur_msg(tr("Erreur lors de la détection du choix de liste : aucun style n'a été coché"), QMessageBox::Information);
         return "";
     }

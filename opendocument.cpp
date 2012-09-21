@@ -24,7 +24,7 @@ OpenDocument::~OpenDocument(){
 QString OpenDocument::ouvre_odt(QString nom){
     //Variables globales
     QString contenu = "";
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     document = new QTextDocument;
     nom_odt = nom;
     contenu_puce = "";
@@ -94,7 +94,7 @@ void OpenDocument::read_xml(QString fichier){
 void OpenDocument::read_styles(QDomElement e){
 
     //Déclaration de l'instance d'erreurs
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
 
     if(e.isNull()){
         return; //QDomElement invalide, on se casse
@@ -249,7 +249,7 @@ bool OpenDocument::style_graphics(QString nom, QDomElement e){
 
 //Lecture du contenu du document
 void OpenDocument::read_body(QDomElement e){
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     QTextCursor curseur(document);
     curseur.movePosition(QTextCursor::End);
 
@@ -301,7 +301,7 @@ void OpenDocument::read_body(QDomElement e){
 
 //Lecture des paragraphes
 bool OpenDocument::contenu_paragraphe(QDomElement e, QTextCursor &curseur, bool puces, bool h_item, bool tableau){
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     p_current++;
     case_tableau = "";
     //On change la QProgressBar
@@ -463,7 +463,7 @@ bool OpenDocument::contenu_paragraphe(QDomElement e, QTextCursor &curseur, bool 
 //Lecture des puces et numérotations
 bool OpenDocument::contenu_puces(QDomElement e, QTextCursor &curseur, int niveau, QString style){
     //Erreurs
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     //Nom de style
     QString nom_style;
 
@@ -534,7 +534,7 @@ bool OpenDocument::contenu_puces(QDomElement e, QTextCursor &curseur, int niveau
 //Lecture des tableaux
 bool OpenDocument::contenu_tableaux(QDomElement e, QTextCursor &curseur){
     //Création de l'instance d'erreur
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     QList<QStringList> full_table;
 
     QDomNode enfants = e.firstChild();
@@ -599,7 +599,8 @@ bool OpenDocument::contenu_tableaux(QDomElement e, QTextCursor &curseur){
 
 //Création du format
 QTextCharFormat OpenDocument::cree_bloc_format(QString nom){
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
+    SettingsManager settings;
     QTextCharFormat format;
     int id_style = -1;
 
@@ -620,9 +621,8 @@ QTextCharFormat OpenDocument::cree_bloc_format(QString nom){
 
     if(id_style < 0){
         //On a pas trouvé de style -> on applique le style par défaut
-        Outils instance_outils;
-        QString font_temp = instance_outils.lire_config("police").toString();
-        int taille_temp = instance_outils.lire_config("taille").toInt();
+        QString font_temp = settings.getSettings(Police).toString();
+        int taille_temp = settings.getSettings(Taille).toInt();
         QFont police_default(font_temp);
         format.setFont(police_default);
         format.setFontPointSize(taille_temp);
@@ -644,8 +644,7 @@ QTextCharFormat OpenDocument::cree_bloc_format(QString nom){
         }
         else{
             //On indique la taille par défaut sinon il y a des bugs
-            Outils instance_outils;
-            format.setFontPointSize(instance_outils.lire_config("taille").toInt());
+            format.setFontPointSize(settings.getSettings(Taille).toInt());
         }
         //Gras
         if(styles.at(id_style).contains("font-weight")){
@@ -685,8 +684,7 @@ QTextCharFormat OpenDocument::cree_bloc_format(QString nom){
                 format.setFontUnderline(false);
             }
             else{
-                Erreur instance;
-                instance.Erreur_msg(tr("Type de soulignement non pris en charge -> désactivation"), QMessageBox::Ignore);
+                instance_erreur.Erreur_msg(tr("Type de soulignement non pris en charge -> désactivation"), QMessageBox::Ignore);
                 format.setFontUnderline(false);
             }
         }
@@ -745,8 +743,8 @@ QTextBlockFormat OpenDocument::cree_bloc_format2(QString nom){
                 format.setAlignment(Qt::AlignJustify);
             }
             else{
-                Erreur instance;
-                instance.Erreur_msg("ODT : Alignement non trouvé", QMessageBox::Ignore);
+                ErrorManager instance_erreur;
+                instance_erreur.Erreur_msg("ODT : Alignement non trouvé", QMessageBox::Ignore);
             }
         }
     }
@@ -777,8 +775,8 @@ QTextImageFormat OpenDocument::cree_image_format(QString nom){
 
     if(id_style < 0){
         //Il y a eu un bug!  On se casse
-        Erreur instance;
-        instance.Erreur_msg(tr("ODT : style d'image introuvable : %1").arg(nom), QMessageBox::Ignore);
+        ErrorManager instance_erreur;
+        instance_erreur.Erreur_msg(tr("ODT : style d'image introuvable : %1").arg(nom), QMessageBox::Ignore);
         //return false;
     }
     else{
@@ -793,7 +791,7 @@ QTextImageFormat OpenDocument::cree_image_format(QString nom){
 //Fonction qui traite les <span> (styles internes aux paragraphes)
 bool OpenDocument::traite_span(QTextCharFormat format, QTextCursor &curseur, QDomElement e, bool puces, bool tableau){
 
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     QTextCharFormat format_span;
     if(e.tagName() == "text:span"){
         QString nom_format = e.attribute("text:style-name");
@@ -880,7 +878,7 @@ bool OpenDocument::traite_span(QTextCharFormat format, QTextCursor &curseur, QDo
 
 bool OpenDocument::traite_lien(QTextCursor &curseur, QDomElement e, QTextCharFormat format){
 
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     if(e.tagName() != "text:a"){
         instance_erreur.Erreur_msg(tr("ODT : lien invalide: skipping!"), QMessageBox::Ignore);
         return false; //On se casse
@@ -900,7 +898,7 @@ bool OpenDocument::traite_lien(QTextCursor &curseur, QDomElement e, QTextCharFor
 }
 
 bool OpenDocument::traite_image(QTextCursor &curseur, QDomElement e, QString nom){
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     QString file = "";
 
     if(e.tagName() != "draw:image"){
@@ -1028,8 +1026,8 @@ QString OpenDocument::nettoye_code(QString code){
         resultat = resultat.remove((depart+4), fin);
     }
     else{
-        Erreur instance;
-        instance.Erreur_msg(tr("ODT : erreur de troncation de code dans les listes à puces : élément non déterminé"), QMessageBox::Ignore);
+        ErrorManager instance_erreur;
+        instance_erreur.Erreur_msg(tr("ODT : erreur de troncation de code dans les listes à puces : élément non déterminé"), QMessageBox::Ignore);
         return "N/A";
     }
 

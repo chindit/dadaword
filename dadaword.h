@@ -43,11 +43,12 @@
 
 #include "constantes.h"
 #include "ddz.h"
-#include "erreur.h"
+#include "errorManager.h"
 #include "fen_puces.h"
 #include "highlighterhtml.h"
 #include "outils.h"
 #include "opendocument.h"
+#include "settingsManager.h"
 #include "spellchecker.h"
 #include "style.h"
 
@@ -121,7 +122,7 @@ private slots:
     void coller();
     void mode_surecriture();
     void html_highlight();
-    void affiche_menu_perso(const QPoint &position);
+    void affiche_menu_perso();
     void remplace_all();
     void call_remplace();
     void curseur_change();
@@ -138,6 +139,8 @@ private:
     QMdiSubWindow* find_onglet();
     QTextEdit* find_edit();
 
+    SettingsManager *settings;
+    ErrorManager *erreur;
     QMdiArea *zone_centrale;
     QAction *enregistrer;
     QToolBar *puces;

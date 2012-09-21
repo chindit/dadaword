@@ -16,19 +16,19 @@ DadaWord::DadaWord(QWidget *parent)
     type_liste = "";
 
     //Initialisation des dicos
-    Outils instance;
-    dictPath = "/usr/share/hunspell/"+instance.lire_config("dico").toString();
+    settings = new SettingsManager;
+    erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
+    dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
     if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
         dictPath = "/usr/share/hunspell/fr_FR";
     }
 
     //On regarde si le dossier de config existe
-    QString dossier = QDir::homePath()+QDir::separator()+".dadaword";
+    QString dossier = QDir::homePath()+"/.dadaword";
     QDir dir_dossier(dossier);
     if(!dir_dossier.exists()){
         if(!dir_dossier.mkdir(dossier)){
-            Erreur instance;
-            instance.Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Information);
+            erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Information);
         }
         else{
             //On crée un fichier vide
@@ -37,11 +37,18 @@ DadaWord::DadaWord(QWidget *parent)
                 dico_perso.close();
             }
             else{
-                Erreur instance;
-                instance.Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Critical);
+                erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Critical);
             }
         }
     }
+
+    //On crée le timer pour enregistrer automatiquement le fichier
+    QTimer *timer_enregistrement = new QTimer;
+    timer_enregistrement->setSingleShot(false); //Timer répétitif
+    timer_enregistrement->setInterval(settings->getSettings(Timer).toInt()*1000); //On sauvegarde toutes les 5 minutes
+    timer_enregistrement->start();
+    QObject::connect(timer_enregistrement, SIGNAL(timeout()), this, SLOT(enregistrement()));
+
 }
 
 //Destructeur
@@ -97,18 +104,6 @@ void DadaWord::cree_iu(){
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
-    Outils instance_outils;
-    //Par précaution, on remplit à "HIGH" la config si ce n'est pas encore fait
-    if(instance_outils.lire_config("alertes").toInt() != LOW && instance_outils.lire_config("alertes").toInt() != MEDIUM && instance_outils.lire_config("alertes").toInt() != HIGH){
-        instance_outils.enregistre_config("alertes", HIGH);
-    }
-
-    //On regarde s'il y a une taille par défaut définie sinon on la définit (pour éviter un avertissement lors de l'exécution
-    if(instance_outils.lire_config("taille").toInt() < 1){
-        instance_outils.enregistre_config("taille", 12);
-    }
-
-
     //Préparation des variables globales
     //modification = false;
     titre_doc = new QString;
@@ -160,11 +155,11 @@ void DadaWord::cree_iu(){
     QMdiSubWindow *zone_document;
     //Connection du QTextEdit à la correction
     document->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));
+    connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso()));
     connect(document, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
 
     //Gestion des onglets Word ou non
-    if(instance_outils.lire_config("word").toBool()){
+    if(settings->getSettings(Word).toBool()){
         zone_document = new QMdiSubWindow;
         //On delete en plus de fermer
         zone_document->setAttribute(Qt::WA_DeleteOnClose);
@@ -199,7 +194,7 @@ void DadaWord::cree_iu(){
     zone_document->setAccessibleName(tr("Nouveau document"));
 
     //Vue en onglets
-    if(!instance_outils.lire_config("onglets").toBool()){
+    if(!settings->getSettings(Onglets).toBool()){
         zone_centrale->setViewMode(QMdiArea::TabbedView);
         //Autorisation de déplacer les onglets
         QTabBar *tab_bar_area = zone_centrale->findChild<QTabBar*>();
@@ -209,8 +204,7 @@ void DadaWord::cree_iu(){
     }
 
     //Déclaration de la police par défaut :
-    QFont police("ubuntu");
-    document->setFont(police);
+    document->setFont(settings->getSettings(Police).value<QFont>());
 
     //Placement du widget comme zone centrale
     this->setCentralWidget(zone_centrale);
@@ -329,8 +323,7 @@ void DadaWord::apercu_avant_impression(){
     }
     QPrinter printer;
     printer.setPaperSize(QPrinter::A4);
-    Outils instance;
-    if(instance.lire_config("word").toBool()){
+    if(settings->getSettings(Word).toBool()){
         printer.setPageMargins(0, 0, 0, 0, QPrinter::Pica);
     }
     printer.setOrientation(QPrinter::Portrait);
@@ -354,8 +347,7 @@ void DadaWord::imprimer(){
         return;
     }
     QPrinter printer(QPrinter::HighResolution);
-    Outils instance;
-    if(instance.lire_config("word").toBool()){
+    if(settings->getSettings(Word).toBool()){
         printer.setPageMargins(0, 0, 0, 0, QPrinter::Pica);
     }
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
@@ -384,8 +376,6 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     QTextDocument *temp_document;
     QStringList extensions_style;
     extensions_style << "ddw" << "htm" << "html" << "odt" << "ddz";
-    Outils instance_outils;
-    Erreur instance_erreur;
 
     //----------------------------------------------
     //Récupération du QTextEdit à enregistrer
@@ -410,7 +400,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     if(nom_fenetre.isEmpty() || nom_fenetre.isNull() || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
-        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", QDir::homePath(), "Documents DadaWord (*.ddz *.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
+        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", settings->getSettings(Enregistrement).toString(), "Documents DadaWord (*.ddz *.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
             //On enregistre pas, on fait comme si de rien n'était
             return;
@@ -432,7 +422,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
                 //-------------------------
                 //Avertissement de format
                 //-------------------------
-            if(instance_outils.lire_config("alertes").toInt() != LOW){
+            if(settings->getSettings(Alertes).toInt() != LOW){
                 int reponse = QMessageBox::question(this, tr("Format texte"), tr("Attention: le format que vous avez choisi ne peut sauvegarder les informations de style présentes dans ce document.\n Voulez-vous continuer?"), QMessageBox::Yes | QMessageBox::No);
                 if(reponse == QMessageBox::Yes){
                     //Si l'utilisateur est OK, on remplace le contenu de "contenu_fichier" par du plain text
@@ -443,7 +433,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
                     return;
                 }
                 else{
-                    instance_erreur.Erreur_msg(tr("Enregistrement : retour de QMessageBox inopiné -> exit"), QMessageBox::Critical);
+                    erreur->Erreur_msg(tr("Enregistrement : retour de QMessageBox inopiné -> exit"), QMessageBox::Critical);
                     return;
                 }
             }//IF : gestion des alertes
@@ -515,7 +505,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
             }
         }
         if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, envoi_ddz)){
-            instance_erreur.Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
+            erreur->Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
         add_ddz_annexe->setVisible(true);
         rm_ddz_annexe->setVisible(true);
@@ -551,8 +541,6 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     bool style = false;
     bool texte = false;
     bool annexes = false;
-    Outils instance_outils;
-
 
     //----------------------------------------------------------------
     //Récupération du nom du fichier et actions de pré-ouverture
@@ -560,11 +548,10 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     //Récupération du nom de fichier
     QFile file(fichier);
     if(!file.exists()){
-        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", instance_outils.lire_config("enregistrement").toString(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", settings->getSettings(Enregistrement).toString(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
         //On vérifie que l'utilisateur n'a pas fait "Cancel"
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Impossible d'ouvrir le fichier, aucun nom n'a été donné"), QMessageBox::Ignore);
+            erreur->Erreur_msg(tr("Impossible d'ouvrir le fichier, aucun nom n'a été donné"), QMessageBox::Ignore);
             return;
         }
         //S'il n'a pas d'extention, on la rajoute
@@ -588,7 +575,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         QMdiSubWindow *temp_boucle = liste_fichiers.at(i);
         if(temp_boucle->accessibleName() == titre){
             break; //On sort de la boucle
-            if(instance_outils.lire_config("alertes").toInt() != LOW){
+            if(settings->getSettings(Alertes).toInt() != LOW){
                 QMessageBox::information(this, tr("Fichier déjà ouvert"), tr("Le fichier que vous tentez d'ouvrir est déjà ouvert.\n Si ce n'est pas le cas, deux fichiers portent un nom identique. Veuillez les renommer."));
             }
             return;
@@ -607,8 +594,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         style = true; //Fichier contenant du style
         //Erreur de lecture
         if(contenu.isEmpty() || contenu.isNull() || contenu == "NULL"){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Une erreur est survenue lors de l'ouverture du fichier ODT. \n Consultez le fichier de LOG pour plus d'informations"), QMessageBox::Critical);
+            erreur->Erreur_msg(tr("Une erreur est survenue lors de l'ouverture du fichier ODT. \n Consultez le fichier de LOG pour plus d'informations"), QMessageBox::Critical);
             return;
         }
     }
@@ -619,8 +605,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         contenu = retour.at(0);
         //Erreur de lecture
         if(contenu.isEmpty() || contenu.isNull() || contenu == "NULL"){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Une erreur est survenue lors de l'ouverture du fichier DDZ. \n Consultez le fichier de LOG pour plus d'informations"), QMessageBox::Critical);
+            erreur->Erreur_msg(tr("Une erreur est survenue lors de l'ouverture du fichier DDZ. \n Consultez le fichier de LOG pour plus d'informations"), QMessageBox::Critical);
             return;
         }
         style = true; //Fichier de style
@@ -641,9 +626,8 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         file.close();
 
         //BUG : Fichier vide
-        if((contenu.isEmpty() || contenu.isNull()) && !instance_outils.lire_config("fichiers_vides").toBool()){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Une erreur s'est produite lors de l'ouverture du fichier : aucun contenu n'a été détecté. \n Êtes-vous sûr que le fichier n'est pas corrompu?"), QMessageBox::Critical);
+        if((contenu.isEmpty() || contenu.isNull()) && !settings->getSettings(FichiersVides).toBool()){
+            erreur->Erreur_msg(tr("Une erreur s'est produite lors de l'ouverture du fichier : aucun contenu n'a été détecté. \n Êtes-vous sûr que le fichier n'est pas corrompu?"), QMessageBox::Critical);
             return;
         }
 
@@ -666,8 +650,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     //Une erreur s'est produite lors de l'ouverture du fichier
     else{
         //Échec de l'ouverture du fichier
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Le fichier demandé n'a pu être ouvert. \n Veuillez réessayer."), QMessageBox::Critical);
+        erreur->Erreur_msg(tr("Le fichier demandé n'a pu être ouvert. \n Veuillez réessayer."), QMessageBox::Critical);
         return;
     }
 
@@ -697,10 +680,10 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     find_onglet()->setAccessibleName(titre);
     find_onglet()->setAccessibleDescription(nom_fichier);
     //Connexion au slot des récemment ouverts
+    Outils instance_outils;
     instance_outils.enregistre_fichiers(nom_fichier);
     //Configurations WORD
-    Outils instance;
-    if(instance.lire_config("word").toBool()){
+    if(settings->getSettings(Word).toBool()){
         QTextFrame *tf = find_edit()->document()->rootFrame();
         QTextFrameFormat tff = tf->frameFormat();
         tff.setMargin(MARGIN_WORD);
@@ -737,8 +720,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
         }
     }
     else{
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Erreur lors de l'ouverture de fichier : il n'a pu être déterminé si le fichier s'ouvrait ou non en mode texte"), QMessageBox::Warning);
+        erreur->Erreur_msg(tr("Erreur lors de l'ouverture de fichier : il n'a pu être déterminé si le fichier s'ouvrait ou non en mode texte"), QMessageBox::Warning);
         return;
     }
 
@@ -758,9 +740,8 @@ void DadaWord::export_odt(){
         QFile *test_nom = new QFile(find_onglet()->accessibleDescription());
         QString fichier = find_onglet()->accessibleDescription();
         if(!test_nom->isWritable()){
-            Erreur instance;
-            instance.Erreur_msg(tr("ODT : Emplacement non inscriptible"), QMessageBox::Ignore);
-            fichier = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), QDir::homePath(), tr("Documents textes (*.odt)"));
+            erreur->Erreur_msg(tr("ODT : Emplacement non inscriptible"), QMessageBox::Ignore);
+            fichier = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), settings->getSettings(Enregistrement).toString(), tr("Documents textes (*.odt)"));
         }
         else{
             fichier = find_onglet()->accessibleDescription();
@@ -779,7 +760,7 @@ void DadaWord::export_pdf(){
     if(find_edit() == 0){
         return;
     }
-    QString nom_fichier = QFileDialog::getSaveFileName(this, tr("Exporter en PDF"), QDir::homePath(), tr("Documents PDF (*.pdf)"));
+    QString nom_fichier = QFileDialog::getSaveFileName(this, tr("Exporter en PDF"), settings->getSettings(Word).toString(), tr("Documents PDF (*.pdf)"));
     if(!nom_fichier.isEmpty()){
         if(QFileInfo(nom_fichier).suffix().isEmpty()){
             nom_fichier.append(".pdf");
@@ -787,8 +768,7 @@ void DadaWord::export_pdf(){
         QPrinter printer(QPrinter::HighResolution);
         printer.setOutputFormat(QPrinter::PdfFormat);
         if(!printer.isValid()){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Aucune imprimante PDF n'a été trouvée sur votre système.\n Annulation de l'impression"), QMessageBox::Warning);
+            erreur->Erreur_msg(tr("Aucune imprimante PDF n'a été trouvée sur votre système.\n Annulation de l'impression"), QMessageBox::Warning);
             return;
         }
         printer.setOutputFileName(nom_fichier);
@@ -827,8 +807,7 @@ void DadaWord::create_liste_puce(const int ordonne){
                 liste_puce.setStyle(QTextListFormat::ListUpperRoman);
             }
             else{
-                Erreur instance;
-                instance.Erreur_msg(tr("Erreur lors de la transmission du type de liste à DadaWord::create_liste_puce"), QMessageBox::Information);
+                erreur->Erreur_msg(tr("Erreur lors de la transmission du type de liste à DadaWord::create_liste_puce"), QMessageBox::Information);
                 return;
             }
             //Si on est ici, c'est qu'il n'y a pas eu de bugs.  Donc, on enregistre le type de liste dans "type_liste"
@@ -849,8 +828,7 @@ void DadaWord::create_liste_puce(const int ordonne){
         desincremente_puce_bouton->setEnabled(true);
     }
     else{
-        Outils instance_outils;
-        if(instance_outils.lire_config("alertes").toInt() == HIGH){
+        if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Erreur de liste"), QString::fromUtf8("Vous êtes déjà dans une liste à puces; vous ne pouvez donc en insérer une autre."));
         }
     }
@@ -905,8 +883,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             }
         }//Fin du "if" de "Escape"
         if(keyEvent->key() == Qt::Key_Space){
-            Outils instance_outils;
-            if(instance_outils.lire_config("orthographe").toBool()){
+            if(settings->getSettings(Orthographe).toBool()){
                 QTextCursor temp = find_edit()->textCursor();
                 temp.movePosition(QTextCursor::PreviousWord);
                 if(temp.movePosition(QTextCursor::PreviousWord)){
@@ -1040,8 +1017,6 @@ void DadaWord::incremente_puce(){
 
 //Création des menus pour l'UI
 void DadaWord::create_menus(){
-    //Instance outils
-    Outils instance_outils;
     //Création de la barre de menu "Fichier"
     QMenu *menu_fichier = menuBar()->addMenu(tr("Fichier"));
 
@@ -1058,6 +1033,7 @@ void DadaWord::create_menus(){
     connect(menu_ouvrir_fichier, SIGNAL(triggered()), this, SLOT(ouvrir_fichier()));
 
     QMenu *menu_recents = menu_fichier->addMenu(tr("Récemments ouverts"));
+    Outils instance_outils;
     QStringList recemment_ouverts = instance_outils.fichiers_recents();
     if(recemment_ouverts.size() == 0){
         menu_recents->setEnabled(false);
@@ -1074,8 +1050,7 @@ void DadaWord::create_menus(){
                 connect(mappeur_string, SIGNAL(mapped(const QString &)), this, SLOT(ouvrir_fichier(const QString &)));
             }
             else{
-                Erreur instance_erreur;
-                instance_erreur.Erreur_msg(tr("Erreur lors de la génération des fichiers récents; des items vides ont été trouvés"), QMessageBox::Information);
+                erreur->Erreur_msg(tr("Erreur lors de la génération des fichiers récents; des items vides ont été trouvés"), QMessageBox::Information);
             }
         }
     }
@@ -1470,13 +1445,13 @@ void DadaWord::create_menus(){
     barre_standard->addAction(menu_ouvrir_fichier);
     barre_standard->addAction(enregistrer);
     choix_police = new QFontComboBox;
-    choix_police->setCurrentFont(instance_outils.lire_config("police").value<QFont>());
+    choix_police->setCurrentFont(settings->getSettings(Police).value<QFont>());
     barre_standard->addWidget(choix_police);
     //Connection du slot
     connect(choix_police, SIGNAL(currentFontChanged(QFont)), this, SLOT(change_police(QFont)));
 
     taille_police = new QSpinBox;
-    taille_police->setValue(instance_outils.lire_config("taille").toInt());
+    taille_police->setValue(settings->getSettings(Taille).toInt());
     barre_standard->addWidget(taille_police);
     //Connexion au slot
     connect(taille_police, SIGNAL(valueChanged(int)), this, SLOT(change_taille(int)));
@@ -1645,13 +1620,12 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
         QTextEdit *document_onglet = new QTextEdit;
         document_onglet->installEventFilter(this);
         document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
-        connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso(const QPoint &)));//Connection au slot d'affichage du menu
+        connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso()));//Connection au slot d'affichage du menu
         connect(document_onglet, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
         QTextDocument *doc_principal_onglet = new QTextDocument;
         document_onglet->setDocument(doc_principal_onglet);
-        Outils instance_outils;
         QMdiSubWindow *zone_document_onglet;
-        if(instance_outils.lire_config("word").toBool()){
+        if(settings->getSettings(Word).toBool()){
             zone_document_onglet = new QMdiSubWindow;
             zone_centrale->addSubWindow(zone_document_onglet);
             QPrinter printer(QPrinter::HighResolution);
@@ -1728,9 +1702,8 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         QFont police_onglet = text_edit_temp->currentFont();
         QTextDocument *document_actuel = text_edit_temp->document();
         if(document_actuel->isEmpty()){
-            Outils instance_outils;
-            choix_police->setCurrentFont(instance_outils.lire_config("police").value<QFont>());
-            text_edit_temp->setFont(instance_outils.lire_config("police").value<QFont>());
+            choix_police->setCurrentFont(settings->getSettings(Police).value<QFont>());
+            text_edit_temp->setFont(settings->getSettings(Police).value<QFont>());
         }
         else{
             choix_police->setCurrentFont(police_onglet);
@@ -1739,8 +1712,8 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         qreal taille_onglet = text_edit_temp->fontPointSize();
         if(taille_onglet <= 0){
             Outils instance_outils;
-            taille_police->setValue(instance_outils.lire_config("taille").toInt());
-            text_edit_temp->setFontPointSize(instance_outils.lire_config("taille").toInt());
+            taille_police->setValue(settings->getSettings(Taille).toInt());
+            text_edit_temp->setFontPointSize(settings->getSettings(Taille).toInt());
         }
         else{
             taille_police->setValue(taille_onglet);
@@ -1824,8 +1797,8 @@ void DadaWord::fermer_fichier(){
 
 //Alerte d'enregistrement de fichier
 void DadaWord::alerte_enregistrement(QMdiSubWindow *fenetre){
-    Outils instance_outils;
-    if(instance_outils.lire_config("alertes").toInt() == LOW){
+
+    if(settings->getSettings(Alertes).toInt() == LOW){
         return;
     }
     int reponse = QMessageBox::question(this, tr("Enregistrer le fichier?"), "Des modifications ont été apportées au document \""+fenetre->accessibleName()+"\" depuis sa dernière modification.\n Voulez-vous les sauvegarder?", QMessageBox::Yes | QMessageBox::No);
@@ -1837,8 +1810,7 @@ void DadaWord::alerte_enregistrement(QMdiSubWindow *fenetre){
     }
     else{
         //FATAL ERROR!!!!! Mais pour l'instant on ne fait rien
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg("Félicitations! Vous avez réussi à faire planter le programme! Un point pour vous.", QMessageBox::Critical);
+        erreur->Erreur_msg("Félicitations! Vous avez réussi à faire planter le programme! Un point pour vous.", QMessageBox::Critical);
     }
     return;
 }
@@ -1864,8 +1836,7 @@ void DadaWord::change_couleur(const int &value){
     }
     else{
         //Erreur, on ne peut jamais arriver ici
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Exception inconnue lors du choix de couleur.\n L'option choisie n'est pas valide"), QMessageBox::Warning);
+        erreur->Erreur_msg(tr("Exception inconnue lors du choix de couleur.\n L'option choisie n'est pas valide"), QMessageBox::Warning);
         return;
     }
     return;
@@ -1931,8 +1902,7 @@ void DadaWord::change_align(const int &value){
         find_edit()->setAlignment(Qt::AlignJustify);
     }
     else{
-        Erreur instance_erreur;
-        instance_erreur.Erreur_msg(tr("Un alignement non présent a été demandé"), QMessageBox::Information);
+        erreur->Erreur_msg(tr("Un alignement non présent a été demandé"), QMessageBox::Information);
         find_edit()->setAlignment(Qt::AlignLeft);
     }
     return;
@@ -1944,17 +1914,16 @@ void DadaWord::add_image(){
     if(find_edit() == 0){
         return;
     }
-    Outils instance_outils;
+
     if(!find_edit()->acceptRichText()){
-        if(instance_outils.lire_config("alertes").toInt() != LOW){
-            Erreur instance_erreur;
-            instance_erreur.Erreur_msg(tr("Malheureusement, votre document n'accepte pas l'insertion d'image.\n Veuillez réessayer avec un format compatible comme \".ddw\""), QMessageBox::Information);
+        if(settings->getSettings(Alertes).toInt() != LOW){
+            erreur->Erreur_msg(tr("Malheureusement, votre document n'accepte pas l'insertion d'image.\n Veuillez réessayer avec un format compatible comme \".ddw\""), QMessageBox::Information);
         }
         //Évidamment, on quitte
         return;
     }
     //1)Sélectionne l'image
-    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", instance_outils.lire_config("enregistrement").toString(), "Images (*.png *.gif *.jpg *.jpeg *bmp)");
+    QString chemin_image = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", settings->getSettings(Enregistrement).toString(), "Images (*.png *.gif *.jpg *.jpeg *bmp)");
 
     //S'il n'y a pas d'image, on se casse
     if(chemin_image.isEmpty() || chemin_image.isNull()){
@@ -2037,8 +2006,7 @@ void DadaWord::creer_tableau(){
 void DadaWord::tableau_add(const int &pos){
     QTextCursor curseur = find_edit()->textCursor();
     if(curseur.currentTable() == 0){
-        Erreur instance;
-        instance.Erreur_msg(tr("Tentative d'insertion de ligne dans un tableau inexistant"), QMessageBox::Information);
+        erreur->Erreur_msg(tr("Tentative d'insertion de ligne dans un tableau inexistant"), QMessageBox::Information);
         return;
     }
     QTextTable *tableau = curseur.currentTable();
@@ -2055,8 +2023,7 @@ void DadaWord::tableau_add(const int &pos){
         tableau->appendColumns(1);
     }
     else{
-        Erreur instance;
-        instance.Erreur_msg(tr("Opération illégale dans la modification de tableau!"), QMessageBox::Warning);
+        erreur->Erreur_msg(tr("Opération illégale dans la modification de tableau!"), QMessageBox::Warning);
         return;
     }
 
@@ -2067,8 +2034,7 @@ void DadaWord::tableau_add(const int &pos){
 void DadaWord::tableau_remove(const int &pos){
     QTextCursor curseur = find_edit()->textCursor();
     if(curseur.currentTable() == 0){
-        Erreur instance;
-        instance.Erreur_msg(tr("Tentative d'insertion de ligne dans un tableau inexistant"), QMessageBox::Information);
+        erreur->Erreur_msg(tr("Tentative d'insertion de ligne dans un tableau inexistant"), QMessageBox::Information);
         return;
     }
     QTextTable *tableau = curseur.currentTable();
@@ -2094,8 +2060,7 @@ void DadaWord::tableau_remove(const int &pos){
         }
     }
     else{
-        Erreur instance;
-        instance.Erreur_msg(tr("Opération illégale dans la modification de tableau!"), QMessageBox::Warning);
+        erreur->Erreur_msg(tr("Opération illégale dans la modification de tableau!"), QMessageBox::Warning);
         return;
     }
 
@@ -2180,8 +2145,7 @@ void DadaWord::hide_toolbar(const int identifiant){
         }
         break;
     default:
-        Erreur instance;
-        instance.Erreur_msg(tr("Exception lors de la gestion de la visibilité des barres d'outils"), QMessageBox::Information);
+        erreur->Erreur_msg(tr("Exception lors de la gestion de la visibilité des barres d'outils"), QMessageBox::Information);
         return;
         break;
     }
@@ -2199,8 +2163,7 @@ void DadaWord::make_full_screen(){
     }
     else{
         //Bug, on ne peut pas être ici
-        Erreur instance;
-        instance.Erreur_msg(tr("Une erreur est survenue lors de la gestion du fullscreen. L'état de la fenêtre et du menu ne sont pas en adéquation -> skipping"), QMessageBox::Information);
+        erreur->Erreur_msg(tr("Une erreur est survenue lors de la gestion du fullscreen. L'état de la fenêtre et du menu ne sont pas en adéquation -> skipping"), QMessageBox::Information);
     }
     return;
 }
@@ -2296,7 +2259,7 @@ void DadaWord::make_search(const int from){
     bool fenetre = false;
     QTextEdit::ExtraSelection es;
     QTextCharFormat surligne;
-    Outils instance_outils;
+
     surligne.setBackground(QBrush(QColor("#ff6060")));
     surligne.setForeground(QBrush(QColor("#000000")));
 
@@ -2305,8 +2268,7 @@ void DadaWord::make_search(const int from){
     //---------------------------------------------
     if(from == QTOOLBAR || from == GAUCHE || from == DROITE){//Pour les directionnelles, ça revient au même
         if(champ_recherche->text().isEmpty() || champ_recherche->text().isNull()){
-            Erreur instance;
-            instance.Erreur_msg(tr("Tentative de recheche à partir d'une chaine vide"), QMessageBox::Ignore);
+            erreur->Erreur_msg(tr("Tentative de recheche à partir d'une chaine vide"), QMessageBox::Ignore);
             return;
         }
         if(from == GAUCHE){
@@ -2319,8 +2281,7 @@ void DadaWord::make_search(const int from){
         fenetre = true;
     }
     else{
-        Erreur instance;
-        instance.Erreur_msg(tr("Provenance de recherche non identifiée"), QMessageBox::Information);
+        erreur->Erreur_msg(tr("Provenance de recherche non identifiée"), QMessageBox::Information);
     }
 
     //Préparation des curseurs
@@ -2395,7 +2356,7 @@ void DadaWord::make_search(const int from){
     //-------------------------------------------
     if(newCursor.atEnd()){
         pos_recherche.movePosition(QTextCursor::Start);
-        if(instance_outils.lire_config("alertes").toInt() == HIGH && !resultat){
+        if(settings->getSettings(Alertes).toInt() == HIGH && !resultat){
             QMessageBox::information(this, tr("Fin du document"), tr("Le curseur a atteint la fin du document sans trouver de résultat"));
         }
     }
@@ -2413,7 +2374,7 @@ void DadaWord::make_search(const int from){
 
         //Avant de partir, on transfère les résultats si on vient de la fenêtre
         if(fenetre){
-            if(instance_outils.lire_config("alertes").toInt() == HIGH || instance_outils.lire_config("alertes").toInt() == MEDIUM){
+            if(settings->getSettings(Alertes).toInt() == HIGH || settings->getSettings(Alertes).toInt() == MEDIUM){
                 QMessageBox::warning(this, tr("Recherche infructueuse"), tr("Malheureusement, votre recheche n'a donné aucun résultat.\nPeut-être devriez-vous essayer avec des critères moins stricts?"));
             }
             //On ferme tout
@@ -2720,8 +2681,7 @@ void DadaWord::verif_orthographe(){
     find_edit()->ensureCursorVisible();
 
     if(!erreur){//Si "erreur" est faux, c'est qu'on a atteint la fin du document
-        Outils instance_outils;
-        if(instance_outils.lire_config("alertes").toInt() == HIGH){
+        if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Terminé"), tr("La vérification orthographique est terminée."));
         }
 
@@ -2761,7 +2721,7 @@ void DadaWord::orth_dico(){
     if(!orth_erreur.isEmpty() && !orth_erreur.isNull()){
         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
         if(!QFile::exists(userDict)){
-            userDict = QDir::homePath() + ".dadaword/perso.dic";
+            userDict = QDir::homePath() + "/.dadaword/perso.dic";
         }
         SpellChecker instance_dico(dictPath, userDict);
         instance_dico.addToUserWordlist(orth_erreur);
@@ -2877,8 +2837,7 @@ void DadaWord::orth_remplace_all(QString remplace){
     delete mots;
 
     //On affiche le nombre de remplacements
-    Outils instance_outils;
-    if(instance_outils.lire_config("alertes").toInt() == HIGH){
+    if(settings->getSettings(Alertes).toInt() == HIGH){
         QMessageBox::information(this, "Remplacement terminé", QString("Le mot «%1» a été remplacé %2 fois").arg(orth_erreur).arg(nb_remplacements));
     }
 
@@ -3019,7 +2978,7 @@ void DadaWord::html_highlight(){
 }
 
 //Menu personnalisé
-void DadaWord::affiche_menu_perso(const QPoint &position){
+void DadaWord::affiche_menu_perso(){
     //Vérification de l'éditeur
     QTextEdit *editor = qobject_cast<QTextEdit *>(sender());
     if(!editor){
@@ -3189,7 +3148,9 @@ void DadaWord::add_annexe(){
     QFile fichier(annexe);
     qint64 taille = fichier.size();
     if(taille > 2500000){
-        QMessageBox::information(this, tr("Annexe trop volumineuse"), tr("L'annexe est trop volumineuse et ne sera pas insérée dans le document"));
+        if(settings->getSettings(Alertes) != HIGH){
+            QMessageBox::information(this, tr("Annexe trop volumineuse"), tr("L'annexe est trop volumineuse et ne sera pas insérée dans le document"));
+        }
         return;
     }
     //Si on est ici, c'est que tout est bon
@@ -3206,7 +3167,9 @@ void DadaWord::add_annexe(){
         liste_annexes.append(annexes);
     }
     else{
-        QMessageBox::information(this, tr("Annexes trop nombreuses"), tr("Pour des raisons de portabililté, vous ne pouvez avoir plus de 10 annexes pour le même document.  Merci"));
+        if(settings->getSettings(Alertes) != HIGH){
+            QMessageBox::information(this, tr("Annexes trop nombreuses"), tr("Pour des raisons de portabililté, vous ne pouvez avoir plus de 10 annexes pour le même document.  Merci"));
+        }
         return;
     }
 
@@ -3284,7 +3247,6 @@ void DadaWord::rm_annexe(){
 
 //Delete l'annexe
 void DadaWord::make_rm_annexe(QString annexe){
-    Outils instance_outils;
     int pos = -1;
     for(int i=0; i<liste_annexes.size(); i++){
         if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
@@ -3303,13 +3265,13 @@ void DadaWord::make_rm_annexe(QString annexe){
             }
         }
         show_annexes();
-        if(instance_outils.lire_config("alertes") == HIGH){
+        if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Annexe supprimée"), tr("L'annexe a été supprimée"));
         }
         emit delete_annexes();
     }
     else{
-        if(instance_outils.lire_config("alertes") == HIGH){
+        if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Pas d'annexes"), tr("Ce document ne contient pas d'annexes, il est donc impossible de les supprimer. ;-)"));
         }
     }

@@ -290,7 +290,7 @@ void Style::affiche_fen(){
 
 //Crée un nouveau style
 void Style::ajoute_style(){
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
 
     QString styleName = QInputDialog::getText(this, tr("Nom du style"), tr("Nom du style : "));
     if(styleName.isEmpty()){
@@ -410,7 +410,7 @@ void Style::change_couleur(int bouton){
         color_background.at(stackedWidget->currentIndex())->setText(couleur.name());
     }
     else{
-        Erreur instance_erreur;
+        ErrorManager instance_erreur;
         instance_erreur.Erreur_msg(tr("Style:: Exception dans le changement de couleur : pas de bouton spécifié"), QMessageBox::Warning);
         return;
     }
@@ -430,7 +430,7 @@ void Style::enregistre_style(){
 
     //S'il y a un bug, on arrête
     if(liste_styles.count() != nb_styles){
-        Erreur instance_erreur;
+        ErrorManager instance_erreur;
         instance_erreur.Erreur_msg(tr("Une erreur est survenue lors de l'enregistrement des styles, une valeur erronée de l'index a sans doute été fournie."), QMessageBox::Warning);
         return;
     }
@@ -482,7 +482,7 @@ void Style::supprime_style(){
             //On vérifie que le style est enregistré
             QStringList stylesSettingsList = settings.value("noms_styles").toStringList();
             if(!stylesSettingsList.contains(liste_styles.at(activeWidget->currentIndex()))){
-                Erreur instance_erreur;
+                ErrorManager instance_erreur;
                 instance_erreur.Erreur_msg(tr("Impossible de supprimer le style, il n'est pas enregistré"), QMessageBox::Information);
                 return;
             }
@@ -509,11 +509,10 @@ void Style::supprime_style(){
 
         }
         else{
-            Outils instance_outils;
-            if(instance_outils.lire_config("alertes").toInt() == HIGH){
+            //if(instance_outils.lire_config("alertes").toInt() == HIGH){
                 QMessageBox::warning(this, tr("Impossible de supprimer le style"), tr("Il s'agit d'un style par défaut, vous ne pouvez pas le supprimer.\nPar contre, vous pouvez le modifier comme vous le souhaitez."));
                 return;
-            }
+            //}
         }
     }
     else if(reponse == QMessageBox::No){
@@ -521,8 +520,8 @@ void Style::supprime_style(){
         return;
     }
     else{
-        Erreur instance;
-        instance.Erreur_msg(tr("Exception dans la boite de confirmation de la suppression de style"), QMessageBox::Critical);
+        ErrorManager instance_erreur;
+        instance_erreur.Erreur_msg(tr("Exception dans la boite de confirmation de la suppression de style"), QMessageBox::Critical);
         return;
     }
 
@@ -560,7 +559,7 @@ void Style::disableItem(){
         color_background.at(numStyle)->setEnabled(true);
     }
     else{
-        Erreur instance_erreur;
+        ErrorManager instance_erreur;
         instance_erreur.Erreur_msg(tr("Styles : impossible de détecter l'action effectuée dans la checkbox."), QMessageBox::Information);
         return;
     }

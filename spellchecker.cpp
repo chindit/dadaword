@@ -40,13 +40,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QDebug>
 
 #include "hunspell.hxx"
-#include "erreur.h"
+#include "errorManager.h"
 
 SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDictionary)
 {
     UserDictionary = userDictionary;
     dictionnaire_standard = dictionaryPath;
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
     QString dictFile = dictionaryPath + ".dic";
     QString affixFile = dictionaryPath + ".aff";
     QByteArray dictFilePathBA = dictFile.toLocal8Bit();

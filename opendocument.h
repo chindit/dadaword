@@ -21,7 +21,7 @@
 #include "qzipreader.h"
 
 //Classes Perso
-#include "erreur.h"
+#include "errorManager.h"
 #include "dadaword.h"
 
 class OpenDocument : public QObject

@@ -3,19 +3,23 @@
 
 #include <QCheckBox>
 #include <QColor>
+#include <QColorDialog>
 #include <QDialog>
 #include <QFont>
 #include <QFontComboBox>
 #include <QGridLayout>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QListWidget>
 #include <QPushButton>
 #include <QSettings>
 #include <QSignalMapper>
 #include <QSpinBox>
+#include <QStackedWidget>
 #include <QStringList>
 
-#include "erreur.h"
+#include "errorManager.h"
 
 class Style : public QDialog
 {

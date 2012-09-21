@@ -5,25 +5,25 @@
   Merci de ne pas supprimer cette notice.
   */
 
-#include "erreur.h"
+#include "errorManager.h"
 
-Erreur::Erreur()
+ErrorManager::ErrorManager(int alertes)
 {
+    lvlAlertes = alertes;
 }
 
-void Erreur::Affiche_msg(QString msg, int etat){
-    Outils instance_outils;
+void ErrorManager::Affiche_msg(QString msg, int etat){
 
     if(etat == QMessageBox::Critical){
             QMessageBox::critical(0, tr("Erreur fatale"), msg);
     }
     else if(etat == QMessageBox::Warning){
-        if(instance_outils.lire_config("alertes").toInt() != LOW){
+        if(lvlAlertes != LOW){
             QMessageBox::warning(0, tr("Alerte"), msg);
         }
     }
     else if(etat == QMessageBox::Information){
-        if(instance_outils.lire_config("alertes").toInt() == LOW){
+        if(lvlAlertes == HIGH){
             QMessageBox::information(0, tr("Erreur légère"), msg);
         }
     }
@@ -39,7 +39,7 @@ void Erreur::Affiche_msg(QString msg, int etat){
     return;
 }
 
-void Erreur::Erreur_msg(QString msg, int etat){
+void ErrorManager::Erreur_msg(QString msg, int etat){
     //1)Inscription dans le log
     //On stocke dans le fichier de log
     //Emplacement du fichier de LOG

@@ -8,6 +8,10 @@
 #include "constantes.h"
 #include "outils.h"
 
+Outils::Outils(){
+
+}
+
 void Outils::fenetre_config(){
     //Création de la fenêtre de configuration
     configure_fen = new QWidget;
@@ -17,6 +21,9 @@ void Outils::fenetre_config(){
     //Paramètres de la fenêtre
     configure_fen->setWindowIcon(QIcon(":/menu/images/outils.png"));
     configure_fen->setWindowTitle(tr("Configurer Dadaword"));
+
+    //Settings
+    settings = new SettingsManager;
 
     QListWidget *settingsList = new QListWidget;
     settingsList->setMaximumWidth(100);
@@ -67,10 +74,10 @@ void Outils::fenetre_config(){
     checkbox_word = new QCheckBox;
     checkbox_orthographe = new QCheckBox;
     //On y met la configuration déjà existante :
-    checkbox_onglets->setChecked(lire_config("onglets").toBool());
-    checkbox_fichiers_vides->setChecked(lire_config("fichiers_vides").toBool());
-    checkbox_orthographe->setChecked(lire_config("orthographe").toBool());
-    checkbox_word->setChecked(lire_config("word").toBool());
+    checkbox_onglets->setChecked(settings->getSettings(Onglets).toBool());
+    checkbox_fichiers_vides->setChecked(settings->getSettings(FichiersVides).toBool());
+    checkbox_orthographe->setChecked(settings->getSettings(Orthographe).toBool());
+    checkbox_word->setChecked(settings->getSettings(Word).toBool());
 
     alertes = new QComboBox;
     alertes->addItem(tr("Aucunes"), LOW);
@@ -78,7 +85,7 @@ void Outils::fenetre_config(){
     alertes->addItem(tr("Toutes"), HIGH);
 
     saving_edit = new QLineEdit;
-    saving_edit->setText(lire_config("enregistrement").toString());
+    saving_edit->setText(settings->getSettings(Enregistrement).toString());
     saving_edit->setEnabled(false);
     QPushButton *changeSaving = new QPushButton("…");
     changeSaving->setMaximumWidth(25);
@@ -91,7 +98,7 @@ void Outils::fenetre_config(){
     extentions << "*.dic";
     QStringList dicos = dossier.entryList(extentions);
     //On récupère le dico actuel
-    QString nom_dico = lire_config("dico").toString();
+    QString nom_dico = settings->getSettings(Dico).toString();
     for(int i=0; i<dicos.size(); i++){
         QString temp = dicos.at(i);
         temp.resize((temp.size()-4));
@@ -103,7 +110,7 @@ void Outils::fenetre_config(){
     }
 
     //Lecture des valeurs
-    int result = lire_config("alertes").toInt();
+    int result = settings->getSettings(Alertes).toInt();
     switch(result){
     case LOW:
         alertes->setCurrentIndex(0);
@@ -115,18 +122,18 @@ void Outils::fenetre_config(){
         alertes->setCurrentIndex(2);
         break;
     default:
-        Erreur instance_erreur;
+        ErrorManager instance_erreur(settings->getSettings(Alertes).toInt());
         instance_erreur.Erreur_msg(tr("Exception dans la valeur de l'alerte"), QMessageBox::Warning);
     }
 
     taille_police_default = new QSpinBox;
-    taille_police_default->setValue(lire_config("taille").toInt());
+    taille_police_default->setValue(settings->getSettings(Taille).toInt());
     spinbox_timer = new QSpinBox;
     spinbox_timer->setMaximum(1000);
     spinbox_timer->setMinimum(1);
-    spinbox_timer->setValue(lire_config("timer").toInt());
+    spinbox_timer->setValue(settings->getSettings(Timer).toInt());
     police_default = new QFontComboBox;
-    police_default->setCurrentFont(lire_config("police").value<QFont>());
+    police_default->setCurrentFont(settings->getSettings(Police).value<QFont>());
 
     //-------------------------------------------------
     // Édition
@@ -173,51 +180,32 @@ void Outils::fenetre_config(){
 
 void Outils::enregistre_config(QString nom, int valeur){
     //Enregistrement des paramètres par des QSettings
-    QSettings settings("Dadaword", "dadaword");
+    QSettings s("Dadaword", "dadaword");
     if(nom != "null"){
-        settings.setValue(nom, valeur);
+        s.setValue(nom, valeur);
         return;
     }
     //S'il y a eu un changement, on affiche une alerte.
-    if((lire_config("onglets").toBool() && !checkbox_onglets->isChecked()) || (!lire_config("onglets").toBool() && checkbox_onglets->isChecked()) || (lire_config("word").toBool() && !checkbox_word->isChecked()) || (!lire_config("word").toBool() && checkbox_word->isChecked())){
+    if((settings->getSettings(Onglets).toBool() && !checkbox_onglets->isChecked()) || (!settings->getSettings(Onglets).toBool() && checkbox_onglets->isChecked()) || (settings->getSettings(Word).toBool() && !checkbox_word->isChecked()) || (!settings->getSettings(Word).toBool() && checkbox_word->isChecked())){
         //Avertissement
-        if(lire_config("alertes").toInt() != LOW){
+        if(settings->getSettings(Alertes).toInt() != LOW){
             QMessageBox::information(0, tr("Configuration modifiée"), tr("Attention, la modification de certains paramètres ne sera prise en compte que lors du redémarrage du programme."));
         }
     }//Fin des "alertes"
 
-    settings.setValue("onglets", checkbox_onglets->isChecked());
-    settings.setValue("fichiers_vides", checkbox_fichiers_vides->isChecked());
-    settings.setValue("police", police_default->currentFont());
-    settings.setValue("taille", taille_police_default->value());
-    settings.setValue("alertes", alertes->itemData(alertes->currentIndex()));
-    settings.setValue("orthographe", checkbox_orthographe->isChecked());
-    settings.setValue("word", checkbox_word->isChecked());
-    settings.setValue("dico", liste_dicos->currentText());
-    settings.setValue("timer", spinbox_timer->value());
-    settings.setValue("enregistrement", saving_edit->text());
+    s.setValue("onglets", checkbox_onglets->isChecked());
+    s.setValue("fichiers_vides", checkbox_fichiers_vides->isChecked());
+    s.setValue("police", police_default->currentFont());
+    s.setValue("taille", taille_police_default->value());
+    s.setValue("alertes", alertes->itemData(alertes->currentIndex()));
+    s.setValue("orthographe", checkbox_orthographe->isChecked());
+    s.setValue("word", checkbox_word->isChecked());
+    s.setValue("dico", liste_dicos->currentText());
+    s.setValue("timer", spinbox_timer->value());
+    s.setValue("enregistrement", saving_edit->text());
 
     configure_fen->close();
     return;
-}
-
-//Lire une valeur booléenne dans la configuration
-QVariant Outils::lire_config(QString nom){
-    QSettings settings("Dadaword", "dadaword");
-    //On teste la valeur
-    if(nom == "taille" || nom == "timer"){
-        bool ok = false;
-        settings.value(nom).toInt(&ok);
-        if(!ok){
-            if(nom == "taille"){
-                return QVariant(12);
-            }
-            else{
-                return QVariant(300);
-            }
-        }
-    }
-    return settings.value(nom);
 }
 
 //Enregistre un fichier ouvert dans les «récemment ouverts»
@@ -331,7 +319,7 @@ bool Outils::clean_log(){
         //On ne fait rien, il n'y a pas assez de données dans le fichier de log
         return true;
     }
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
 
     //On broie l'ancien fichier de log
     fichier.resize(0);
@@ -341,8 +329,7 @@ bool Outils::clean_log(){
         message = message.remove(0, 24);
         instance_erreur.Erreur_msg(message, QMessageBox::Ignore);
     }
-    Outils instance;
-    if(instance.lire_config("alertes").toInt() == HIGH){
+    if(settings->getSettings(Alertes).toInt() == HIGH){
         QMessageBox::information(0, tr("Nettoyage effectué"), tr("Le nettoyage du fichie de log a été effectué avec succès"));
     }
     else{

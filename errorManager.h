@@ -8,14 +8,21 @@
 #ifndef ERREUR_H
 #define ERREUR_H
 
-#include "dadaword.h"
+#include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QTextStream>
 
-class Erreur : public QObject{
+#include "constantes.h"
+
+class ErrorManager : public QObject{
 
     Q_OBJECT
 
 public:
-    Erreur();
+    ErrorManager(int alertes = HIGH);
     void Erreur_msg(QString msg, int etat);
 
 public slots:
@@ -24,6 +31,7 @@ public slots:
 private:
     void Affiche_msg(QString msg, int etat);
 
+    int lvlAlertes;
 };
 
 #endif // ERREUR_H

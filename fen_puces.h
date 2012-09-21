@@ -13,7 +13,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QTextListFormat>
-#include "erreur.h"
+#include "errorManager.h"
 
 class fen_puces : public QDialog
 {

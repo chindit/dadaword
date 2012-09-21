@@ -6,7 +6,7 @@ DDZ::DDZ()
 
 bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
     //Paramètres de fonction
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
 
     QZipWriter ddz_global(fichier, QIODevice::WriteOnly);
 
@@ -83,7 +83,7 @@ QStringList DDZ::ouvre(QString nom){
     //Variables globales
     QString contenu;
     QStringList retour;
-    Erreur instance_erreur;
+    ErrorManager instance_erreur;
 
     //---------------------------------------------
     //Extraction de l'archive
