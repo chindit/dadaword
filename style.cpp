@@ -31,9 +31,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -46,9 +46,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", false);
         settings.setValue("souligne", false);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -61,9 +61,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", true);
         settings.setValue("souligne", false);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -76,9 +76,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", false);
         settings.setValue("souligne", true);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -91,9 +91,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Bold);
         settings.setValue("italique", true);
         settings.setValue("souligne", true);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -106,9 +106,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", true);
         settings.setValue("souligne", true);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
 
@@ -121,9 +121,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", false);
         settings.setValue("souligne", true);
-        settings.setValue("noForeground", false);
+        settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
-        settings.setValue("noBackground", false);
+        settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
     }
