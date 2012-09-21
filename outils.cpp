@@ -178,13 +178,7 @@ void Outils::fenetre_config(){
     return;
 }
 
-void Outils::enregistre_config(QString nom, int valeur){
-    //Enregistrement des paramètres par des QSettings
-    QSettings s("Dadaword", "dadaword");
-    if(nom != "null"){
-        s.setValue(nom, valeur);
-        return;
-    }
+void Outils::enregistre_config(){
     //S'il y a eu un changement, on affiche une alerte.
     if((settings->getSettings(Onglets).toBool() && !checkbox_onglets->isChecked()) || (!settings->getSettings(Onglets).toBool() && checkbox_onglets->isChecked()) || (settings->getSettings(Word).toBool() && !checkbox_word->isChecked()) || (!settings->getSettings(Word).toBool() && checkbox_word->isChecked())){
         //Avertissement
@@ -193,16 +187,16 @@ void Outils::enregistre_config(QString nom, int valeur){
         }
     }//Fin des "alertes"
 
-    s.setValue("onglets", checkbox_onglets->isChecked());
-    s.setValue("fichiers_vides", checkbox_fichiers_vides->isChecked());
-    s.setValue("police", police_default->currentFont());
-    s.setValue("taille", taille_police_default->value());
-    s.setValue("alertes", alertes->itemData(alertes->currentIndex()));
-    s.setValue("orthographe", checkbox_orthographe->isChecked());
-    s.setValue("word", checkbox_word->isChecked());
-    s.setValue("dico", liste_dicos->currentText());
-    s.setValue("timer", spinbox_timer->value());
-    s.setValue("enregistrement", saving_edit->text());
+    settings->setSettings(Onglets, checkbox_onglets->isChecked());
+    settings->setSettings(FichiersVides, checkbox_fichiers_vides->isChecked());
+    settings->setSettings(Police, police_default->currentFont());
+    settings->setSettings(Taille, taille_police_default->value());
+    settings->setSettings(Alertes, alertes->itemData(alertes->currentIndex()));
+    settings->setSettings(Orthographe, checkbox_orthographe->isChecked());
+    settings->setSettings(Word, checkbox_word->isChecked());
+    settings->setSettings(Dico, liste_dicos->currentText());
+    settings->setSettings(Timer, spinbox_timer->value());
+    settings->setSettings(Enregistrement, saving_edit->text());
 
     configure_fen->close();
     return;

@@ -25,6 +25,17 @@ QVariant SettingsManager::getSettings(Setting s){
     return settings[s];
 }
 
+void SettingsManager::setSettings(Setting s, QVariant v){
+    if(settings[s] != v){
+        settings[s] = v;
+        //Enregistrement
+        saveSettings();
+    }
+    else{
+        return;
+    }
+}
+
 void SettingsManager::loadSettings(){
     QSettings options("DadaWord", "dadaword");
     settings[Onglets] = options.value(names[Onglets], false);
@@ -37,5 +48,20 @@ void SettingsManager::loadSettings(){
     settings[Word] = options.value(names[Word], true);
     settings[Timer] = options.value(names[Timer], 300);
     settings[Enregistrement] = options.value(names[Enregistrement], QDir::homePath());
+    return;
+}
+
+void SettingsManager::saveSettings(){
+    QSettings options("DadaWord", "dadaword");
+    options.setValue(names[Onglets], settings[Onglets]);
+    options.setValue(names[FichiersVides], settings[FichiersVides]);
+    options.setValue(names[Dico], settings[Dico]);
+    options.setValue(names[Police], settings[Police]);
+    options.setValue(names[Taille], settings[Taille]);
+    options.setValue(names[Alertes], settings[Alertes]);
+    options.setValue(names[Orthographe], settings[Orthographe]);
+    options.setValue(names[Word], settings[Word]);
+    options.setValue(names[Timer], settings[Timer]);
+    options.setValue(names[Enregistrement], settings[Enregistrement]);
     return;
 }

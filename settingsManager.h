@@ -16,6 +16,7 @@ class SettingsManager : public QObject
 public:
     explicit SettingsManager(QObject *parent = 0);
     QVariant getSettings(Setting s);
+    void setSettings(Setting s, QVariant v);
     
 signals:
     
@@ -23,6 +24,7 @@ public slots:
 
 private:
     void loadSettings();
+    void saveSettings();
     QVariant *settings;
     QString *names;
     

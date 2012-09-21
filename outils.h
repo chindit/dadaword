@@ -35,8 +35,7 @@ public:
 
 public slots:
     void fenetre_config();
-    //QVariant lire_config(QString nom);
-    void enregistre_config(QString nom = "null", int valeur = 0);
+    void enregistre_config();
     void enregistre_fichiers(QString fichier);
     QStringList fichiers_recents();
     void affiche_log();
