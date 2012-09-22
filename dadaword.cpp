@@ -67,6 +67,8 @@ DadaWord::~DadaWord()
     }
 
     //On fait les delete
+    delete settings;
+    delete erreur;
     delete zone_centrale;
     delete enregistrer;
     delete puces;
@@ -392,7 +394,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         fenetre_temp = fenetre_active;
     }
 
-    if(edit_temp->isReadOnly()){
+    if(!edit_temp->document()->isModified()){
         return;
     }
 
@@ -685,14 +687,6 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     //Connexion au slot des récemment ouverts
     Outils instance_outils;
     instance_outils.enregistre_fichiers(nom_fichier);
-    //Configurations WORD
-    if(settings->getSettings(Word).toBool()){
-        QTextFrame *tf = find_edit()->document()->rootFrame();
-        QTextFrameFormat tff = tf->frameFormat();
-        tff.setMargin(MARGIN_WORD);
-        tf->setFrameFormat(tff);
-        find_edit()->document()->setModified(false);
-    }
 
     //----------------------------------------------
     //Insertion du contenu dans le QTextEdit
@@ -725,6 +719,15 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     else{
         erreur->Erreur_msg(tr("Erreur lors de l'ouverture de fichier : il n'a pu être déterminé si le fichier s'ouvrait ou non en mode texte"), QMessageBox::Warning);
         return;
+    }
+
+    //Configurations WORD
+    if(settings->getSettings(Word).toBool()){
+        QTextFrame *tf = find_edit()->document()->rootFrame();
+        QTextFrameFormat tff = tf->frameFormat();
+        tff.setMargin(MARGIN_WORD);
+        tf->setFrameFormat(tff);
+        find_edit()->document()->setModified(false);
     }
 
     return;

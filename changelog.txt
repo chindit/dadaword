@@ -5,6 +5,8 @@ Version 1.2.0 :
 - Ajout d'un menu déroulant avec les couleurs les plus courantes dans le bouton de surlignage.
 - BUG : dictionnaire personnel mal placé selon certaine configuration
 - BUG : paramètre non utilisé : QPoint.
+- BUG : enregistrement du fichier même s'il n'était pas modifié
+- BUG : marges des documents Word qui disparaissaient à l'ouverture d'un fichier.
 
 Version 1.1.3 :
 - Mise à jour des boutons selon la position du curseur
