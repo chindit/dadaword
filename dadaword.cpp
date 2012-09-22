@@ -39,6 +39,10 @@ DadaWord::DadaWord(QWidget *parent)
             else{
                 erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Critical);
             }
+            QDir dir_autosave(QDir::homePath()+"/.dadaword/autosave");
+            if(!dir_autosave.exists()){
+                dir_autosave.mkdir(QDir::homePath()+"/.dadaword/autosave");
+            }
         }
     }
 
@@ -47,7 +51,7 @@ DadaWord::DadaWord(QWidget *parent)
     timer_enregistrement->setSingleShot(false); //Timer répétitif
     timer_enregistrement->setInterval(settings->getSettings(Timer).toInt()*1000); //On sauvegarde toutes les 5 minutes
     timer_enregistrement->start();
-    QObject::connect(timer_enregistrement, SIGNAL(timeout()), this, SLOT(enregistrement()));
+    QObject::connect(timer_enregistrement, SIGNAL(timeout()), this, SLOT(autoSave()));
 
 }
 
@@ -366,11 +370,12 @@ void DadaWord::imprimer(){
 }
 
 //Enregistrement
-void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
+void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
     //---------------------------------------------------
     //Variables globales pour la fonction
     //---------------------------------------------------
     QString nom_fichier = "";
+    QString nom_autosave = "";
     QString contenu_fichier;
     QTextEdit *edit_temp;
     QMdiSubWindow *fenetre_temp;
@@ -402,13 +407,25 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     //Récupération du nom du fichier
     //-------------------------------------
     QString nom_fenetre = fenetre_temp->accessibleDescription();
-    if(nom_fenetre.isEmpty() || nom_fenetre.isNull() || nom_fenetre.contains(tr("Nouveau document")) || saveas){
+    if(nom_fenetre.isEmpty() || nom_fenetre.contains("DDWubIntMs") || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
-        nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", settings->getSettings(Enregistrement).toString(), "Documents DadaWord (*.ddz *.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
-        if(nom_fichier.isNull() || nom_fichier.isEmpty()){
-            //On enregistre pas, on fait comme si de rien n'était
-            return;
+        if(!autosave){
+            nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", settings->getSettings(Enregistrement).toString(), "Documents DadaWord (*.ddz *.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
+            if(nom_fichier.isNull() || nom_fichier.isEmpty()){
+                //On enregistre pas, on fait comme si de rien n'était
+                return;
+            }
+        }
+        else{
+            //Autosave
+            if(nom_fenetre.contains("DDWubIntMs")){
+                nom_fichier = nom_fenetre;
+            }
+            else{
+                QDateTime temps;
+                nom_fichier = QDir::homePath()+"/.dadaword/autosave/DDWubIntMs"+QString::number(temps.toTime_t())+".ddz";
+            }
         }
 
         //------------------------------------------------
@@ -465,8 +482,13 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
         //------------------------------------------------
         //Opérations générales appliquées à la fenêtre
         //------------------------------------------------
+        if(fenetre_temp->accessibleDescription().contains("DDWubIntMs")){
+            nom_autosave = fenetre_temp->accessibleDescription();
+        }
         fenetre_temp->setAccessibleDescription(nom_fichier);
-        fenetre_temp->setWindowTitle(nom_fichier.split("/").last());
+        if(!autosave){
+            fenetre_temp->setWindowTitle(nom_fichier.split("/").last());
+        }
 
         //Activation de la coloration syntaxique
         if(fenetre_temp->windowTitle().contains(".htm") || fenetre_temp->windowTitle().contains(".xml")){
@@ -481,7 +503,12 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     //Opérations si le nom de fichier existait déjà
     //-------------------------------------------------
     else{
-        nom_fichier = fenetre_temp->accessibleDescription();
+        if(!autosave){
+            nom_fichier = fenetre_temp->accessibleDescription();
+        }
+        else{
+            nom_fichier = QDir::homePath()+"/.dadaword/autosave/"+fenetre_temp->accessibleDescription().split("/").last();
+        }
         if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && !nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
             contenu_fichier = edit_temp->toHtml();
         }
@@ -528,12 +555,41 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     //----------------------------------------------
     //Opérations de post-enregistrement
     //----------------------------------------------
-    temp_document = edit_temp->document();
-    temp_document->setModified(false);
-    enregistrer->setEnabled(false);
-    status_is_modified->setEnabled(false);
+    if(!autosave){
+        temp_document = edit_temp->document();
+        temp_document->setModified(false);
+        enregistrer->setEnabled(false);
+        status_is_modified->setEnabled(false);
+    }
     find_edit()->setFocus();
+    if(!autosave){
+        QFile fichier_autosave;
+        if(nom_autosave.isEmpty()){
+            fichier_autosave.setFileName(fenetre_temp->accessibleDescription());
+        }
+        else{
+            fichier_autosave.setFileName(nom_autosave);
+        }
+        //Suppression
+        if(fichier_autosave.exists()){
+            if(!fichier_autosave.remove()){
+                ErrorManager instance_erreur(settings->getSettings(Alertes).toInt());
+                instance_erreur.Erreur_msg(tr("Impossible de supprimer le fichier de sauvegarde"), QMessageBox::Ignore);
+            }
+        }
+    }
 
+    return;
+}
+
+//Enregistrement automatique par le Timer
+void DadaWord::autoSave(){
+    if(!find_edit()->document()->isModified()){
+        //Rien à faire si le document n'est pas modifié
+        return;
+    }
+    //On renvoie à la fonction d'enregistrement
+    enregistrement(find_onglet(), false, true);
     return;
 }
 

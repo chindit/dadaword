@@ -77,7 +77,8 @@ private slots:
     void souligne_police(bool etat);
     void change_taille(int taille);
     void apercu_avant_impression();
-    void enregistrement(QMdiSubWindow* fenetre_active = 0, bool saveas = false);
+    void enregistrement(QMdiSubWindow* fenetre_active = 0, bool saveas = false, bool autosave = false);
+    void autoSave();
     void ouvrir_fichier(const QString &fichier = "null");
     void print(QPrinter *p);
     void export_odt();
