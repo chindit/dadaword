@@ -2,6 +2,7 @@ DadaWord - Changelog
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque
+- Ajout d'un menu déroulant avec les couleurs les plus courantes dans le bouton de surlignage.
 - BUG : dictionnaire personnel mal placé selon certaine configuration
 - BUG : paramètre non utilisé : QPoint.
 

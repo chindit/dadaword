@@ -365,7 +365,6 @@ void DadaWord::imprimer(){
 
 //Enregistrement
 void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
-
     //---------------------------------------------------
     //Variables globales pour la fonction
     //---------------------------------------------------
@@ -391,6 +390,10 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas){
     else{//On n'est pas dans la fenêtre active
         edit_temp = fenetre_active->findChild<QTextEdit *>();
         fenetre_temp = fenetre_active;
+    }
+
+    if(edit_temp->isReadOnly()){
+        return;
     }
 
     //-------------------------------------
@@ -1478,12 +1481,64 @@ void DadaWord::create_menus(){
     mappeur_couleur->setMapping(couleur_texte, TEXTE);
     connect(mappeur_couleur, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
 
-    QAction *couleur_highlight = barre_standard->addAction(QIcon(":/menus/images/couleur_highlight.png"), tr("Couleur de surlignage"));
+    QToolButton *button_highlight = new QToolButton;
+    button_highlight->setIcon(QIcon(":/menus/images/couleur_highlight.png"));
+    barre_standard->addWidget(button_highlight);
     //Mappeur 2 pour passer une valeur à la fonction
     QSignalMapper *mappeur_couleur2 = new QSignalMapper;
-    connect(couleur_highlight, SIGNAL(triggered()), mappeur_couleur2, SLOT(map()));
-    mappeur_couleur2->setMapping(couleur_highlight, SURLIGNE);
+    connect(button_highlight, SIGNAL(clicked()), mappeur_couleur2, SLOT(map()));
+    mappeur_couleur2->setMapping(button_highlight, SURLIGNE);
     connect(mappeur_couleur2, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    //Menu du QToolButton
+    QMenu *menu_couleurs = new QMenu;
+    //Jaune
+    QWidgetAction *couleur_jaune = new QWidgetAction(menu_couleurs);
+    QLabel *label_jaune = new QLabel;
+    label_jaune->setMinimumWidth(75);
+    label_jaune->setStyleSheet("background-color: yellow");
+    couleur_jaune->setDefaultWidget(label_jaune);
+    menu_couleurs->addAction(couleur_jaune);
+    //Rouge
+    QWidgetAction *couleur_rouge = new QWidgetAction(menu_couleurs);
+    QLabel *label_rouge = new QLabel;
+    label_rouge->setMinimumWidth(75);
+    label_rouge->setStyleSheet("background-color: red");
+    couleur_rouge->setDefaultWidget(label_rouge);
+    menu_couleurs->addAction(couleur_rouge);
+    //Blue
+    QWidgetAction *couleur_bleu = new QWidgetAction(menu_couleurs);
+    QLabel *label_bleu = new QLabel;
+    label_bleu->setMinimumWidth(75);
+    label_bleu->setStyleSheet("background-color: blue");
+    couleur_bleu->setDefaultWidget(label_bleu);
+    menu_couleurs->addAction(couleur_bleu);
+    //Vert
+    QWidgetAction *couleur_vert = new QWidgetAction(menu_couleurs);
+    QLabel *label_vert = new QLabel;
+    label_vert->setMinimumWidth(75);
+    label_vert->setStyleSheet("background-color: green");
+    couleur_vert->setDefaultWidget(label_vert);
+    menu_couleurs->addAction(couleur_vert);
+    //Connects
+    QSignalMapper *mappeur_couleur3 = new QSignalMapper;
+    //Vert
+    connect(couleur_vert, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
+    mappeur_couleur3->setMapping(couleur_vert, VERT);
+    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    //Jaune
+    connect(couleur_jaune, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
+    mappeur_couleur3->setMapping(couleur_jaune, JAUNE);
+    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    //Rouge
+    connect(couleur_rouge, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
+    mappeur_couleur3->setMapping(couleur_rouge, ROUGE);
+    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    //Bleu
+    connect(couleur_bleu, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
+    mappeur_couleur3->setMapping(couleur_bleu, BLEU);
+    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+
+    button_highlight->setMenu(menu_couleurs);
 
     barre_standard->addAction(verif_langue);
 
@@ -1821,17 +1876,43 @@ void DadaWord::change_couleur(const int &value){
     if(find_edit() == 0){
         return;
     }
-    //On récupère la couleur souhaitée :
-    QColor couleur = QColorDialog::getColor(Qt::yellow, this);
 
     //On applique la couleur au texte :
     if(value == TEXTE){
+        //On récupère la couleur souhaitée :
+        QColor couleur = QColorDialog::getColor(Qt::yellow, this);
         find_edit()->setTextColor(couleur);
     }
     else if(value == SURLIGNE){
+        //On récupère la couleur souhaitée :
+        QColor couleur = QColorDialog::getColor(Qt::yellow, this);
         QTextCharFormat format_couleur;
         format_couleur = find_edit()->currentCharFormat();
         format_couleur.setBackground(QBrush(couleur));
+        find_edit()->setCurrentCharFormat(format_couleur);
+    }
+    else if(value == JAUNE){
+        QTextCharFormat format_couleur;
+        format_couleur = find_edit()->currentCharFormat();
+        format_couleur.setBackground(QBrush(Qt::yellow));
+        find_edit()->setCurrentCharFormat(format_couleur);
+    }
+    else if(value == ROUGE){
+        QTextCharFormat format_couleur;
+        format_couleur = find_edit()->currentCharFormat();
+        format_couleur.setBackground(QBrush(Qt::red));
+        find_edit()->setCurrentCharFormat(format_couleur);
+    }
+    else if(value == BLEU){
+        QTextCharFormat format_couleur;
+        format_couleur = find_edit()->currentCharFormat();
+        format_couleur.setBackground(QBrush(Qt::blue));
+        find_edit()->setCurrentCharFormat(format_couleur);
+    }
+    else if(value == VERT){
+        QTextCharFormat format_couleur;
+        format_couleur = find_edit()->currentCharFormat();
+        format_couleur.setBackground(QBrush(Qt::green));
         find_edit()->setCurrentCharFormat(format_couleur);
     }
     else{

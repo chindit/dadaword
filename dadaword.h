@@ -40,6 +40,7 @@
 #include <QTextTable>
 #include <QToolBar>
 #include <QToolButton>
+#include <QWidgetAction>
 
 #include "constantes.h"
 #include "ddz.h"
@@ -66,6 +67,7 @@ public slots:
 
 signals:
     void delete_annexes();
+    void signal_couleur(int action, int couleur);
 
 private slots:
     void affiche_about();
