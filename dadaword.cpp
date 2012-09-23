@@ -232,7 +232,20 @@ void DadaWord::cree_iu(){
         }
     }
 #endif
-}
+
+    //--------------------------------------------------
+    // Récupération automatique des documents
+    //--------------------------------------------------
+    autoLoad *verif_fichiers = new autoLoad;
+    if(verif_fichiers->hasFilesNames()){
+        QStringList fichiers = verif_fichiers->getFilesNames();
+        if(!fichiers.isEmpty()){
+            for(int i=0; i<fichiers.size(); i++){
+                ouvrir_fichier(fichiers.at(i), true);
+            }//Fin "for"
+        }//Fin "fichiers" -> Empty
+    }//Fin "hasFilesNames"
+}//Fin "Create UI"
 
 //A propos du programme
 void DadaWord::affiche_about(){
@@ -407,7 +420,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
     //Récupération du nom du fichier
     //-------------------------------------
     QString nom_fenetre = fenetre_temp->accessibleDescription();
-    if(nom_fenetre.isEmpty() || nom_fenetre.contains("DDWubIntMs") || nom_fenetre.contains(tr("Nouveau document")) || saveas){
+    if(nom_fenetre.isEmpty() || nom_fenetre.contains("DDWubIntMs", Qt::CaseSensitive) || nom_fenetre.contains(tr("Nouveau document")) || saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
         if(!autosave){
@@ -419,7 +432,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         }
         else{
             //Autosave
-            if(nom_fenetre.contains("DDWubIntMs")){
+            if(nom_fenetre.contains("DDWubIntMs", Qt::CaseSensitive)){
                 nom_fichier = nom_fenetre;
             }
             else{
@@ -584,6 +597,9 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
 
 //Enregistrement automatique par le Timer
 void DadaWord::autoSave(){
+    if(find_edit() == 0){
+        return;
+    }
     if(!find_edit()->document()->isModified()){
         //Rien à faire si le document n'est pas modifié
         return;
@@ -594,7 +610,7 @@ void DadaWord::autoSave(){
 }
 
 //Ouverture d'un fichier
-void DadaWord::ouvrir_fichier(const QString &fichier){
+void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Variables globales
     QString nom_fichier;
     QStringList retour;
@@ -736,13 +752,15 @@ void DadaWord::ouvrir_fichier(const QString &fichier){
     }
     //On refait un "find_edit()" parce qu'il se peut que celui-ci ait changé vu qu'on a (peut-être) ouvert un nouvel onglet
     document_actuel = find_edit()->document();
-    document_actuel->setModified(false);
+    if(!autosave){
+        document_actuel->setModified(false);
+        //Connexion au slot des récemment ouverts
+        Outils instance_outils;
+        instance_outils.enregistre_fichiers(nom_fichier);
+    }
     find_onglet()->setWindowTitle(titre);
     find_onglet()->setAccessibleName(titre);
     find_onglet()->setAccessibleDescription(nom_fichier);
-    //Connexion au slot des récemment ouverts
-    Outils instance_outils;
-    instance_outils.enregistre_fichiers(nom_fichier);
 
     //----------------------------------------------
     //Insertion du contenu dans le QTextEdit
@@ -1605,7 +1623,7 @@ void DadaWord::create_menus(){
     bar_format = new QToolBar;
     addToolBar(Qt::TopToolBarArea, bar_format);
     nom_format = new QComboBox;
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     QStringList noms_styles = settings.value("noms_styles").toStringList();
     for(int i=0; i<noms_styles.count(); i++){
         nom_format->addItem(noms_styles.at(i));
@@ -1825,7 +1843,6 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         //Taille
         qreal taille_onglet = text_edit_temp->fontPointSize();
         if(taille_onglet <= 0){
-            Outils instance_outils;
             taille_police->setValue(settings->getSettings(Taille).toInt());
             text_edit_temp->setFontPointSize(settings->getSettings(Taille).toInt());
         }
@@ -1920,7 +1937,11 @@ void DadaWord::alerte_enregistrement(QMdiSubWindow *fenetre){
         enregistrement(fenetre);
     }
     else if(reponse == QMessageBox::No){
-        //On ne fait rien, le programme est déjà en train de se fermer
+        //On supprime le fichier des settings
+        QFile fichier(fenetre->accessibleDescription());
+        if(fichier.exists() && fenetre->accessibleDescription().contains("DDWubIntMs")){
+            fichier.remove();
+        }
     }
     else{
         //FATAL ERROR!!!!! Mais pour l'instant on ne fait rien
@@ -2663,7 +2684,7 @@ void DadaWord::change_style(int style){
         return;
     }
     //Préparation des variables
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     QStringList nom_styles = settings.value("noms_styles").toStringList();
     QTextCursor curseur = find_edit()->textCursor();
     QTextCharFormat format;
@@ -3176,7 +3197,7 @@ void DadaWord::affiche_menu_perso(){
 //Recharge les styles si on en a rajouté un (ou supprimé un)
 void DadaWord::recharge_styles(){
     nom_format->clear();
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     QStringList noms_styles = settings.value("noms_styles").toStringList();
     for(int i=0; i<noms_styles.count(); i++){
         nom_format->addItem(noms_styles.at(i));

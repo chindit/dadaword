@@ -7,7 +7,7 @@ Style::Style(QWidget *parent) :
     //On initialise les styles s'ils n'existent pas
 
     bool conversion = false;
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     nb_styles = settings.value("nb_styles").toInt(&conversion);
     id_modif = -225;
 
@@ -144,7 +144,7 @@ void Style::affiche_fen(){
     setWindowTitle(tr("Gestion des styles - Dadaword"));
     setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
 
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
 
     QListWidget *stylesList = new QListWidget(this);
     stylesList->setMaximumWidth(100);
@@ -435,7 +435,7 @@ void Style::enregistre_style(){
         return;
     }
 
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     settings.setValue("nb_styles", nb_styles);
     settings.setValue("noms_styles", liste_styles);
 
@@ -477,7 +477,7 @@ void Style::supprime_style(){
     if(reponse == QMessageBox::Yes){
         if(activeWidget->currentIndex() > 6){
 
-            QSettings settings("Dadaword", "dadaword");
+            QSettings settings("DadaWord", "dadaword");
 
             //On vérifie que le style est enregistré
             QStringList stylesSettingsList = settings.value("noms_styles").toStringList();

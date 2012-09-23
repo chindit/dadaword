@@ -205,7 +205,7 @@ void Outils::enregistre_config(){
 //Enregistre un fichier ouvert dans les «récemment ouverts»
 void Outils::enregistre_fichiers(QString fichier){
     //Lecture des préférences
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     //On récupère les derniers fichiers
 
     QStringList fichiers_recents = settings.value("recents").toStringList();
@@ -225,7 +225,7 @@ void Outils::enregistre_fichiers(QString fichier){
 //Lire les fichiers récemment ouverts
 QStringList Outils::fichiers_recents(){
     //Lecture des préférences
-    QSettings settings("Dadaword", "dadaword");
+    QSettings settings("DadaWord", "dadaword");
     //On récupère les derniers fichiers
     return settings.value("recents").toStringList();
 }

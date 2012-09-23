@@ -42,6 +42,7 @@
 #include <QToolButton>
 #include <QWidgetAction>
 
+#include "autoload.h"
 #include "constantes.h"
 #include "ddz.h"
 #include "errorManager.h"
@@ -79,7 +80,7 @@ private slots:
     void apercu_avant_impression();
     void enregistrement(QMdiSubWindow* fenetre_active = 0, bool saveas = false, bool autosave = false);
     void autoSave();
-    void ouvrir_fichier(const QString &fichier = "null");
+    void ouvrir_fichier(const QString &fichier = "null", bool autosave = false);
     void print(QPrinter *p);
     void export_odt();
     void create_liste_puce(const int ordonne = 0);

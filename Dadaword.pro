@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     qzip.cpp \  
     style.cpp \
     settingsManager.cpp \
-    errorManager.cpp
+    errorManager.cpp \
+    autoload.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -37,7 +38,8 @@ HEADERS  += dadaword.h \
     qzipwriter.h \  
     style.h \
     settingsManager.h \
-    errorManager.h
+    errorManager.h \
+    autoload.h
 
 RESOURCES += \
     images.qrc
