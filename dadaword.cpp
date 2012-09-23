@@ -420,7 +420,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
     //Récupération du nom du fichier
     //-------------------------------------
     QString nom_fenetre = fenetre_temp->accessibleDescription();
-    if(nom_fenetre.isEmpty() || nom_fenetre.contains("DDWubIntMs", Qt::CaseSensitive) || nom_fenetre.contains(tr("Nouveau document")) || saveas){
+    if(nom_fenetre.isEmpty() || nom_fenetre.contains("DDWubIntMs", Qt::CaseSensitive) || nom_fenetre.contains(tr("Nouveau document")) || nom_fenetre.contains(".dadaword/autosave") ||saveas){
         //POUR AUTORISER L'ODT, SUFFIT DE RAJOUTER CECI : ;;Documents ODT (*.odt)
         //MALHEUREUSEMENT, ÇA MARCHE PAS (SINON JE L'AURAIS DÉJÀ FAIT ;-) )
         if(!autosave){
@@ -578,7 +578,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
     if(!autosave){
         QFile fichier_autosave;
         if(nom_autosave.isEmpty()){
-            fichier_autosave.setFileName(fenetre_temp->accessibleDescription());
+            fichier_autosave.setFileName(QDir::homePath()+"/.dadaword/autosave/"+fenetre_temp->accessibleDescription().split("/").last());
         }
         else{
             fichier_autosave.setFileName(nom_autosave);
@@ -968,6 +968,10 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 temp.movePosition(QTextCursor::PreviousWord);
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+                    if(temp.selectedText() == "=>"){
+                        temp.removeSelectedText();
+                        temp.insertText(QChar(0x21D2));
+                    }
                     if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
                         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
                         if(!QFile::exists(userDict)){
