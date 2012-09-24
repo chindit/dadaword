@@ -186,7 +186,6 @@ void DadaWord::cree_iu(){
         }
     }
 #endif
-
     //--------------------------------------------------
     // Récupération automatique des documents
     //--------------------------------------------------
@@ -381,6 +380,11 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
             nom_fichier = QFileDialog::getSaveFileName(this, "Enregistrer un fichier", settings->getSettings(Enregistrement).toString(), "Documents DadaWord (*.ddz *.ddw);;Documents texte (*.txt);;Documents HTML (*.html, *.htm);;Documents divers (*.*)");
             if(nom_fichier.isNull() || nom_fichier.isEmpty()){
                 //On enregistre pas, on fait comme si de rien n'était
+                return;
+            }
+            if(nom_fichier.contains("DDWubIntMs")){
+                ErrorManager erreur;
+                erreur.Erreur_msg(tr("Vous utilisez un nom réservé au systéme dans le nom de votre fichier.  Veuillez le renommer!"), QMessageBox::Warning);
                 return;
             }
         }
@@ -1289,6 +1293,11 @@ void DadaWord::create_menus(){
     desincremente_puce_bouton = menu_insertion->addAction(tr("Désincrémente la puce"));
     desincremente_puce_bouton->setEnabled(false);
     connect(desincremente_puce_bouton, SIGNAL(triggered()), this, SLOT(desincremente_puce()));
+
+    QAction *insere_caractere = menu_insertion->addAction(tr("Caractères spéciaux"));
+    insere_caractere->setIcon(QIcon(":/menus/images/specialchars.png"));
+    insere_caractere->setStatusTip(tr("Insérer des caractères spéciaux"));
+    connect(insere_caractere, SIGNAL(triggered()), this, SLOT(insertSpecialChars()));
 
     QAction *insere_image = menu_insertion->addAction(tr("Insérer une image"));
     insere_image->setIcon(QIcon(":/menus/images/image.png"));
@@ -3395,4 +3404,17 @@ void DadaWord::make_rm_annexe(QString annexe){
         }
     }
     return;
+}
+
+//Insére des caractères spéciaux
+void DadaWord::insertSpecialChars(){
+    specialChars chars;
+    QSettings options("DadaWord", "dadaword");
+    QList<QChar> listeChars = options.value("specialChars").value<QList <QChar> >();
+    chars.showWindow(listeChars);
+    QString caracteres = chars.getChars();
+    listeChars = chars.getList();
+    options.setValue("specialChars", QVariant::fromValue< QList<QChar> >(listeChars));
+    QTextCursor curseur = find_edit()->textCursor();
+    curseur.insertText(caracteres);
 }

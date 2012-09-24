@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     style.cpp \
     settingsManager.cpp \
     errorManager.cpp \
-    autoload.cpp
+    autoload.cpp \
+    specialchars.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -39,7 +40,8 @@ HEADERS  += dadaword.h \
     style.h \
     settingsManager.h \
     errorManager.h \
-    autoload.h
+    autoload.h \
+    specialchars.h
 
 RESOURCES += \
     images.qrc

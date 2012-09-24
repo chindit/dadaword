@@ -12,6 +12,7 @@
 #include <QBuffer>
 #include <QColorDialog>
 #include <QDateTime>
+#include <QtDeclarative/QDeclarativeContext>
 #include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
@@ -51,8 +52,11 @@
 #include "outils.h"
 #include "opendocument.h"
 #include "settingsManager.h"
+#include "specialchars.h"
 #include "spellchecker.h"
 #include "style.h"
+
+Q_DECLARE_METATYPE( QList<QChar> );
 
 class DadaWord : public QMainWindow
 {
@@ -136,6 +140,7 @@ private slots:
     void make_rm_annexe(QString annexe);
     void show_annexes();
     void ouvre_programme(QString fichier);
+    void insertSpecialChars();
 
 private:
     void create_menus();
