@@ -12,7 +12,6 @@
 #include <QBuffer>
 #include <QColorDialog>
 #include <QDateTime>
-#include <QtDeclarative/QDeclarativeContext>
 #include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
@@ -55,8 +54,6 @@
 #include "specialchars.h"
 #include "spellchecker.h"
 #include "style.h"
-
-Q_DECLARE_METATYPE( QList<QChar> );
 
 class DadaWord : public QMainWindow
 {

@@ -43,6 +43,7 @@ void specialChars::showWindow(QList<QChar> listRecent){
         recentChars->setColumnWidth(i, 25);
     }
     recentChars->setMaximumSize(275, 60);
+    connect(recentChars, SIGNAL(cellClicked(int,int)), this, SLOT(updateTable2(int,int)));
     QLabel *labelRecentChars = new QLabel(tr("Caractères récemment utilisés"));
     layout->addWidget(labelRecentChars);
     layout->addWidget(recentChars);
@@ -57,6 +58,11 @@ void specialChars::showWindow(QList<QChar> listRecent){
 }
 
 void specialChars::updateTable(int row, int coll){
+    if(row < 0){
+        QTableWidgetItem *item = recentChars->item(0, coll);
+        lineChars->setText(lineChars->text()+item->text());
+        return;
+    }
     QTableWidgetItem *item = tableau->item(row, coll);
     lineChars->setText(lineChars->text()+item->text());
     liste.prepend(item->text().at(0));
@@ -71,6 +77,10 @@ void specialChars::updateTable(int row, int coll){
         recentChars->setItem(0, i, temp);
     }
     recentChars->show();
+}
+
+void specialChars::updateTable2(int row, int coll){
+    updateTable(-1, coll); //If we send en negatif row, updateTable'll know we're adding from recents
 }
 
 QString specialChars::getChars(){

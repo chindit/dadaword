@@ -21,6 +21,7 @@ public slots:
 
 private slots:
     void updateTable(int row, int coll);
+    void updateTable2(int row, int coll);
 
 private:
     QTableWidget *tableau;

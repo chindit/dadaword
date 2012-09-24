@@ -3410,11 +3410,13 @@ void DadaWord::make_rm_annexe(QString annexe){
 void DadaWord::insertSpecialChars(){
     specialChars chars;
     QSettings options("DadaWord", "dadaword");
-    QList<QChar> listeChars = options.value("specialChars").value<QList <QChar> >();
+    QList<QVariant> preList = options.value("specialChars").toList();
+    QList<QChar> listeChars; for(int i=0;i<preList.size();i++){listeChars.append(preList.at(i).toChar());} //QVariant to QChar
     chars.showWindow(listeChars);
     QString caracteres = chars.getChars();
     listeChars = chars.getList();
-    options.setValue("specialChars", QVariant::fromValue< QList<QChar> >(listeChars));
+    preList.clear();for(int i=0;i<listeChars.size();i++){preList.append(listeChars.at(i));} //QChar to QVariant
+    options.setValue("specialChars", QVariant(preList));
     QTextCursor curseur = find_edit()->textCursor();
     curseur.insertText(caracteres);
 }
