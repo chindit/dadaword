@@ -8,6 +8,7 @@ autoLoad::~autoLoad(){
     //On supprime les fichiers
     for(int i=0; i<names.size(); i++){
         QFile fichier(QDir::homePath()+"/.dadaword/autosave/"+names.at(i));
+        QString test = QDir::homePath()+"/.dadaword/autosave/"+names.at(i);
         fichier.remove();
     }
 }

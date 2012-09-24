@@ -153,51 +153,9 @@ void DadaWord::cree_iu(){
 
     //Création du MDI
     zone_centrale = new QMdiArea;
-    QTextEdit *document = new QTextEdit;
-    document->installEventFilter(this);
-    QTextDocument *doc_principal = new QTextDocument;
-    document->setDocument(doc_principal);
-    doc_principal->setModified(false);
-    QMdiSubWindow *zone_document;
-    //Connection du QTextEdit à la correction
-    document->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(document, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso()));
-    connect(document, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
 
-    //Gestion des onglets Word ou non
-    if(settings->getSettings(Word).toBool()){
-        zone_document = new QMdiSubWindow;
-        //On delete en plus de fermer
-        zone_document->setAttribute(Qt::WA_DeleteOnClose);
-        zone_centrale->addSubWindow(zone_document);
-
-        QPrinter printer(QPrinter::HighResolution);
-        printer.setPaperSize(QPrinter::A4);
-        document->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
-        document->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
-        //document_onglet->setMaximumSize((printer.paperSize(QPrinter::Point)).toSize());
-        document->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
-        QHBoxLayout *layout_horizontal = new QHBoxLayout;
-        QWidget *widget = new QWidget; //Sert juste pour le layout
-        layout_horizontal->addWidget(document, 0, Qt::AlignHCenter);
-        document->setFrameShape(QFrame::NoFrame);
-        widget->setLayout(layout_horizontal);
-        document->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        zone_document->setWidget(widget);
-        QTextFrame *tf = doc_principal->rootFrame();
-        QTextFrameFormat tff = tf->frameFormat();
-        tff.setMargin(MARGIN_WORD);
-        tf->setFrameFormat(tff);
-        doc_principal->setModified(false);
-
-    }
-    else{
-        zone_document = zone_centrale->addSubWindow(document);
-    }
-
-    //Quelle que soit la config, on affiche ça :
-    zone_document->setWindowTitle(tr("Nouveau document"));
-    zone_document->setAccessibleName(tr("Nouveau document"));
+    //Ouverture d'un onglet
+    ouvre_onglet(true, tr("Nouveau document"));
 
     //Vue en onglets
     if(!settings->getSettings(Onglets).toBool()){
@@ -209,14 +167,10 @@ void DadaWord::cree_iu(){
         connect(tab_bar_area, SIGNAL(tabCloseRequested(int)), this, SLOT(close_tab_button(int)));
     }
 
-    //Déclaration de la police par défaut :
-    document->setFont(settings->getSettings(Police).value<QFont>());
-
     //Placement du widget comme zone centrale
     this->setCentralWidget(zone_centrale);
 
     //connections globales
-    connect(doc_principal, SIGNAL(contentsChanged()), this, SLOT(indicateur_modifications()));
     connect(zone_centrale, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(changement_focus(QMdiSubWindow*)));
 
     //Maintenant, on récupère les arguments (il faut que l'interface soit créée avant de pouvoir les ouvrir

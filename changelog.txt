@@ -6,8 +6,10 @@ Version 1.2.0 :
 - Ajout d'un menu déroulant avec les couleurs les plus courantes dans le bouton de surlignage.
 - Enregistrement automatique dans le répertoire de configuration
 - Récupération des documents perdus suite à un plantage.
+- Appel de la fonction d'ouverture d'onglet plutôt que de le créer manuellement dans le constructeur.
 - BUG : dictionnaire personnel mal placé selon certaine configuration
 - BUG : paramètre non utilisé : QPoint.
+- BUG : suppression du fichier correct au lieu de la sauvegarde
 
 
 Version 1.1.3 :
