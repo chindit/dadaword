@@ -1730,10 +1730,9 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
             QPrinter printer(QPrinter::HighResolution);
             printer.setPaperSize(QPrinter::A4);
             document_onglet->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
-            document_onglet->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
-            //document_onglet->setMaximumSize((printer.paperSize(QPrinter::Point)).toSize());
             document_onglet->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
-            QHBoxLayout *layout_horizontal = new QHBoxLayout;
+            document_onglet->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
+            QVBoxLayout *layout_horizontal = new QVBoxLayout;
             QWidget *widget = new QWidget; //Sert juste pour le layout
             layout_horizontal->addWidget(document_onglet, 0, Qt::AlignHCenter);
             document_onglet->setFrameShape(QFrame::NoFrame);
@@ -1745,6 +1744,22 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
             tf->setFrameFormat(tff);
 
             doc_principal_onglet->setModified(false);
+
+            //--------------------------------
+            // Ajout d'une nouvelle page
+            //--------------------------------
+            /*QTextEdit *o2 = new QTextEdit;
+            o2->installEventFilter(this);
+            o2->setFrameShape(QFrame::NoFrame);
+            o2->setContextMenuPolicy(Qt::CustomContextMenu);
+            o2->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
+            o2->setMinimumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
+            o2->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);layout_horizontal->addWidget(o2, 0, Qt::AlignHCenter);
+            o2->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
+            QTextFrame *tf2 = o2->document()->rootFrame();
+            QTextFrameFormat tff2 = tf2->frameFormat();
+            tff2.setMargin(MARGIN_WORD);
+            tf2->setFrameFormat(tff2);*/
         }
         else{
             zone_document_onglet = zone_centrale->addSubWindow(document_onglet);

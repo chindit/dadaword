@@ -14,14 +14,19 @@ autoLoad::~autoLoad(){
 }
 
 bool autoLoad::hasFilesNames(){
-    QDir autosave = QDir::homePath()+"/.dadaword/autosave";
-    names = autosave.entryList();
-    names.removeFirst();//"."
-    names.removeFirst();//".."
-    if(!names.isEmpty()){
+    QDir autosave = QDir::homePath()+"/.dadaword/autosave";qDebug("1");
+    names = autosave.entryList();qDebug("2");
+    if(names.size() >= 2){
+        names.removeFirst();qDebug("3");
+        names.removeFirst();qDebug("4");
+    }
+    else{
+        return false;
+    }
+    if(!names.isEmpty()){qDebug("5");
         showFiles();
     }
-    return !names.isEmpty();
+    return (names.isEmpty()) ? false : true;
 }
 
 void autoLoad::showFiles(){
