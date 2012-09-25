@@ -29,7 +29,7 @@
 #include <QPrinterInfo>
 #include <QPrintPreviewDialog>
 #include <QProgressBar>
-#include <QScrollBar>
+#include <QScrollArea>
 #include <QSignalMapper>
 #include <QSpinBox>
 #include <QStatusBar>

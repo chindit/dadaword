@@ -1733,7 +1733,7 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
             document_onglet->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
             document_onglet->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
             QVBoxLayout *layout_horizontal = new QVBoxLayout;
-            QWidget *widget = new QWidget; //Sert juste pour le layout
+            QScrollArea *widget = new QScrollArea; //Sert juste pour le layout
             layout_horizontal->addWidget(document_onglet, 0, Qt::AlignHCenter);
             document_onglet->setFrameShape(QFrame::NoFrame);
             widget->setLayout(layout_horizontal);
@@ -1750,12 +1750,12 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
             //--------------------------------
             /*QTextEdit *o2 = new QTextEdit;
             o2->installEventFilter(this);
-            o2->setFrameShape(QFrame::NoFrame);
+            //o2->setFrameShape(QFrame::NoFrame);
             o2->setContextMenuPolicy(Qt::CustomContextMenu);
             o2->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
             o2->setMinimumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
-            o2->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);layout_horizontal->addWidget(o2, 0, Qt::AlignHCenter);
-            o2->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
+            o2->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
+            o2->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);layout_horizontal->addWidget(o2, 0, Qt::AlignHCenter);
             QTextFrame *tf2 = o2->document()->rootFrame();
             QTextFrameFormat tff2 = tf2->frameFormat();
             tff2.setMargin(MARGIN_WORD);
@@ -3227,19 +3227,19 @@ void DadaWord::curseur_change(){
         //On récupére le format
         QTextCharFormat format = curseur.charFormat();
         //On adapte les boutons selon le format
-        if(format.fontWeight() == QFont::Bold && !gras->isChecked()){
+        if(format.fontWeight() == QFont::Bold && !gras->isChecked() && !curseur.hasSelection()){
             gras->setChecked(true);
             find_edit()->setFontWeight(QFont::Bold);
         }
-        if(format.fontWeight() == QFont::Normal && gras->isChecked()){
+        if(format.fontWeight() == QFont::Normal && gras->isChecked() && !curseur.hasSelection()){
             gras->setChecked(false);
             find_edit()->setFontWeight(QFont::Normal);
         }
-        if(format.fontItalic() != italique->isChecked()){
+        if(format.fontItalic() != italique->isChecked() && !curseur.hasSelection()){
             italique->setChecked(format.fontItalic());
             find_edit()->setFontItalic(format.fontItalic());
         }
-        if(format.fontUnderline() != souligne->isChecked()){
+        if(format.fontUnderline() != souligne->isChecked() && !curseur.hasSelection()){
             souligne->setChecked(format.fontUnderline());
             find_edit()->setFontUnderline(format.fontUnderline());
         }
