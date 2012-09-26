@@ -9,7 +9,6 @@
 #include "outils.h"
 
 Outils::Outils(){
-
 }
 
 void Outils::fenetre_config(){
@@ -19,7 +18,7 @@ void Outils::fenetre_config(){
     configure_fen->setAttribute(Qt::WA_DeleteOnClose);
 
     //Paramètres de la fenêtre
-    configure_fen->setWindowIcon(QIcon(":/menu/images/outils.png"));
+    configure_fen->setWindowIcon(QIcon::fromTheme("preferences-system", QIcon(":/menus/images/outils.png")));
     configure_fen->setWindowTitle(tr("Configurer Dadaword"));
 
     //Settings
@@ -30,11 +29,11 @@ void Outils::fenetre_config(){
     QStackedWidget *settingsView = new QStackedWidget(configure_fen);
     QPushButton *fermer = new QPushButton;
     fermer->setText(tr("Fermer la fenêtre"));
-    fermer->setIcon(QIcon(":/menus/images/exit.png"));
+    fermer->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
     connect(fermer, SIGNAL(clicked()), configure_fen, SLOT(close()));
     QPushButton *valider = new QPushButton;
     valider->setText(tr("Valider"));
-    valider->setIcon(QIcon(":/menus/images/ok.png"));
+    valider->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
     valider->setToolTip(tr("Enregistrer la configuration"));
     connect(valider, SIGNAL(clicked()), this, SLOT(enregistre_config()));
     QGridLayout *settingsWidgetLayout = new QGridLayout(configure_fen);
@@ -42,8 +41,8 @@ void Outils::fenetre_config(){
     //Connect QStackedWidget to QListWidget
     connect(settingsList, SIGNAL(currentRowChanged(int)), settingsView, SLOT(setCurrentIndex(int)));
 
-    QListWidgetItem *itemEdit = new QListWidgetItem(QIcon(":/programme/images/textedit.png"), tr("Édition"));
-    QListWidgetItem *itemGeneral = new QListWidgetItem(QIcon(":/programme/images/configure.png"), tr("Général"));
+    QListWidgetItem *itemEdit = new QListWidgetItem(QIcon::fromTheme("document-edit", QIcon(":/programme/images/textedit.png")), tr("Édition"));
+    QListWidgetItem *itemGeneral = new QListWidgetItem(QIcon::fromTheme("applications-development", QIcon(":/programme/images/configure.png")), tr("Général"));
     settingsList->addItem(itemEdit);
     settingsList->addItem(itemGeneral);
 
@@ -52,7 +51,7 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
@@ -63,11 +62,13 @@ void Outils::fenetre_config(){
     label_dicos = new QLabel(tr("Langue du dictionnaire"));
     label_timer = new QLabel(tr("Sauvegarde automatique (en secondes)"));
     label_saving = new QLabel(tr("Répertoire d'enregistrement par défaut"));
+    label_theme = new QLabel(tr("Thème d'icônes"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
     label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
     label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
     label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
     label_timer->setToolTip(tr("Intervalle de temps avant de lancer une sauvegarde automatique du document."));
+    label_theme->setToolTip(tr("Le thème définit les icones du programme."));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
@@ -107,6 +108,13 @@ void Outils::fenetre_config(){
         if(temp == nom_dico){
             liste_dicos->setCurrentIndex(i);
         }
+    }
+
+    liste_themes = new QComboBox;
+    QStringList themePath = QIcon::themeSearchPaths();
+    for(int i=0; i<themePath.size(); i++){
+        dossier.setPath(themePath.at(i));
+        liste_themes->addItems(dossier.entryList(QDir::Dirs | QDir::NoDotAndDotDot));
     }
 
     //Lecture des valeurs
@@ -170,8 +178,9 @@ void Outils::fenetre_config(){
     QHBoxLayout *layoutSaving = new QHBoxLayout;
     layoutSaving->addWidget(saving_edit);
     layoutSaving->addWidget(changeSaving);
-    layoutGeneral->addWidget(label_saving, 4, 0);
     layoutGeneral->addLayout(layoutSaving, 4, 1);
+    layoutGeneral->addWidget(label_theme, 5, 0);
+    layoutGeneral->addWidget(liste_themes, 5, 1);
 
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
     configure_fen->show();
@@ -185,6 +194,9 @@ void Outils::enregistre_config(){
         if(settings->getSettings(Alertes).toInt() != LOW){
             QMessageBox::information(0, tr("Configuration modifiée"), tr("Attention, la modification de certains paramètres ne sera prise en compte que lors du redémarrage du programme."));
         }
+    }
+    if(settings->getSettings(Alertes).toInt() == HIGH && settings->getSettings(Theme).toString() != liste_themes->currentText() && !liste_themes->currentText().contains("dadaword", Qt::CaseInsensitive)){
+        QMessageBox::warning(0, tr("Thème changé"), tr("Vous avez choisis un thème qui n'a pas été vérifié.\nIl se peut qu'il manque certaines icônes."));
     }//Fin des "alertes"
 
     settings->setSettings(Onglets, checkbox_onglets->isChecked());
@@ -197,6 +209,7 @@ void Outils::enregistre_config(){
     settings->setSettings(Dico, liste_dicos->currentText());
     settings->setSettings(Timer, spinbox_timer->value());
     settings->setSettings(Enregistrement, saving_edit->text());
+    settings->setSettings(Theme, liste_themes->currentText());
 
     configure_fen->close();
     return;
@@ -237,7 +250,7 @@ void Outils::affiche_log(){
     log_fen->setWindowModality(Qt::ApplicationModal);
 
     //Paramètres de la fenêtre
-    log_fen->setWindowIcon(QIcon(":/menu/images/log.png"));
+    log_fen->setWindowIcon(QIcon::fromTheme("text-x-log", QIcon(":/menu/images/log.png")));
     log_fen->setWindowTitle(tr("Gestion du log de DadaWord"));
 
     QGridLayout layout;
@@ -252,9 +265,9 @@ void Outils::affiche_log(){
 
     //Remplissage des boutons
     close_window->setText(tr("Fermer la fenêtre"));
-    close_window->setIcon(QIcon(":/menus/images/sortir.png"));
+    close_window->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/sortir.png")));
     clean_log->setText(tr("Nettoyer le log"));
-    clean_log->setIcon(QIcon(":/menus/images/balai.png"));
+    clean_log->setIcon(QIcon::fromTheme("edit-clear", QIcon(":/menus/images/balai.png")));
     clean_log->setToolTip(tr("Ne laisse que les dix dernières entrées dans le fichier le log"));
 
     //Remplissage du text edit

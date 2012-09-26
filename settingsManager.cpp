@@ -3,8 +3,8 @@
 SettingsManager::SettingsManager(QObject *parent) :
     QObject(parent)
 {
-    names = new QString[10];
-    settings = new QVariant[10];
+    names = new QString[11];
+    settings = new QVariant[11];
 
     names[Onglets] = "onglets";
     names[FichiersVides] = "fichiersVides";
@@ -16,6 +16,7 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[Word] = "word";
     names[Timer] = "timer";
     names[Enregistrement] = "enregistrement";
+    names[Theme] = "themes";
 
     loadSettings();
 
@@ -48,6 +49,7 @@ void SettingsManager::loadSettings(){
     settings[Word] = options.value(names[Word], true);
     settings[Timer] = options.value(names[Timer], 300);
     settings[Enregistrement] = options.value(names[Enregistrement], QDir::homePath());
+    settings[Theme] = options.value(names[Theme], "DadaWord");
     return;
 }
 
@@ -63,5 +65,6 @@ void SettingsManager::saveSettings(){
     options.setValue(names[Word], settings[Word]);
     options.setValue(names[Timer], settings[Timer]);
     options.setValue(names[Enregistrement], settings[Enregistrement]);
+    options.setValue(names[Theme], settings[Theme]);
     return;
 }

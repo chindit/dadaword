@@ -1,6 +1,7 @@
 #ifndef AUTOLOAD_H
 #define AUTOLOAD_H
 
+#include <QIcon>
 #include <QListWidgetItem>
 #include <QWidget>
 
@@ -10,7 +11,7 @@ class autoLoad : public QDialog
 {
     Q_OBJECT
 public:
-    explicit autoLoad(QWidget *parent = 0);
+    explicit autoLoad();
     ~autoLoad();
     bool hasFilesNames();
     QStringList getFilesNames();

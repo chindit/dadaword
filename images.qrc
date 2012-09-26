@@ -57,6 +57,7 @@
         <file>images/interligne.png</file>
         <file>images/annexe.png</file>
         <file>images/specialchars.png</file>
+        <file>images/recents.png</file>
     </qresource>
     <qresource prefix="/programme">
         <file>images/dadaword.gif</file>

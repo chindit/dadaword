@@ -1,28 +1,16 @@
 #include "autoload.h"
 
-autoLoad::autoLoad(QWidget *parent) :
-    QDialog(parent){
+autoLoad::autoLoad() :
+    QDialog(0){
 }
 
 autoLoad::~autoLoad(){
-    //On supprime les fichiers
-    for(int i=0; i<names.size(); i++){
-        QFile fichier(QDir::homePath()+"/.dadaword/autosave/"+names.at(i));
-        QString test = QDir::homePath()+"/.dadaword/autosave/"+names.at(i);
-        fichier.remove();
-    }
 }
 
 bool autoLoad::hasFilesNames(){
     QDir autosave = QDir::homePath()+"/.dadaword/autosave";
-    names = autosave.entryList();
-    if(names.size() >= 2){
-        names.removeFirst();
-        names.removeFirst();
-    }
-    else{
-        return false;
-    }
+    names = autosave.entryList(QDir::NoDotAndDotDot);
+
     if(!names.isEmpty()){;
         showFiles();
     }
@@ -40,7 +28,7 @@ void autoLoad::showFiles(){
     QLabel *title = new QLabel(tr("<h1>Récupération de documents</h1>"));
     QLabel *explanation = new QLabel(tr("DadaWord s'est mal fermé lors de la dernière exécution.  Fort heureusement, les fichiers suivants ont pu être récupérés.\nSi vous souhaitez récupérer le document, cochez la case et validez.\nVous pourrez ensuite enregistrer le document récupéré sous le nom que vous souhaitez."));
     QListWidget *filesList = new QListWidget;
-    QPushButton *go = new QPushButton(QIcon(":/menus/images/ok.png"), tr("Continuer"));
+    QPushButton *go = new QPushButton(QIcon::fromTheme("dialog-close"), tr("Continuer"));
     go->setMaximumWidth(100);
     connect(go, SIGNAL(clicked()), this, SLOT(close()));
     for(int i=0; i<names.size(); i++){
@@ -62,6 +50,11 @@ QStringList autoLoad::getFilesNames(){
     for(int i=0; i<names.size(); i++){
         if(items[i].checkState() == Qt::Checked){
             filesToRestore.append(QDir::homePath()+"/.dadaword/autosave/"+names.at(i));
+        }
+        else{
+            //L'utilisateur ne veut pas garder -> on vire
+            QFile fichier(QDir::homePath()+"/.dadaword/autosave/"+names.at(i));
+            fichier.remove();
         }
     }
     return filesToRestore;

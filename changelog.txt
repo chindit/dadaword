@@ -8,6 +8,9 @@ Version 1.2.0 :
 - Récupération des documents perdus suite à un plantage.
 - Appel de la fonction d'ouverture d'onglet plutôt que de le créer manuellement dans le constructeur.
 - Ajout de l'insertion de caractères spéciaux (13072 caractères disponibles)
+- Ajout d'un système de gestion des thèmes
+
+- BUG : raccourci des alignements non fonctionnel
 - BUG : dictionnaire personnel mal placé selon certaine configuration
 - BUG : paramètre non utilisé : QPoint.
 - BUG : suppression du fichier correct au lieu de la sauvegarde

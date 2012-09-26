@@ -52,7 +52,7 @@ private:
     QLineEdit *saving_edit;
     QSpinBox *taille_police_default, *spinbox_timer;
     QFontComboBox *police_default;
-    QComboBox *alertes, *liste_dicos;
+    QComboBox *alertes, *liste_dicos, *liste_themes;
 
 };
 

@@ -30,7 +30,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("taille", taille_defaut);
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", false);
-        settings.setValue("souligne", false);
+        settings.setValue("souligne", true);
         settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
         settings.setValue("noBackground", true);
@@ -149,13 +149,13 @@ void Style::affiche_fen(){
     QListWidget *stylesList = new QListWidget(this);
     stylesList->setMaximumWidth(100);
     QStackedWidget *stylesView = new QStackedWidget(this);
-    QPushButton *closeStyle = new QPushButton(QIcon(":/menus/images/exit.png"), tr("Fermer la fenêtre"));
+    QPushButton *closeStyle = new QPushButton(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")), tr("Fermer la fenêtre"));
     connect(closeStyle, SIGNAL(clicked()), this, SLOT(close()));
-    QPushButton *saveStyle = new QPushButton(QIcon(":/menus/images/filesave.png"), tr("Enregistrer"));
+    QPushButton *saveStyle = new QPushButton(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")), tr("Enregistrer"));
     saveStyle->setToolTip(tr("Enregistrer les styles"));
     connect(saveStyle, SIGNAL(clicked()), this, SLOT(enregistre_style()));
-    QPushButton *newStyle = new QPushButton(QIcon(":/programme/images/ajouter.png"), tr("Nouveau style"));
-    QPushButton *deleteStyle = new QPushButton(QIcon(":/menus/images/sortir.png"), tr("Supprimer"));
+    QPushButton *newStyle = new QPushButton(QIcon::fromTheme("edit-add", QIcon(":/programme/images/ajouter.png")), tr("Nouveau style"));
+    QPushButton *deleteStyle = new QPushButton(QIcon::fromTheme("edit-delete", QIcon(":/menus/images/sortir.png")), tr("Supprimer"));
     deleteStyle->setToolTip(tr("Supprime le style actuel"));
     QGridLayout *stylesWidgetLayout = new QGridLayout(this);
     stylesWidgetLayout->addWidget(stylesList, 0, 0);

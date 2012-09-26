@@ -18,6 +18,13 @@ DadaWord::DadaWord(QWidget *parent)
     //Initialisation des dicos
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
+
+    //Initialisation du thème
+    QStringList locateThemes;
+    locateThemes << QDir::homePath()+"/.dadaword/icons" << QIcon::themeSearchPaths();
+    QIcon::setThemeSearchPaths(locateThemes);
+    QIcon::setThemeName(settings->getSettings(Theme).toString());
+
     dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
     if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
         dictPath = "/usr/share/hunspell/fr_FR";
@@ -138,7 +145,7 @@ void DadaWord::cree_iu(){
     connect(status_surecriture, SIGNAL(clicked()), this, SLOT(mode_surecriture()));
     //Enregistrement
     status_is_modified = new QPushButton(statusBar());
-    status_is_modified->setIcon(QIcon(":/menus/images/filesave.png"));
+    status_is_modified->setIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
     status_is_modified->setEnabled(false);
     //Style du bouton pour qu'on ne le remarque pas
     status_is_modified->setFlat(true);
@@ -189,7 +196,7 @@ void DadaWord::cree_iu(){
     //--------------------------------------------------
     // Récupération automatique des documents
     //--------------------------------------------------
-    autoLoad *verif_fichiers = new autoLoad;
+    autoLoad *verif_fichiers = new autoLoad();
     if(verif_fichiers->hasFilesNames()){
         QStringList fichiers = verif_fichiers->getFilesNames();
         if(!fichiers.isEmpty()){
@@ -1063,18 +1070,18 @@ void DadaWord::create_menus(){
     QMenu *menu_fichier = menuBar()->addMenu(tr("Fichier"));
 
     QAction *nouveau_document = menu_fichier->addAction(tr("Nouveau document"));
-    nouveau_document->setIcon(QIcon(":/menus/images/nouveau.png"));
+    nouveau_document->setIcon(QIcon::fromTheme("document-new", QIcon(":/menus/images/nouveau.png")));
     nouveau_document->setShortcut(QKeySequence("Ctrl+N"));
     nouveau_document->setStatusTip(tr("Ouvrir un nouveau document"));
     connect(nouveau_document, SIGNAL(triggered()), this, SLOT(ouvre_onglet()));
 
     QAction *menu_ouvrir_fichier = menu_fichier->addAction(tr("Ouvrir un fichier"));
-    menu_ouvrir_fichier->setIcon(QIcon(":/menus/images/fileopen.png"));
+    menu_ouvrir_fichier->setIcon(QIcon::fromTheme("document-open", QIcon(":/menus/images/fileopen.png")));
     menu_ouvrir_fichier->setShortcut(QKeySequence("Ctrl+O"));
     menu_ouvrir_fichier->setStatusTip(tr("Ouvrir un nouveau fichier"));
     connect(menu_ouvrir_fichier, SIGNAL(triggered()), this, SLOT(ouvrir_fichier()));
 
-    QMenu *menu_recents = menu_fichier->addMenu(tr("Récemments ouverts"));
+    QMenu *menu_recents = menu_fichier->addMenu(tr("Récemments ouverts"));menu_recents->setIcon(QIcon::fromTheme("document-open-recent", QIcon(":/menus/images/recents.png")));
     Outils instance_outils;
     QStringList recemment_ouverts = instance_outils.fichiers_recents();
     if(recemment_ouverts.size() == 0){
@@ -1097,8 +1104,8 @@ void DadaWord::create_menus(){
         }
     }
 
-    enregistrer = menu_fichier->addAction(QIcon(":/menus/images/filesave.png"), tr("Enregistrer le fichier"));
-    enregistrer->setIcon(QIcon(":/menus/images/filesave.png"));
+    enregistrer = menu_fichier->addAction(tr("Enregistrer le fichier"));
+    enregistrer->setIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
     enregistrer->setShortcut(QKeySequence("Ctrl+S"));
     enregistrer->setStatusTip(tr("Enregistrer le fichier courant"));
     connect(enregistrer, SIGNAL(triggered()), this, SLOT(enregistrement()));
@@ -1107,7 +1114,7 @@ void DadaWord::create_menus(){
     //status_is_modified->setText(tr("Pas de modifications"));
     status_is_modified->setEnabled(false);
 
-    QAction *enregistrer_sous = menu_fichier->addAction(QIcon(":/menus/images/enregistrer_sous.png"), tr("Enregistrer le fichier sous"));
+    QAction *enregistrer_sous = menu_fichier->addAction(QIcon::fromTheme("document-save-as", QIcon(":/menus/images/enregistrer_sous.png")), tr("Enregistrer le fichier sous"));
     enregistrer_sous->setShortcut(QKeySequence("Maj+Ctrl+S"));
     enregistrer_sous->setStatusTip(tr("Enregistrer le fichier courant sous…"));
     connect(enregistrer_sous, SIGNAL(triggered()), this, SLOT(enregistrer_sous()));
@@ -1116,13 +1123,13 @@ void DadaWord::create_menus(){
     QMenu *exporter = menu_fichier->addMenu(tr("Exporter"));
 
     QAction *exporter_odt = exporter->addAction(tr("ODT"));
-    exporter_odt->setIcon(QIcon(":/menus/images/odt.png"));
+    exporter_odt->setIcon(QIcon::fromTheme("application-vnd.oasis.opendocument.text", QIcon(":/menus/images/odt.png")));
     exporter_odt->setShortcut(QKeySequence("Ctrl+E"));
     exporter_odt->setStatusTip(tr("Exporter le fichier courant en ODT"));
     connect(exporter_odt, SIGNAL(triggered()), this, SLOT(export_odt()));
 
     QAction *exporter_pdf = exporter->addAction(tr("PDF"));
-    exporter_pdf->setIcon(QIcon(":/menus/images/pdf.png"));
+    exporter_pdf->setIcon(QIcon::fromTheme("application-pdf", QIcon(":/menus/images/pdf.png")));
     exporter_pdf->setStatusTip(tr("Exporter le fichier courant en PDF"));
     connect(exporter_pdf, SIGNAL(triggered()), this, SLOT(export_pdf()));
 
@@ -1130,10 +1137,10 @@ void DadaWord::create_menus(){
     QAction *apercu_impression = menu_fichier->addAction(tr("Aperçu avant impression"));
     connect(apercu_impression, SIGNAL(triggered()), this, SLOT(apercu_avant_impression()));
     apercu_impression->setStatusTip(tr("Afficher un aperçu avant impression"));
-    apercu_impression->setIcon(QIcon(":/menus/images/document_preview.png"));
+    apercu_impression->setIcon(QIcon::fromTheme("document-print-preview", QIcon(":/menus/images/document_preview.png")));
 
     QAction *impression = menu_fichier->addAction(tr("Imprimer"));
-    impression->setIcon(QIcon(":/menus/images/imprimer.png"));
+    impression->setIcon(QIcon::fromTheme("document-print", QIcon(":/menus/images/imprimer.png")));
     impression->setStatusTip(tr("Imprimer le fichier courant"));
     impression->setShortcut(QKeySequence("Ctrl+P"));
     connect(impression, SIGNAL(triggered()), this, SLOT(imprimer()));
@@ -1141,7 +1148,7 @@ void DadaWord::create_menus(){
     QAction *fichier_fermer = menu_fichier->addAction(tr("Fermer"));
     fichier_fermer->setToolTip(tr("Fermer le document actif"));
     fichier_fermer->setShortcut(QKeySequence("Ctrl+W"));
-    fichier_fermer->setIcon(QIcon(":/menus/images/close.png"));
+    fichier_fermer->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/close.png")));
     fichier_fermer->setStatusTip(tr("Fermer l'onglet courant"));
     connect(fichier_fermer, SIGNAL(triggered()), this, SLOT(fermer_fichier()));
 
@@ -1149,7 +1156,7 @@ void DadaWord::create_menus(){
     //Connexion slot
     connect(fichier_quitter, SIGNAL(triggered()), qApp, SLOT(quit()));
     //Image
-    fichier_quitter->setIcon(QIcon(":/menus/images/exit.png"));
+    fichier_quitter->setIcon(QIcon::fromTheme("application-exit", QIcon(":/menus/images/exit.png")));
     //Shortcut
     fichier_quitter->setShortcut(QKeySequence(QKeySequence::Quit));
     //Tooltip
@@ -1159,13 +1166,13 @@ void DadaWord::create_menus(){
     //Création du menu "Édition"
     QMenu *menu_edition = menuBar()->addMenu(tr("Édition"));
     edition_undo = menu_edition->addAction(tr("Annuler"));
-    edition_undo->setIcon(QIcon(":/menus/images/undo.png"));
+    edition_undo->setIcon(QIcon::fromTheme("edit-undo", QIcon(":/menus/images/undo.png")));
     edition_undo->setShortcut(QKeySequence("Ctrl+Z"));
     edition_undo->setStatusTip(tr("Annuler l'opération précédente"));
     connect(edition_undo, SIGNAL(triggered()), this, SLOT(make_undo()));
 
     edition_redo = menu_edition->addAction(tr("Refaire"));
-    edition_redo->setIcon(QIcon(":/menus/images/redo.png"));
+    edition_redo->setIcon(QIcon::fromTheme("edit-redo", QIcon(":/menus/images/redo.png")));
     edition_redo->setStatusTip(tr("Refaire l'action précédemment annulée"));
     edition_redo->setShortcut(QKeySequence("Ctrl+Maj+Z"));
     connect(edition_redo, SIGNAL(triggered()), this, SLOT(make_redo()));
@@ -1173,33 +1180,33 @@ void DadaWord::create_menus(){
     QAction *edition_couper = menu_edition->addAction(tr("Couper"));
     edition_couper->setStatusTip(tr("Couper la sélection"));
     edition_couper->setShortcut(QKeySequence("Ctrl+X"));
-    edition_couper->setIcon(QIcon(":/menus/images/edit-cut.png"));
+    edition_couper->setIcon(QIcon::fromTheme("edit-cut", QIcon(":/menus/images/edit-cut.png")));
     connect(edition_couper, SIGNAL(triggered()), this, SLOT(couper()));
 
     QAction *edition_copier = menu_edition->addAction(tr("Copier"));
     edition_copier->setStatusTip(tr("Copier la sélection"));
     edition_copier->setShortcut(QKeySequence("Ctrl+C"));
-    edition_copier->setIcon(QIcon(":/menus/images/edit-copy.png"));
+    edition_copier->setIcon(QIcon::fromTheme("edit-copy", QIcon(":/menus/images/edit-copy.png")));
     connect(edition_copier, SIGNAL(triggered()), this, SLOT(copier()));
 
     QAction *edition_coller = menu_edition->addAction(tr("Coller"));
     edition_coller->setStatusTip(tr("Coller la sélection"));
     edition_coller->setShortcut(QKeySequence("Ctrl+V"));
-    edition_coller->setIcon(QIcon(":/menus/images/edit-paste.png"));
+    edition_coller->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/menus/images/edit-paste.png")));
     connect(edition_coller, SIGNAL(triggered()), this, SLOT(coller()));
 
     //Recherche
     QAction *rechercher = menu_edition->addAction(tr("Rechercher"));
     rechercher->setStatusTip(tr("Recherche dans le document courant"));
     rechercher->setShortcut(QKeySequence("Ctrl+F"));
-    rechercher->setIcon(QIcon(":/menus/images/search.png"));
+    rechercher->setIcon(QIcon::fromTheme("edit-find", QIcon(":/menus/images/search.png")));
     connect(rechercher, SIGNAL(triggered()), this, SLOT(recherche()));
 
     //Remplacer
     QAction *remplacer = menu_edition->addAction(tr("Remplacer"));
     remplacer->setStatusTip(tr("Remplacer du texte"));
     remplacer->setShortcut(QKeySequence("Ctrl+Maj+F"));
-    remplacer->setIcon(QIcon(":/programme/images/remplace.png"));
+    remplacer->setIcon(QIcon::fromTheme("edit-find-replace", QIcon(":/programme/images/remplace.png")));
     connect(remplacer, SIGNAL(triggered()), this, SLOT(call_remplace()));
 
     //Gestion des style
@@ -1213,8 +1220,8 @@ void DadaWord::create_menus(){
     QMenu *alignement = menu_edition->addMenu(tr("Alignement"));
     QAction *alignement_gauche = alignement->addAction(tr("Gauche"));
     alignement_gauche->setToolTip(tr("Aligner le texte à gauche (écritures latines)"));
-    alignement_gauche->setIcon(QIcon(":/menus/images/format_gauche.png"));
-    alignement_gauche->setShortcut(QKeySequence("Ctrl+Maj+G"));
+    alignement_gauche->setIcon(QIcon::fromTheme("format-justify-left", QIcon(":/menus/images/format_gauche.png")));
+    alignement_gauche->setShortcut(QKeySequence("Ctrl+Shift+G"));
     QSignalMapper *mappeur_alignement = new QSignalMapper;
     connect(alignement_gauche, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
     mappeur_alignement->setMapping(alignement_gauche, Qt::AlignLeft);
@@ -1222,31 +1229,31 @@ void DadaWord::create_menus(){
 
     QAction *alignement_centre = alignement->addAction(tr("Centré"));
     alignement_centre->setToolTip(tr("Texte centré"));
-    alignement_centre->setIcon(QIcon(":/menus/images/format_centre.png"));
-    alignement_centre->setShortcut(QKeySequence("Ctrl+Maj+C"));
+    alignement_centre->setIcon(QIcon::fromTheme("format-justify-center", QIcon(":/menus/images/format_centre.png")));
+    alignement_centre->setShortcut(QKeySequence("Ctrl+Shift+C"));
     connect(alignement_centre, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
     mappeur_alignement->setMapping(alignement_centre, Qt::AlignCenter);
     connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
 
     QAction *alignement_droit = alignement->addAction(tr("Droite"));
     alignement_droit->setToolTip(tr("Alignement à droite (écritures orientales)"));
-    alignement_droit->setIcon(QIcon(":/menus/images/format_droite.png"));
-    alignement_droit->setShortcut(QKeySequence("Ctrl+Maj+D"));
+    alignement_droit->setIcon(QIcon::fromTheme("format-justify-right", QIcon(":/menus/images/format_droite.png")));
+    alignement_droit->setShortcut(QKeySequence("Ctrl+Shift+D"));
     connect(alignement_droit, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
     mappeur_alignement->setMapping(alignement_droit, Qt::AlignRight);
     connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
 
     QAction *alignement_justifie = alignement->addAction(tr("Justifié"));
     alignement_justifie->setToolTip(tr("Justifié (sans marges)"));
-    alignement_justifie->setIcon(QIcon(":/menus/images/format_justifie.png"));
-    alignement_justifie->setShortcut(QKeySequence("Ctrl+Maj+J"));
+    alignement_justifie->setIcon(QIcon::fromTheme("format-justify-fill", QIcon(":/menus/images/format_justifie.png")));
+    alignement_justifie->setShortcut(QKeySequence("Ctrl+Shift+J"));
     connect(alignement_justifie, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
     mappeur_alignement->setMapping(alignement_justifie, Qt::AlignJustify);
     connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
 
     //Interligne
     QMenu *edit_interligne = menu_edition->addMenu(tr("Interligne"));
-    edit_interligne->setIcon(QIcon(":/menus/images/interligne.png"));
+    edit_interligne->setIcon(QIcon::fromTheme("format-line-spacing-normal", QIcon(":/menus/images/interligne.png")));
 
     //Sous-menu
     QAction *int_simple = edit_interligne->addAction(tr("Simple (1)"));
@@ -1275,12 +1282,12 @@ void DadaWord::create_menus(){
 
     QAction *insere_puce = menu_insertion->addAction(tr("Puces"));
     insere_puce->setStatusTip(tr("Insérer une liste à puces"));
-    insere_puce->setIcon(QIcon(":/menus/images/puces.png"));
+    insere_puce->setIcon(QIcon::fromTheme("format-list-unordered", QIcon(":/menus/images/puces.png")));
     connect(insere_puce, SIGNAL(triggered()), this, SLOT(create_liste_puce()));
 
     QAction *puce_speciale = menu_insertion->addAction(tr("Liste ordonnée"));
     puce_speciale->setStatusTip(tr("Insérer une liste ordonnée"));
-    puce_speciale->setIcon(QIcon(":/menus/images/liste_ordonnee.png"));
+    puce_speciale->setIcon(QIcon::fromTheme("format-list-ordered", QIcon(":/menus/images/liste_ordonnee.png")));
     QSignalMapper *mappeur_puce = new QSignalMapper;
     connect(puce_speciale, SIGNAL(triggered()), mappeur_puce, SLOT(map()));
     mappeur_puce->setMapping(puce_speciale, 1);
@@ -1295,23 +1302,23 @@ void DadaWord::create_menus(){
     connect(desincremente_puce_bouton, SIGNAL(triggered()), this, SLOT(desincremente_puce()));
 
     QAction *insere_caractere = menu_insertion->addAction(tr("Caractères spéciaux"));
-    insere_caractere->setIcon(QIcon(":/menus/images/specialchars.png"));
+    insere_caractere->setIcon(QIcon::fromTheme("character-set", QIcon(":/menus/images/specialchars.png")));
     insere_caractere->setStatusTip(tr("Insérer des caractères spéciaux"));
     connect(insere_caractere, SIGNAL(triggered()), this, SLOT(insertSpecialChars()));
 
     QAction *insere_image = menu_insertion->addAction(tr("Insérer une image"));
-    insere_image->setIcon(QIcon(":/menus/images/image.png"));
+    insere_image->setIcon(QIcon::fromTheme("insert-image", QIcon(":/menus/images/image.png")));
     insere_image->setStatusTip(tr("Insérer une image"));
     connect(insere_image, SIGNAL(triggered()), this, SLOT(add_image()));
 
     QMenu *menu_tableau = menu_insertion->addMenu(tr("Tableau"));
     QAction *insere_tableau = menu_tableau->addAction(tr("Insérer un tableau"));
-    insere_tableau->setIcon(QIcon(":/menus/images/tableau.png"));
+    insere_tableau->setIcon(QIcon::fromTheme("insert-table", QIcon(":/menus/images/tableau.png")));
     insere_tableau->setStatusTip(tr("Insère un tableau"));
     connect(insere_tableau, SIGNAL(triggered()), this, SLOT(creer_tableau()));
 
     QAction *ajoute_ligne = menu_tableau->addAction(tr("Ajouter une ligne"));
-    ajoute_ligne->setIcon(QIcon(":/menus/images/add_row.png"));
+    ajoute_ligne->setIcon(QIcon::fromTheme("edit-table-insert-row-below", QIcon(":/menus/images/add_row.png")));
     ajoute_ligne->setStatusTip(tr("Ajouter une ligne au tableau"));
     QSignalMapper *tableau = new QSignalMapper;
     connect(ajoute_ligne, SIGNAL(triggered()), tableau, SLOT(map()));
@@ -1319,7 +1326,7 @@ void DadaWord::create_menus(){
     connect(tableau, SIGNAL(mapped(const int &)), this, SLOT(tableau_add(const int &)));
 
     QAction *ajoute_colonne = menu_tableau->addAction(tr("Ajouter une colonne"));
-    ajoute_colonne->setIcon(QIcon(":/menus/images/add_column.jpeg"));
+    ajoute_colonne->setIcon(QIcon::fromTheme("edit-table-insert-column-right", QIcon(":/menus/images/add_column.jpeg")));
     ajoute_colonne->setStatusTip(tr("Ajoute une colonne au tableau"));
     QSignalMapper *tableau2 = new QSignalMapper;
     connect(ajoute_colonne, SIGNAL(triggered()), tableau2, SLOT(map()));
@@ -1327,7 +1334,7 @@ void DadaWord::create_menus(){
     connect(tableau2, SIGNAL(mapped(const int &)), this, SLOT(tableau_add(const int &)));
 
     QAction *delete_ligne = menu_tableau->addAction(tr("Supprimer une ligne"));
-    delete_ligne->setIcon(QIcon(":/menus/images/delete_row.jpeg"));
+    delete_ligne->setIcon(QIcon::fromTheme("edit-table-delete-row", QIcon(":/menus/images/delete_row.jpeg")));
     delete_ligne->setStatusTip(tr("Supprime une ligne précise du tableau"));
     QSignalMapper *tableau3 = new QSignalMapper;
     connect(delete_ligne, SIGNAL(triggered()), tableau3, SLOT(map()));
@@ -1335,7 +1342,7 @@ void DadaWord::create_menus(){
     connect(tableau3, SIGNAL(mapped(const int &)), this, SLOT(tableau_remove(const int &)));
 
     QAction *delete_colonne = menu_tableau->addAction(tr("Supprimer une colonne"));
-    delete_colonne->setIcon(QIcon(":/menus/images/delete_column.gif"));
+    delete_colonne->setIcon(QIcon::fromTheme("edit-table-delete-column", QIcon(":/menus/images/delete_column.gif")));
     delete_colonne->setStatusTip(tr("Supprime une colonne précise du tableau"));
     QSignalMapper *tableau4 = new QSignalMapper;
     connect(delete_colonne, SIGNAL(triggered()), tableau4, SLOT(map()));
@@ -1343,13 +1350,13 @@ void DadaWord::create_menus(){
     connect(tableau4, SIGNAL(mapped(const int &)), this, SLOT(tableau_remove(const int &)));
 
     add_ddz_annexe = menu_insertion->addAction(tr("Ajouter une annexe DDZ"));
-    add_ddz_annexe->setIcon(QIcon(":/menus/images/annexe.png"));
+    add_ddz_annexe->setIcon(QIcon::fromTheme("archive-insert", QIcon(":/menus/images/annexe.png")));
     add_ddz_annexe->setVisible(false);
     connect(add_ddz_annexe, SIGNAL(triggered()), this, SLOT(add_annexe()));
 
     rm_ddz_annexe = menu_insertion->addAction(tr("Supprimer un annexe DDZ"));
     rm_ddz_annexe->setVisible(false);
-    rm_ddz_annexe->setIcon(QIcon(":/menus/images/close.png"));
+    rm_ddz_annexe->setIcon(QIcon::fromTheme("archive-remove", QIcon(":/menus/images/close.png")));
     connect(rm_ddz_annexe, SIGNAL(triggered()), this, SLOT(rm_annexe()));
 
 
@@ -1359,7 +1366,7 @@ void DadaWord::create_menus(){
     //Sous-menu : "Affichage"
     QMenu *affichage = menu_outils->addMenu(tr("Barres d'outils"));
     affichage->setStatusTip(tr("Gère l'affichage des barres d'outils"));
-    affichage->setIcon(QIcon(":/menus/images/visible.png"));
+    affichage->setIcon(QIcon::fromTheme("layer-visible-on", QIcon(":/menus/images/visible.png")));
 
     //Contenu du sous-menu
     affichage_default = affichage->addAction(tr("Défaut"));
@@ -1409,7 +1416,7 @@ void DadaWord::create_menus(){
 
     //Orthographe
     QAction *verif_langue = menu_outils->addAction(tr("Vérification orthographique"));
-    verif_langue->setIcon(QIcon(":/menus/images/orthographe.png"));
+    verif_langue->setIcon(QIcon::fromTheme("tools-check-spelling", QIcon(":/menus/images/orthographe.png")));
     verif_langue->setStatusTip(tr("Vérifie l'orthographe du document courant"));
     verif_langue->setShortcut(QKeySequence("F7"));
     connect(verif_langue, SIGNAL(triggered()), this, SLOT(verif_orthographe()));
@@ -1417,12 +1424,12 @@ void DadaWord::create_menus(){
     //Langue
     QAction *change_langue = menu_outils->addAction(tr("Langue du correcteur"));
     change_langue->setStatusTip(tr("Change la langue du correcteur orthographique"));
-    change_langue->setIcon(QIcon(":/menus/images/langue.png"));
+    change_langue->setIcon(QIcon::fromTheme("preferences-desktop-locale", QIcon(":/menus/images/langue.png")));
     connect(change_langue, SIGNAL(triggered()), this, SLOT(orth_langue()));
 
     //Mode texte
     to_text = menu_outils->addAction(tr("Mode texte seul"));
-    to_text->setIcon(QIcon(":/menus/images/text.png"));
+    to_text->setIcon(QIcon::fromTheme("text-plain", QIcon(":/menus/images/text.png")));
     to_text->setStatusTip(tr("Afficher le fichier en mode texte"));
     to_text->setCheckable(true);
     to_text->setChecked(false);
@@ -1430,7 +1437,7 @@ void DadaWord::create_menus(){
 
     //Gestion du plein écran
     full_screen = menu_outils->addAction(tr("Mode plein écran"));
-    full_screen->setIcon(QIcon(":/menus/images/full_screen.png"));
+    full_screen->setIcon(QIcon::fromTheme("view-fullscreen", QIcon(":/menus/images/full_screen.png")));
     full_screen->setStatusTip(tr("Affiche DadaWord en mode plein écran"));
     full_screen->setCheckable(true);
     full_screen->setChecked(false);
@@ -1439,7 +1446,7 @@ void DadaWord::create_menus(){
 
     //Coloration du HTML
     colore_html = menu_outils->addAction(tr("Colorer la syntaxe"));
-    colore_html->setIcon(QIcon(":/menus/images/coloration_syntaxique.png"));
+    colore_html->setIcon(QIcon::fromTheme("application-x-object", QIcon(":/menus/images/coloration_syntaxique.png")));
     colore_html->setStatusTip(tr("Colore le code HTML"));
     colore_html->setCheckable(true);
     colore_html->setChecked(false);
@@ -1448,20 +1455,20 @@ void DadaWord::create_menus(){
 
     //Statistiques
     QAction *statistiques_doc = menu_outils->addAction(tr("Statistiques"));
-    statistiques_doc->setIcon(QIcon(":/menus/images/statistiques.png"));
+    statistiques_doc->setIcon(QIcon::fromTheme("view-statistics", QIcon(":/menus/images/statistiques.png")));
     statistiques_doc->setStatusTip(tr("Affiche les statistiques pour le document en cours"));
     connect(statistiques_doc, SIGNAL(triggered()), this, SLOT(statistiques()));
 
     //Gestion du log
     QAction *gestion_log = menu_outils->addAction(tr("Gestion du log"));
-    gestion_log->setIcon(QIcon(":/menus/images/log.png"));
+    gestion_log->setIcon(QIcon::fromTheme("text-x-log", QIcon(":/menus/images/log.png")));
     gestion_log->setStatusTip("Gérer le fichier de log");
     Outils *instance_connect = new Outils;
     connect(gestion_log, SIGNAL(triggered()), instance_connect, SLOT(affiche_log()));
 
     //Preferences
     QAction *preferences = menu_outils->addAction(tr("Préférences"));
-    preferences->setIcon(QIcon(":/menus/images/outils.png"));
+    preferences->setIcon(QIcon::fromTheme("preferences-system", QIcon(":/menus/images/outils.png")));
     preferences->setToolTip(tr("Préférences de DadaWord"));
     preferences->setStatusTip(tr("Configuration de DadaWord"));
     connect(preferences, SIGNAL(triggered()), instance_connect, SLOT(fenetre_config()));
@@ -1470,10 +1477,10 @@ void DadaWord::create_menus(){
     //Création de la barre de menu "Aide"
     QMenu *menu_aide = menuBar()->addMenu(tr("Aide"));
     //Menu "Aide"
-    QAction *aide_a_propos = menu_aide->addAction(QIcon(":/menus/images/about.gif"), tr("A propos de Dadaword"));
+    QAction *aide_a_propos = menu_aide->addAction(tr("A propos de Dadaword"));
     aide_a_propos->setToolTip(tr("A propos de Dadaword"));
     //Image
-    aide_a_propos->setIcon(QIcon(":/menus/images/about.gif"));
+    aide_a_propos->setIcon(QIcon::fromTheme("about", QIcon(":/menus/images/about.gif")));
     aide_a_propos->setStatusTip(tr("À propos du créateur de ce génial programme"));
     //Connexion slot
     connect(aide_a_propos, SIGNAL(triggered()), this, SLOT(affiche_about()));
@@ -1503,22 +1510,22 @@ void DadaWord::create_menus(){
     //Connexion au slot
     connect(taille_police, SIGNAL(valueChanged(int)), this, SLOT(change_taille(int)));
 
-    gras = barre_standard->addAction(QIcon(":/menus/images/text_bold.png"), tr("Gras"));
+    gras = barre_standard->addAction(QIcon::fromTheme("format-text-bold", QIcon(":/menus/images/text_bold.png")), tr("Gras"));
     gras->setShortcut(QKeySequence("Ctrl+B"));
     connect(gras, SIGNAL(triggered(bool)), this, SLOT(graisse_police(bool)));
     gras->setCheckable(true);
 
-    italique = barre_standard->addAction(QIcon(":/menus/images/text_italic.png"), tr("Italique"));
+    italique = barre_standard->addAction(QIcon::fromTheme("format-text-italic", QIcon(":/menus/images/text_italic.png")), tr("Italique"));
     italique->setShortcut(QKeySequence("Ctrl+I"));
     connect(italique, SIGNAL(triggered(bool)), this, SLOT(italique_police(bool)));
     italique->setCheckable(true);
 
-    souligne = barre_standard->addAction(QIcon(":/menus/images/text_under.png"), tr("Souligné"));
+    souligne = barre_standard->addAction(QIcon::fromTheme("format-text-underline", QIcon(":/menus/images/text_under.png")), tr("Souligné"));
     souligne->setShortcut(QKeySequence("Ctrl+U"));
     connect(souligne, SIGNAL(triggered(bool)), this, SLOT(souligne_police(bool)));
     souligne->setCheckable(true);
 
-    QAction *couleur_texte = barre_standard->addAction(QIcon(":/menus/images/couleur_texte.png"), tr("Couleur du texte"));
+    QAction *couleur_texte = barre_standard->addAction(QIcon::fromTheme("format-text-color", QIcon(":/menus/images/couleur_texte.png")), tr("Couleur du texte"));
     //Mappeur pour passer la value à la fonction
     QSignalMapper *mappeur_couleur = new QSignalMapper;
     connect(couleur_texte, SIGNAL(triggered()), mappeur_couleur, SLOT(map()));
@@ -1526,7 +1533,7 @@ void DadaWord::create_menus(){
     connect(mappeur_couleur, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
 
     QToolButton *button_highlight = new QToolButton;
-    button_highlight->setIcon(QIcon(":/menus/images/couleur_highlight.png"));
+    button_highlight->setIcon(QIcon::fromTheme("fill-color", QIcon(":/menus/images/couleur_highlight.png")));
     barre_standard->addWidget(button_highlight);
     //Mappeur 2 pour passer une valeur à la fonction
     QSignalMapper *mappeur_couleur2 = new QSignalMapper;
@@ -1606,8 +1613,8 @@ void DadaWord::create_menus(){
     //Création de la toolbar des puces
     puces = new QToolBar;
     addToolBar(Qt::BottomToolBarArea, puces);
-    incremente_puce_bouton->setIcon(QIcon(":/menus/images/suivant.png"));
-    desincremente_puce_bouton->setIcon(QIcon(":/menus/images/precedent.png"));
+    incremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-more", QIcon(":/menus/images/suivant.png")));
+    desincremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-less", QIcon(":/menus/images/precedent.png")));
     puces->addAction(incremente_puce_bouton);
     puces->addAction(desincremente_puce_bouton);
     puces->hide();
@@ -1633,7 +1640,7 @@ void DadaWord::create_menus(){
     barre_recherche->hide();
     barre_recherche->setMovable(true);
     QAction *make_recherche = barre_recherche->addAction(tr("Rechercher"));
-    make_recherche->setIcon(QIcon(":/menus/images/ok.png"));
+    make_recherche->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
     make_recherche->setStatusTip(tr("Rechercher dans le document"));
     QSignalMapper *mappeur_toolbar5 = new QSignalMapper;
     connect(make_recherche, SIGNAL(triggered()), mappeur_toolbar5, SLOT(map()));
@@ -1645,13 +1652,13 @@ void DadaWord::create_menus(){
     mappeur_toolbar9->setMapping(champ_recherche, QTOOLBAR);
     connect(mappeur_toolbar9, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
     QAction *recherche_avant = barre_recherche->addAction(tr("Occurence précédente"));
-    recherche_avant->setIcon(QIcon(":/menus/images/avant.png"));
+    recherche_avant->setIcon(QIcon::fromTheme("go-previous", QIcon(":/menus/images/avant.png")));
     recherche_avant->setStatusTip(tr("Recherche l'occurence précédente"));
     QAction *recherche_apres = barre_recherche->addAction(tr("Occurence suivante"));
-    recherche_apres->setIcon(QIcon(":/menus/images/apres.png"));
+    recherche_apres->setIcon(QIcon::fromTheme("go-next", QIcon(":/menus/images/apres.png")));
     recherche_apres->setStatusTip(tr("Recherche l'occurence suivante"));
     QAction *ferme_recherche = barre_recherche->addAction(tr("Ferme la barre d'outils"));
-    ferme_recherche->setIcon(QIcon(":/menus/images/exit.png"));
+    ferme_recherche->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
     ferme_recherche->setStatusTip(tr("Ferme la barre d'outils de recherche"));
     connect(ferme_recherche, SIGNAL(triggered()), this, SLOT(hide_searchbar()));
     QSignalMapper *mappeur_toolbar6 = new QSignalMapper;
@@ -1670,16 +1677,16 @@ void DadaWord::create_menus(){
     orth_mot = new QLabel("N/A");
     QPushButton *add_dico, *remplace_tout, *ignore, *ignore_tout, *suivant, *fin_orth;
     add_dico = new QPushButton(tr("Ajouter au dictionnaire"));
-    add_dico->setIcon(QIcon(":/menus/images/add_dico.png"));
+    add_dico->setIcon(QIcon::fromTheme("book", QIcon(":/menus/images/add_dico.png")));
     remplace_tout = new QPushButton(tr("Remplacer tout"));
     ignore = new QPushButton(tr("Ignorer"));
-    ignore->setIcon(QIcon(":/menus/images/apres.png"));
+    //ignore->setIcon(QIcon::fromTheme("go-next", QIcon(":/menus/images/apres.png")));
     ignore_tout = new QPushButton(tr("Ignorer tout"));
-    ignore_tout->setIcon(QIcon(":/menus/images/ignorer.png"));
+    //ignore_tout->setIcon(QIcon::fromTheme(":/menus/images/ignorer.png"));
     suivant = new QPushButton(tr("Correction suivante"));
-    suivant->setIcon(QIcon(":/menus/images/suivant2.png"));
+    suivant->setIcon(QIcon::fromTheme("go-next", QIcon(":/menus/images/suivant2.png")));
     fin_orth = new QPushButton(tr("Annuler"));
-    fin_orth->setIcon(QIcon(":/menus/images/exit.png"));
+    fin_orth->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
     //Ajout à la barre
     barre_orthographe->addWidget(orth_mot);
     barre_orthographe->addWidget(orth_suggest);
@@ -2326,7 +2333,7 @@ void DadaWord::recherche(bool remplacer){
     else{
         dialog_recherche->setWindowTitle(tr("Rechercher dans …"));
     }
-    dialog_recherche->setWindowIcon(QIcon(":/menus/images/search.png"));
+    dialog_recherche->setWindowIcon(QIcon::fromTheme("edit-find", QIcon(":/menus/images/search.png")));
     dialog_recherche->setAttribute(Qt::WA_DeleteOnClose);
 
     QGridLayout *layout = new QGridLayout;
@@ -2350,9 +2357,9 @@ void DadaWord::recherche(bool remplacer){
 
     QPushButton *bouton_recherche = new QPushButton;
     QPushButton *bouton_annuler = new QPushButton;
-    bouton_recherche->setIcon(QIcon(":/menus/images/search.png"));
+    bouton_recherche->setIcon(QIcon::fromTheme("edit-find", QIcon(":/menus/images/search.png")));
     bouton_recherche->setText(tr("Rechercher"));
-    bouton_annuler->setIcon(QIcon(":/menus/images/sortir.png"));
+    bouton_annuler->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/sortir.png")));
     bouton_annuler->setText(tr("Annuler"));
 
     //On rentre tout dans le layout
@@ -2608,7 +2615,7 @@ void DadaWord::statistiques(){
     fen_stats->setAttribute(Qt::WA_DeleteOnClose);
     fen_stats->setWindowModality(Qt::ApplicationModal);
     fen_stats->setWindowTitle(tr("Statistiques du document courant"));
-    quitter->setIcon(QIcon(":/menus/images/exit.png"));
+    quitter->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
     connect(quitter, SIGNAL(clicked()), fen_stats, SLOT(close()));
     fen_stats->setLayout(layout);
 
@@ -2926,7 +2933,7 @@ void DadaWord::orth_remplace_all(QString remplace){
         QHBoxLayout *layout = new QHBoxLayout;
         layout->addWidget(select_words);
         QPushButton *ok = new QPushButton(tr("Valider"));
-        ok->setIcon(QIcon(":/menus/images/ok.png"));
+        ok->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
         connect(ok, SIGNAL(clicked()), mots, SLOT(close()));
         layout->addWidget(ok, 0, Qt::AlignHCenter);
         mots->setLayout(layout);
@@ -3014,7 +3021,7 @@ void DadaWord::orth_langue(){
             liste->setCurrentIndex(i);
         }
     }
-    valider->setIcon(QIcon(":/menus/images/ok.png"));
+    valider->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
     layout->addWidget(actuelle, 1, 0);
@@ -3362,7 +3369,7 @@ void DadaWord::rm_annexe(){
         connect(this, SIGNAL(delete_annexes()), dialog_annexes, SLOT(close()));
         dialog_annexes->setAttribute(Qt::WA_DeleteOnClose);
         QPushButton *rm_button[annexes.size()];
-        QPushButton *quit = new QPushButton(QIcon(":/menus/images/exit.png"), tr("Fermer la fenêtre"), dialog_annexes);
+        QPushButton *quit = new QPushButton(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")), tr("Fermer la fenêtre"), dialog_annexes);
         QGridLayout *layout = new QGridLayout(dialog_annexes);
 
         QLabel *titre = new QLabel(tr("<h3>Cliquez sur l'annexe à supprimer</h3>"));
@@ -3371,7 +3378,7 @@ void DadaWord::rm_annexe(){
         for(int i=0; i<annexes.size(); i++){
             rm_button[i] = new QPushButton(dialog_annexes);
             rm_button[i]->setFlat(true);
-            rm_button[i]->setIcon(QIcon(":/menus/images/sortir.png"));
+            rm_button[i]->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/sortir.png")));
             rm_button[i]->setText(annexes.at(i));
             QSignalMapper *mappeur = new QSignalMapper;
             connect(rm_button[i], SIGNAL(clicked()), mappeur, SLOT(map()));
