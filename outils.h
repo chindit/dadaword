@@ -48,7 +48,7 @@ private:
     SettingsManager *settings;
     QWidget *log_fen;
     QWidget *configure_fen;
-    QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe;
+    QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe, *checkbox_autocorrection;
     QLineEdit *saving_edit;
     QSpinBox *taille_police_default, *spinbox_timer;
     QFontComboBox *police_default;

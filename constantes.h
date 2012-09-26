@@ -42,6 +42,6 @@ enum { GAUCHE, DROITE };
 enum { INT_AUTRE };
 
 //Énumération pour les settings
-enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme };
+enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection };
 
 #endif // CONSTANTES_H

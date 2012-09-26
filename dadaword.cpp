@@ -928,37 +928,45 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             }
         }//Fin du "if" de "Escape"
         if(keyEvent->key() == Qt::Key_Space){
-            if(settings->getSettings(Orthographe).toBool()){
+            if(settings->getSettings(Orthographe).toBool() || settings->getSettings(Autocorrection).toBool()){
                 QTextCursor temp = find_edit()->textCursor();
                 temp.movePosition(QTextCursor::PreviousWord);
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-                    if(temp.selectedText() == "=>"){
-                        temp.removeSelectedText();
-                        temp.insertText(QChar(0x21D2));
-                    }
-                    if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
-                        QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-                        if(!QFile::exists(userDict)){
-                            userDict = QDir::homePath() + ".dadaword/perso.dic";
+                    if(settings->getSettings(Autocorrection).toBool()){
+                        QStringList clesRemplacement = settings->getSettings(Cles).toStringList();
+                        for(int i=0; i<clesRemplacement.size(); i++){
+                            if(temp.selectedText() == clesRemplacement.at(i)){
+                                temp.removeSelectedText();
+                                temp.insertText(settings->getSettings(Valeurs).toStringList().at(i));
+                                break;
+                            }
                         }
-                        SpellChecker instance_orthographe(dictPath, userDict);
-                        if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
-                            // highlight the unknown word
-                            QTextCharFormat marquage_erreurs;
-                            QColor couleur(Qt::red);
-                            marquage_erreurs.setUnderlineColor(couleur);
-                            marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+                    }//Fin remplacement automatique
+                    else{
+                        if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
+                            QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
+                            if(!QFile::exists(userDict)){
+                                userDict = QDir::homePath() + ".dadaword/perso.dic";
+                            }
+                            SpellChecker instance_orthographe(dictPath, userDict);
+                            if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
+                                // highlight the unknown word
+                                QTextCharFormat marquage_erreurs;
+                                QColor couleur(Qt::red);
+                                marquage_erreurs.setUnderlineColor(couleur);
+                                marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-                            //Sélection de texte (pour le surlignage)
-                            QTextEdit::ExtraSelection es;
-                            es.cursor = temp;
-                            es.format = marquage_erreurs;
+                                //Sélection de texte (pour le surlignage)
+                                QTextEdit::ExtraSelection es;
+                                es.cursor = temp;
+                                es.format = marquage_erreurs;
 
-                            liste_erreurs << es;
-                            find_edit()->setExtraSelections(liste_erreurs);
-                        } //IF : s'il y a une faute
-                    }//IF : s'il y a sélection et qu'elle est valide
+                                liste_erreurs << es;
+                                find_edit()->setExtraSelections(liste_erreurs);
+                            } //IF : s'il y a une faute
+                        }//IF : s'il y a sélection et qu'elle est valide
+                    }//IF : si on est pas dans le remplacement mais dans la correction
                 }//IF : s'il y a un mot précédent
             }//IF : si la correction est activée
         }//IF : activation de la touche "Espace"
@@ -1148,7 +1156,8 @@ void DadaWord::create_menus(){
     QAction *fichier_fermer = menu_fichier->addAction(tr("Fermer"));
     fichier_fermer->setToolTip(tr("Fermer le document actif"));
     fichier_fermer->setShortcut(QKeySequence("Ctrl+W"));
-    fichier_fermer->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/close.png")));
+    QString nomIcone = QIcon::hasThemeIcon("document-close") ? "document-close" : "process-stop";
+    fichier_fermer->setIcon(QIcon::fromTheme(nomIcone, QIcon(":/menus/images/document-close.png")));
     fichier_fermer->setStatusTip(tr("Fermer l'onglet courant"));
     connect(fichier_fermer, SIGNAL(triggered()), this, SLOT(fermer_fichier()));
 
@@ -1215,6 +1224,12 @@ void DadaWord::create_menus(){
     Style *instance_style = new Style;
     connect(gere_styles, SIGNAL(triggered()), instance_style, SLOT(affiche_fen()));
     connect(instance_style, SIGNAL(styles_changed()), this, SLOT(recharge_styles()));
+
+    //Gestion de l'autocorrection
+    QAction *autocorrection = menu_edition->addAction(tr("Autocorrection"));
+    //autocorrection->setIcon(QIcon::fromTheme("edit-find-replace", QIcon(":/programme/images/remplace.png")));
+    ReplaceManager *instance_remplacement = new ReplaceManager;
+    connect(autocorrection, SIGNAL(triggered()), instance_remplacement, SLOT(showWindow()));
 
     //Alignement
     QMenu *alignement = menu_edition->addMenu(tr("Alignement"));
@@ -1498,6 +1513,7 @@ void DadaWord::create_menus(){
     barre_standard->addAction(nouveau_document);
     barre_standard->addAction(menu_ouvrir_fichier);
     barre_standard->addAction(enregistrer);
+    barre_standard->addAction(fichier_fermer);
     choix_police = new QFontComboBox;
     choix_police->setCurrentFont(settings->getSettings(Police).value<QFont>());
     barre_standard->addWidget(choix_police);
@@ -1716,7 +1732,8 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
     bool titre_ok = false;
     QString reponse;
     if(!fichier){
-        reponse = QInputDialog::getText(this, tr("Titre du document"), tr("Quel est le titre du document?"), QLineEdit::Normal, QString(), &titre_ok);
+        //reponse = QInputDialog::getText(this, tr("Titre du document"), tr("Quel est le titre du document?"), QLineEdit::Normal, QString(), &titre_ok);
+        reponse = tr("Nouveau document");
     }
     else{
         titre_ok = true;

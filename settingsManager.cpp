@@ -3,8 +3,8 @@
 SettingsManager::SettingsManager(QObject *parent) :
     QObject(parent)
 {
-    names = new QString[11];
-    settings = new QVariant[11];
+    names = new QString[14];
+    settings = new QVariant[14];
 
     names[Onglets] = "onglets";
     names[FichiersVides] = "fichiersVides";
@@ -17,6 +17,9 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[Timer] = "timer";
     names[Enregistrement] = "enregistrement";
     names[Theme] = "themes";
+    names[Cles] = "ClésRemplacements";
+    names[Valeurs] = "ValeursRemplacement";
+    names[Autocorrection] = "Autocorrection";
 
     loadSettings();
 
@@ -50,6 +53,9 @@ void SettingsManager::loadSettings(){
     settings[Timer] = options.value(names[Timer], 300);
     settings[Enregistrement] = options.value(names[Enregistrement], QDir::homePath());
     settings[Theme] = options.value(names[Theme], "DadaWord");
+    settings[Cles] = options.value(names[Cles]);
+    settings[Valeurs] = options.value(names[Valeurs]);
+    settings[Autocorrection] = options.value(names[Autocorrection], true);
     return;
 }
 
@@ -66,5 +72,6 @@ void SettingsManager::saveSettings(){
     options.setValue(names[Timer], settings[Timer]);
     options.setValue(names[Enregistrement], settings[Enregistrement]);
     options.setValue(names[Theme], settings[Theme]);
+    options.setValue(names[Autocorrection], settings[Autocorrection]);
     return;
 }

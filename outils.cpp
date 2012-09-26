@@ -51,7 +51,7 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
@@ -63,22 +63,26 @@ void Outils::fenetre_config(){
     label_timer = new QLabel(tr("Sauvegarde automatique (en secondes)"));
     label_saving = new QLabel(tr("Répertoire d'enregistrement par défaut"));
     label_theme = new QLabel(tr("Thème d'icônes"));
+    label_autocorrection = new QLabel(tr("Activer l'autocorrection"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
     label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
     label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
     label_orthographe->setToolTip(tr("Active le surlignement automatique des erreurs dans le document courant"));
     label_timer->setToolTip(tr("Intervalle de temps avant de lancer une sauvegarde automatique du document."));
     label_theme->setToolTip(tr("Le thème définit les icones du programme."));
+    label_autocorrection->setToolTip(tr("Active l'autocorrection pour les éléments listés dans le panel"));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
     checkbox_word = new QCheckBox;
     checkbox_orthographe = new QCheckBox;
+    checkbox_autocorrection = new QCheckBox;
     //On y met la configuration déjà existante :
     checkbox_onglets->setChecked(settings->getSettings(Onglets).toBool());
     checkbox_fichiers_vides->setChecked(settings->getSettings(FichiersVides).toBool());
     checkbox_orthographe->setChecked(settings->getSettings(Orthographe).toBool());
     checkbox_word->setChecked(settings->getSettings(Word).toBool());
+    checkbox_autocorrection->setChecked(settings->getSettings(Autocorrection).toBool());
 
     alertes = new QComboBox;
     alertes->addItem(tr("Aucunes"), LOW);
@@ -159,6 +163,8 @@ void Outils::fenetre_config(){
     layoutEdition->addWidget(checkbox_word, 3, 1);
     layoutEdition->addWidget(label_orthographe, 4, 0);
     layoutEdition->addWidget(checkbox_orthographe, 4, 1);
+    layoutEdition->addWidget(label_autocorrection, 5, 0);
+    layoutEdition->addWidget(checkbox_autocorrection, 5, 1);
 
     //---------------------------------------------------
     // Général

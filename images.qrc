@@ -58,6 +58,7 @@
         <file>images/annexe.png</file>
         <file>images/specialchars.png</file>
         <file>images/recents.png</file>
+        <file>images/document-close.png</file>
     </qresource>
     <qresource prefix="/programme">
         <file>images/dadaword.gif</file>

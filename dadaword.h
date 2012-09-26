@@ -50,6 +50,7 @@
 #include "highlighterhtml.h"
 #include "outils.h"
 #include "opendocument.h"
+#include "replaceManager.h"
 #include "settingsManager.h"
 #include "specialchars.h"
 #include "spellchecker.h"
