@@ -3,8 +3,8 @@
 SettingsManager::SettingsManager(QObject *parent) :
     QObject(parent)
 {
-    names = new QString[14];
-    settings = new QVariant[14];
+    names = new QString[15];
+    settings = new QVariant[15];
 
     names[Onglets] = "onglets";
     names[FichiersVides] = "fichiersVides";
@@ -20,6 +20,7 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[Cles] = "ClésRemplacements";
     names[Valeurs] = "ValeursRemplacement";
     names[Autocorrection] = "Autocorrection";
+    names[ToolbarIcons] = "showIconsToolbar";
 
     loadSettings();
 
@@ -56,6 +57,7 @@ void SettingsManager::loadSettings(){
     settings[Cles] = options.value(names[Cles]);
     settings[Valeurs] = options.value(names[Valeurs]);
     settings[Autocorrection] = options.value(names[Autocorrection], true);
+    settings[ToolbarIcons] = options.value(names[ToolbarIcons], false);
     return;
 }
 
@@ -73,5 +75,6 @@ void SettingsManager::saveSettings(){
     options.setValue(names[Enregistrement], settings[Enregistrement]);
     options.setValue(names[Theme], settings[Theme]);
     options.setValue(names[Autocorrection], settings[Autocorrection]);
+    options.setValue(names[ToolbarIcons], settings[ToolbarIcons]);
     return;
 }

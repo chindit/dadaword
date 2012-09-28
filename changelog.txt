@@ -12,6 +12,9 @@ Version 1.2.0 :
 - Ajout d'un système de remplacement automatique (configuration dans "Édition/Autocorrection" et (dés)activation dans les préférences)
 - Désactivation de la demande de nom d'un nouvel onglet au profit de "Nouveau document" par défaut.
 - Optimisation d'une icône peu fréquente
+- Masquage des actions pour lesquelles le thème ne possède pas d'icônes (désactivé par défaut)
+- Sélection automatique du style actif
+- Création d'un menu «Format» regroupant les différentes options de style
 - BUG : raccourci des alignements non fonctionnel
 - BUG : dictionnaire personnel mal placé selon certaine configuration
 - BUG : paramètre non utilisé : QPoint.

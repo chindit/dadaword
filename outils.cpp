@@ -51,7 +51,7 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection, *label_icons;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
@@ -64,6 +64,7 @@ void Outils::fenetre_config(){
     label_saving = new QLabel(tr("Répertoire d'enregistrement par défaut"));
     label_theme = new QLabel(tr("Thème d'icônes"));
     label_autocorrection = new QLabel(tr("Activer l'autocorrection"));
+    label_icons = new QLabel(tr("Masquer les actions pour lesquelles le thème n'a pas d'icônes"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
     label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
     label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
@@ -71,18 +72,21 @@ void Outils::fenetre_config(){
     label_timer->setToolTip(tr("Intervalle de temps avant de lancer une sauvegarde automatique du document."));
     label_theme->setToolTip(tr("Le thème définit les icones du programme."));
     label_autocorrection->setToolTip(tr("Active l'autocorrection pour les éléments listés dans le panel"));
+    label_icons->setToolTip(tr("Ne masque que les icônes de la barre d'outils.  Les actions restent disponibles dans les menus"));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
     checkbox_word = new QCheckBox;
     checkbox_orthographe = new QCheckBox;
     checkbox_autocorrection = new QCheckBox;
+    checkbox_icons = new QCheckBox;
     //On y met la configuration déjà existante :
     checkbox_onglets->setChecked(settings->getSettings(Onglets).toBool());
     checkbox_fichiers_vides->setChecked(settings->getSettings(FichiersVides).toBool());
     checkbox_orthographe->setChecked(settings->getSettings(Orthographe).toBool());
     checkbox_word->setChecked(settings->getSettings(Word).toBool());
     checkbox_autocorrection->setChecked(settings->getSettings(Autocorrection).toBool());
+    checkbox_icons->setChecked(settings->getSettings(ToolbarIcons).toBool());
 
     alertes = new QComboBox;
     alertes->addItem(tr("Aucunes"), LOW);
@@ -120,6 +124,13 @@ void Outils::fenetre_config(){
         dossier.setPath(themePath.at(i));
         liste_themes->addItems(dossier.entryList(QDir::Dirs | QDir::NoDotAndDotDot));
     }
+    for(int i=0; i<liste_themes->count(); i++){
+        if(liste_themes->itemText(i) == settings->getSettings(Theme).toString()){
+            liste_themes->setCurrentIndex(i);
+            break;
+        }
+    }
+
 
     //Lecture des valeurs
     int result = settings->getSettings(Alertes).toInt();
@@ -187,6 +198,8 @@ void Outils::fenetre_config(){
     layoutGeneral->addLayout(layoutSaving, 4, 1);
     layoutGeneral->addWidget(label_theme, 5, 0);
     layoutGeneral->addWidget(liste_themes, 5, 1);
+    layoutGeneral->addWidget(label_icons, 6, 0);
+    layoutGeneral->addWidget(checkbox_icons, 6, 1);
 
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
     configure_fen->show();
@@ -214,8 +227,11 @@ void Outils::enregistre_config(){
     settings->setSettings(Word, checkbox_word->isChecked());
     settings->setSettings(Dico, liste_dicos->currentText());
     settings->setSettings(Timer, spinbox_timer->value());
-    settings->setSettings(Enregistrement, saving_edit->text());
-    settings->setSettings(Theme, liste_themes->currentText());
+    if(!saving_edit->text().isEmpty())
+        settings->setSettings(Enregistrement, saving_edit->text());
+    if(!liste_themes->currentText().isEmpty())
+        settings->setSettings(Theme, liste_themes->currentText());
+    settings->setSettings(ToolbarIcons, checkbox_icons->isChecked());
 
     configure_fen->close();
     return;

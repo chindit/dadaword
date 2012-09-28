@@ -236,6 +236,19 @@ void DadaWord::change_police(QFont nouvelle_police){
     return;
 }
 
+//Surcharge pour le menu
+void DadaWord::change_police(){
+    bool ok = true;
+    QFont police = QFontDialog::getFont(&ok, this);
+    if(!ok){
+        return;
+    }
+    else{
+        change_police(police);
+    }
+    return;
+}
+
 //Mise en gras
 void DadaWord::graisse_police(bool etat){
     //Si pas de document ouvert, on quitte
@@ -291,6 +304,19 @@ void DadaWord::change_taille(int taille){
     }
     find_edit()->setFontPointSize(taille);
     find_edit()->setFocus();
+    return;
+}
+
+//Surcharge
+void DadaWord::change_taille(){
+    bool ok = true;
+    int taille = QInputDialog::getInt(this, tr("Taille de la police"), tr("Taille de la police"), 12, 1, 72, 1, &ok);
+    if(!ok){
+        return;
+    }
+    else{
+        change_taille(taille);
+    }
     return;
 }
 
@@ -1292,6 +1318,10 @@ void DadaWord::create_menus(){
     }
 
 
+    //Création de la barre de menu "Format"
+    QMenu *menu_format = menuBar()->addMenu(tr("Format"));
+
+
     //Création de la barre de menu "Insertion"
     QMenu *menu_insertion = menuBar()->addMenu(tr("Insérer"));
 
@@ -1508,12 +1538,20 @@ void DadaWord::create_menus(){
     connect(about_qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 
+    //-----------------------------------------------------------
+    // Création des toolbars
+    //-----------------------------------------------------------
+
     //Ajout de la barre d'outils
     barre_standard = addToolBar(tr("Défaut"));
-    barre_standard->addAction(nouveau_document);
-    barre_standard->addAction(menu_ouvrir_fichier);
-    barre_standard->addAction(enregistrer);
-    barre_standard->addAction(fichier_fermer);
+    if((QIcon::hasThemeIcon("document-new") || (!settings->getSettings(ToolbarIcons).toBool())))
+            barre_standard->addAction(nouveau_document);
+    if((QIcon::hasThemeIcon("document-open") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(menu_ouvrir_fichier);
+    if((QIcon::hasThemeIcon("document-save") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(enregistrer);
+    if((QIcon::hasThemeIcon("document-close") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(fichier_fermer);
     choix_police = new QFontComboBox;
     choix_police->setCurrentFont(settings->getSettings(Police).value<QFont>());
     barre_standard->addWidget(choix_police);
@@ -1526,22 +1564,30 @@ void DadaWord::create_menus(){
     //Connexion au slot
     connect(taille_police, SIGNAL(valueChanged(int)), this, SLOT(change_taille(int)));
 
-    gras = barre_standard->addAction(QIcon::fromTheme("format-text-bold", QIcon(":/menus/images/text_bold.png")), tr("Gras"));
+    gras = new QAction(QIcon::fromTheme("format-text-bold", QIcon(":/menus/images/text_bold.png")), tr("Gras"), menu_format);
+    if((QIcon::hasThemeIcon("format-text-bold") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(gras);
     gras->setShortcut(QKeySequence("Ctrl+B"));
     connect(gras, SIGNAL(triggered(bool)), this, SLOT(graisse_police(bool)));
     gras->setCheckable(true);
 
-    italique = barre_standard->addAction(QIcon::fromTheme("format-text-italic", QIcon(":/menus/images/text_italic.png")), tr("Italique"));
+    italique = new QAction(QIcon::fromTheme("format-text-italic", QIcon(":/menus/images/text_italic.png")), tr("Italique"), menu_format);
+    if((QIcon::hasThemeIcon("format-text-italic") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(italique);
     italique->setShortcut(QKeySequence("Ctrl+I"));
     connect(italique, SIGNAL(triggered(bool)), this, SLOT(italique_police(bool)));
     italique->setCheckable(true);
 
-    souligne = barre_standard->addAction(QIcon::fromTheme("format-text-underline", QIcon(":/menus/images/text_under.png")), tr("Souligné"));
+    souligne = new QAction(QIcon::fromTheme("format-text-underline", QIcon(":/menus/images/text_under.png")), tr("Souligné"), menu_format);
+    if((QIcon::hasThemeIcon("format-text-underline") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(souligne);
     souligne->setShortcut(QKeySequence("Ctrl+U"));
     connect(souligne, SIGNAL(triggered(bool)), this, SLOT(souligne_police(bool)));
     souligne->setCheckable(true);
 
-    QAction *couleur_texte = barre_standard->addAction(QIcon::fromTheme("format-text-color", QIcon(":/menus/images/couleur_texte.png")), tr("Couleur du texte"));
+    QAction *couleur_texte = new QAction(QIcon::fromTheme("format-text-color", QIcon(":/menus/images/couleur_texte.png")), tr("Couleur du texte"), menu_format);
+    if((QIcon::hasThemeIcon("format-text-color") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(couleur_texte);
     //Mappeur pour passer la value à la fonction
     QSignalMapper *mappeur_couleur = new QSignalMapper;
     connect(couleur_texte, SIGNAL(triggered()), mappeur_couleur, SLOT(map()));
@@ -1550,7 +1596,8 @@ void DadaWord::create_menus(){
 
     QToolButton *button_highlight = new QToolButton;
     button_highlight->setIcon(QIcon::fromTheme("fill-color", QIcon(":/menus/images/couleur_highlight.png")));
-    barre_standard->addWidget(button_highlight);
+    if((QIcon::hasThemeIcon("fill-color") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addWidget(button_highlight);
     //Mappeur 2 pour passer une valeur à la fonction
     QSignalMapper *mappeur_couleur2 = new QSignalMapper;
     connect(button_highlight, SIGNAL(clicked()), mappeur_couleur2, SLOT(map()));
@@ -1607,7 +1654,26 @@ void DadaWord::create_menus(){
 
     button_highlight->setMenu(menu_couleurs);
 
-    barre_standard->addAction(verif_langue);
+    if((QIcon::hasThemeIcon("tools-check-spelling") || (!settings->getSettings(ToolbarIcons).toBool())))
+        barre_standard->addAction(verif_langue);
+
+    //-----------------------------------
+    // Remplissage du menu «Format»
+    //-----------------------------------
+    QAction *police_format = new QAction(tr("Police"), menu_format);
+    connect(police_format, SIGNAL(triggered()), this, SLOT(change_police()));
+    menu_format->addAction(police_format);
+    menu_format->addAction(tr("Taille"), this, SLOT(change_taille()));
+    menu_format->addAction(gras);
+    menu_format->addAction(italique);
+    menu_format->addAction(souligne);
+    menu_format->addAction(couleur_texte);
+    QAction *action_highlight = new QAction(QIcon::fromTheme("fill-color", QIcon(":/menus/images/couleur_highlight.png")), tr("Surligner"), menu_format);
+    QSignalMapper *mappeur_couleur4 = new QSignalMapper;
+    connect(action_highlight, SIGNAL(triggered()), mappeur_couleur4, SLOT(map()));
+    mappeur_couleur4->setMapping(action_highlight, SURLIGNE);
+    connect(mappeur_couleur4, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    menu_format->addAction(action_highlight);
 
     //Création de la toolbar de format
     bar_format = new QToolBar;

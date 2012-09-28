@@ -17,6 +17,7 @@
 #include <QFileDialog>
 #include <QFont>
 #include <QFontComboBox>
+#include <QFontDialog>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QMainWindow>
@@ -75,10 +76,12 @@ signals:
 private slots:
     void affiche_about();
     void change_police(QFont nouvelle_police);
+    void change_police();
     void graisse_police(bool etat);
     void italique_police(bool etat);
     void souligne_police(bool etat);
     void change_taille(int taille);
+    void change_taille();
     void apercu_avant_impression();
     void enregistrement(QMdiSubWindow* fenetre_active = 0, bool saveas = false, bool autosave = false);
     void autoSave();
