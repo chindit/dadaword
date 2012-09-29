@@ -257,9 +257,9 @@ void DadaWord::graisse_police(bool etat){
     }
     if(etat){
         QTextCursor curseur = find_edit()->textCursor();
-        if(curseur.hasSelection()){
+        /*if(curseur.hasSelection()){
             gras->setChecked(false);
-        }
+        }*/
         find_edit()->setFontWeight(QFont::Bold);
     }
     else{
@@ -275,9 +275,9 @@ void DadaWord::italique_police(bool etat){
         return;
     }
     QTextCursor curseur = find_edit()->textCursor();
-    if(curseur.hasSelection()){
+    /*if(curseur.hasSelection()){
         italique->setChecked(false);
-    }
+    }*/
     find_edit()->setFontItalic(etat);
     return;
 }
@@ -289,9 +289,9 @@ void DadaWord::souligne_police(bool etat){
         return;
     }
     QTextCursor curseur = find_edit()->textCursor();
-    if(curseur.hasSelection()){
+    /*if(curseur.hasSelection()){
         souligne->setChecked(false);
-    }
+    }*/
     find_edit()->setFontUnderline(etat);
     return;
 }
@@ -1626,18 +1626,29 @@ void DadaWord::create_menus(){
     label_bleu->setStyleSheet("background-color: blue");
     couleur_bleu->setDefaultWidget(label_bleu);
     menu_couleurs->addAction(couleur_bleu);
-    //Vert
-    QWidgetAction *couleur_vert = new QWidgetAction(menu_couleurs);
+    //Vert clair
+    QWidgetAction *couleur_vertc = new QWidgetAction(menu_couleurs);
     QLabel *label_vert = new QLabel;
     label_vert->setMinimumWidth(75);
-    label_vert->setStyleSheet("background-color: green");
-    couleur_vert->setDefaultWidget(label_vert);
-    menu_couleurs->addAction(couleur_vert);
+    label_vert->setStyleSheet("background-color: #00FF00");
+    couleur_vertc->setDefaultWidget(label_vert);
+    menu_couleurs->addAction(couleur_vertc);
+    //Vert foncé
+    QWidgetAction *couleur_vertf = new QWidgetAction(menu_couleurs);
+    QLabel *label_vertf = new QLabel;
+    label_vertf->setMidLineWidth(75);
+    label_vertf->setStyleSheet("background-color: #008000");
+    couleur_vertf->setDefaultWidget(label_vertf);
+    menu_couleurs->addAction(couleur_vertf);
     //Connects
     QSignalMapper *mappeur_couleur3 = new QSignalMapper;
-    //Vert
-    connect(couleur_vert, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
-    mappeur_couleur3->setMapping(couleur_vert, VERT);
+    //Vert clair
+    connect(couleur_vertc, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
+    mappeur_couleur3->setMapping(couleur_vertc, VERTC);
+    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    //Vert foncé
+    connect(couleur_vertf, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
+    mappeur_couleur3->setMapping(couleur_vertf, VERTF);
     connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
     //Jaune
     connect(couleur_jaune, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
@@ -2061,10 +2072,16 @@ void DadaWord::change_couleur(const int &value){
         format_couleur.setBackground(QBrush(Qt::blue));
         find_edit()->setCurrentCharFormat(format_couleur);
     }
-    else if(value == VERT){
+    else if(value == VERTC){
         QTextCharFormat format_couleur;
         format_couleur = find_edit()->currentCharFormat();
         format_couleur.setBackground(QBrush(Qt::green));
+        find_edit()->setCurrentCharFormat(format_couleur);
+    }
+    else if(value == VERTF){
+        QTextCharFormat format_couleur;
+        format_couleur = find_edit()->currentCharFormat();
+        format_couleur.setBackground(QBrush(Qt::darkGreen));
         find_edit()->setCurrentCharFormat(format_couleur);
     }
     else{

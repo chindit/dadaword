@@ -18,7 +18,7 @@
 #define TAMPON_WORD 55
 
 //Énumérations pour le changement de couleur
-enum { TEXTE, SURLIGNE, VERT, BLEU, ROUGE, JAUNE };
+enum { TEXTE, SURLIGNE, VERTC, VERTF, BLEU, ROUGE, JAUNE };
 
 //Énumérations des couleurs
 //enum {  };

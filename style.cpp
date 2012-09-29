@@ -126,6 +126,9 @@ Style::Style(QWidget *parent) :
         settings.setValue("noBackground", true);
         settings.setValue("background", QColor(Qt::white));
         settings.endGroup();
+
+        liste_styles = settings.value("noms_styles").toStringList();
+        nb_styles = 7;
     }
     else{
         liste_styles = settings.value("noms_styles").toStringList();
@@ -243,6 +246,8 @@ void Style::affiche_fen(){
         boxSouligne.at(i)->setChecked(settings.value("souligne").toBool());
         boxNoFont->setChecked(settings.value("noFont").toBool());
         boxNoSize->setChecked(settings.value("noSize").toBool());
+        boxNoForeground->setChecked(settings.value("noForeground").toBool());
+        boxNoBackground->setChecked(settings.value("noBackground").toBool());
         color_foreground.at(i)->setText(settings.value("foreground").value<QColor>().name());
         color_background.at(i)->setText(settings.value("background").value<QColor>().name());
         settings.endGroup();
