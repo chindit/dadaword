@@ -2330,6 +2330,12 @@ void DadaWord::to_plain_text(){
         instance = new HighlighterHtml(find_edit()->document());
         //On refuse le RichText sous peine de bug lors du changement de focus
         find_edit()->setAcceptRichText(false);
+        find_edit()->selectAll();
+        find_edit()->setFontPointSize(12);
+        find_edit()->setFontItalic(false);
+        find_edit()->setFontUnderline(false);
+        find_edit()->setFontWeight(QFont::Normal);
+        find_edit()->textCursor().clearSelection();
     }
     else if(to_text->isChecked() && !find_edit()->acceptRichText()){
         to_text->setChecked(false);
@@ -3334,19 +3340,19 @@ void DadaWord::curseur_change(){
         //On récupére le format
         QTextCharFormat format = curseur.charFormat();
         //On adapte les boutons selon le format
-        if(format.fontWeight() == QFont::Bold && !gras->isChecked() && !curseur.hasSelection()){
+        if(format.fontWeight() == QFont::Bold && !gras->isChecked()){
             gras->setChecked(true);
             find_edit()->setFontWeight(QFont::Bold);
         }
-        if(format.fontWeight() == QFont::Normal && gras->isChecked() && !curseur.hasSelection()){
+        if(format.fontWeight() == QFont::Normal && gras->isChecked()){
             gras->setChecked(false);
             find_edit()->setFontWeight(QFont::Normal);
         }
-        if(format.fontItalic() != italique->isChecked() && !curseur.hasSelection()){
+        if(format.fontItalic() != italique->isChecked()){
             italique->setChecked(format.fontItalic());
             find_edit()->setFontItalic(format.fontItalic());
         }
-        if(format.fontUnderline() != souligne->isChecked() && !curseur.hasSelection()){
+        if(format.fontUnderline() != souligne->isChecked()){
             souligne->setChecked(format.fontUnderline());
             find_edit()->setFontUnderline(format.fontUnderline());
         }
