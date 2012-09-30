@@ -11,6 +11,7 @@ Version 1.2.1 :
 - BUG : impossible de change le style sans sélection si l'on est pas à la fin du document
 - BUG : présence de doublons dans les fichiers récents.
 - BUG : impossible d'ouvrir des fichiers de grosse taille (ralentissement excessif).
+- BUG : erreur de segmentation si le dictionnaire est un lien symbolique (tous les dictionnaires sont pleinement fonctionnels!)
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque

@@ -50,7 +50,7 @@ RESOURCES += \
 
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
-LIBS += /home/david/Documentos/dadaword/hunspell/src/hunspell/.libs/libhunspell-1.3.a
+LIBS += /usr/local/lib/libhunspell-1.3.a
 
 #Zlib
 INCLUDEPATH += zlib

@@ -47,8 +47,18 @@ SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDic
     UserDictionary = userDictionary;
     dictionnaire_standard = dictionaryPath;
     ErrorManager instance_erreur;
-    QString dictFile = dictionaryPath + ".dic";
-    QString affixFile = dictionaryPath + ".aff";
+    QString dictFile;
+    QString affixFile;
+    if(!dictionaryPath.endsWith(".dic")){
+        dictFile = dictionaryPath + ".dic";
+        affixFile = dictionaryPath + ".aff";
+    }
+    else{
+        dictFile = dictionaryPath;
+        QString temp = dictionaryPath;
+        temp.remove(".dic");
+        affixFile = temp + ".aff";
+    }
     QByteArray dictFilePathBA = dictFile.toLocal8Bit();
     QByteArray affixFilePathBA = affixFile.toLocal8Bit();
     instance_hunspell = new Hunspell(affixFilePathBA.constData(), dictFilePathBA.constData());

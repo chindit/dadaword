@@ -28,8 +28,12 @@ DadaWord::DadaWord(QWidget *parent)
 
     dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
     if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
-        dictPath = "/usr/share/hunspell/fr_FR";
+        dictPath = "/usr/share/hunspell/fr_BE";
     }
+    //Vérification des liens symboliques
+    QFileInfo testDico(dictPath);
+    if(testDico.isSymLink())
+        dictPath = testDico.symLinkTarget();
 
     //On regarde si le dossier de config existe
     QString dossier = QDir::homePath()+"/.dadaword";
@@ -2830,8 +2834,12 @@ void DadaWord::change_style(int style){
         format.setFontUnderline(settings.value("souligne").toBool());
         format.setFontItalic(settings.value("italique").toBool());
         format.setFontWeight(settings.value("gras").toInt());
-        format.setBackground(QBrush(settings.value("background").value<QColor>()));
-        format.setForeground(QBrush(settings.value("foreground").value<QColor>()));
+        if(!settings.value("noBackground").toBool()){
+            format.setBackground(QBrush(settings.value("background").value<QColor>()));
+        }
+        if(!settings.value("noForeground").toBool()){
+            format.setForeground(QBrush(settings.value("foreground").value<QColor>()));
+        }
         curseur.setCharFormat(format);
     }
 
@@ -2855,9 +2863,6 @@ void DadaWord::verif_orthographe(){
     QTextCharFormat highlightFormat;
     highlightFormat.setBackground(QBrush(QColor("#ff6060")));
     highlightFormat.setForeground(QBrush(QColor("#000000")));
-
-    // save the position of the current cursor
-    QTextCursor oldCursor = find_edit()->textCursor();
 
     // create a new cursor to walk through the text
     QTextCursor cursor(find_edit()->document());
@@ -3147,6 +3152,12 @@ void DadaWord::orth_langue(){
 
     //On met à jour le dico
     dictPath = "/usr/share/hunspell/"+liste->currentText()+".dic";
+    //Vérification des liens symboliques
+    QFileInfo testDico(dictPath);
+    if(testDico.isSymLink())
+        dictPath = testDico.symLinkTarget();
+    //Et le bouton
+    status_langue->setText(liste->currentText());
     return;
 }
 
