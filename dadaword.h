@@ -149,6 +149,7 @@ private:
     QMdiSubWindow* find_onglet();
     QTextEdit* find_edit();
 
+    Outils *outils;
     SettingsManager *settings;
     ErrorManager *erreur;
     QMdiArea *zone_centrale;

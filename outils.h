@@ -10,20 +10,27 @@
 
 #include <QApplication>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QtConcurrentMap>
 #include <QDesktopWidget>
+#include <QFileDialog>
+#include <QFontComboBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
+#include <QSpinBox>
 #include <QStackedWidget>
 #include <QPushButton>
 #include <QSettings>
+#include <QTextEdit>
 #include <QVariant>
 
 #include <fstream>
 #include <iostream>
 
-#include "dadaword.h"
+#include "constantes.h"
+#include "errorManager.h"
 #include "settingsManager.h"
 
 class Outils : public QObject{
@@ -36,8 +43,8 @@ public:
 public slots:
     void fenetre_config();
     void enregistre_config();
-    void enregistre_fichiers(QString fichier);
-    QStringList fichiers_recents();
+    //void enregistre_fichiers(QString fichier);
+    //QStringList fichiers_recents();
     void affiche_log();
 
 private slots:

@@ -18,6 +18,7 @@ DadaWord::DadaWord(QWidget *parent)
     //Initialisation des dicos
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
+    outils = new Outils;
 
     //Initialisation du thème
     QStringList locateThemes;
@@ -80,6 +81,7 @@ DadaWord::~DadaWord()
     //On fait les delete
     delete settings;
     delete erreur;
+    delete outils;
     delete zone_centrale;
     delete enregistrer;
     delete puces;
@@ -746,8 +748,14 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     if(!autosave){
         document_actuel->setModified(false);
         //Connexion au slot des récemment ouverts
-        Outils instance_outils;
-        instance_outils.enregistre_fichiers(nom_fichier);
+        if(!settings->getSettings(FichiersRecents).toStringList().contains(nom_fichier)){
+            QStringList fichiers = settings->getSettings(FichiersRecents).toStringList();
+            if(fichiers.size() == 10){
+                fichiers.removeLast();
+            }
+            fichiers.prepend(nom_fichier);
+            settings->setSettings(FichiersRecents, fichiers);
+        }
     }
     find_onglet()->setWindowTitle(titre);
     find_onglet()->setAccessibleName(titre);
@@ -794,7 +802,6 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         tf->setFrameFormat(tff);
         find_edit()->document()->setModified(false);
     }
-
     return;
 }
 
@@ -1116,14 +1123,13 @@ void DadaWord::create_menus(){
     connect(menu_ouvrir_fichier, SIGNAL(triggered()), this, SLOT(ouvrir_fichier()));
 
     QMenu *menu_recents = menu_fichier->addMenu(tr("Récemments ouverts"));menu_recents->setIcon(QIcon::fromTheme("document-open-recent", QIcon(":/menus/images/recents.png")));
-    Outils instance_outils;
-    QStringList recemment_ouverts = instance_outils.fichiers_recents();
+    QStringList recemment_ouverts = settings->getSettings(FichiersRecents).toStringList();
     if(recemment_ouverts.size() == 0){
         menu_recents->setEnabled(false);
     }
     else{
         QAction *action_ouverts[recemment_ouverts.size()];
-        for(int i=(recemment_ouverts.size()-1); i>0; i--){
+        for(int i=(recemment_ouverts.size()-1); i>=0; i--){
             QString temp = recemment_ouverts.at(i);
             if(!temp.isEmpty() && !temp.isNull()){
                 action_ouverts[i] = menu_recents->addAction(temp.split("/").last());
@@ -1327,11 +1333,13 @@ void DadaWord::create_menus(){
 
     QAction *insere_puce = menu_insertion->addAction(tr("Puces"));
     insere_puce->setStatusTip(tr("Insérer une liste à puces"));
+    insere_puce->setShortcut(QKeySequence("Shift+F10"));
     insere_puce->setIcon(QIcon::fromTheme("format-list-unordered", QIcon(":/menus/images/puces.png")));
     connect(insere_puce, SIGNAL(triggered()), this, SLOT(create_liste_puce()));
 
     QAction *puce_speciale = menu_insertion->addAction(tr("Liste ordonnée"));
     puce_speciale->setStatusTip(tr("Insérer une liste ordonnée"));
+    puce_speciale->setShortcut(QKeySequence("Shift+F11"));
     puce_speciale->setIcon(QIcon::fromTheme("format-list-ordered", QIcon(":/menus/images/liste_ordonnee.png")));
     QSignalMapper *mappeur_puce = new QSignalMapper;
     connect(puce_speciale, SIGNAL(triggered()), mappeur_puce, SLOT(map()));
@@ -1508,15 +1516,14 @@ void DadaWord::create_menus(){
     QAction *gestion_log = menu_outils->addAction(tr("Gestion du log"));
     gestion_log->setIcon(QIcon::fromTheme("text-x-log", QIcon(":/menus/images/log.png")));
     gestion_log->setStatusTip("Gérer le fichier de log");
-    Outils *instance_connect = new Outils;
-    connect(gestion_log, SIGNAL(triggered()), instance_connect, SLOT(affiche_log()));
+    connect(gestion_log, SIGNAL(triggered()), outils, SLOT(affiche_log()));
 
     //Preferences
     QAction *preferences = menu_outils->addAction(tr("Préférences"));
     preferences->setIcon(QIcon::fromTheme("preferences-system", QIcon(":/menus/images/outils.png")));
     preferences->setToolTip(tr("Préférences de DadaWord"));
     preferences->setStatusTip(tr("Configuration de DadaWord"));
-    connect(preferences, SIGNAL(triggered()), instance_connect, SLOT(fenetre_config()));
+    connect(preferences, SIGNAL(triggered()), outils, SLOT(fenetre_config()));
 
 
     //Création de la barre de menu "Aide"
@@ -3335,24 +3342,22 @@ void DadaWord::curseur_change(){
         return;
     }
     else{
-        //On regrade les caractères
-        curseur.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         //On récupére le format
         QTextCharFormat format = curseur.charFormat();
         //On adapte les boutons selon le format
-        if(format.fontWeight() == QFont::Bold && !gras->isChecked()){
+        if(format.fontWeight() == QFont::Bold && !gras->isChecked() && !curseur.hasSelection()){
             gras->setChecked(true);
             find_edit()->setFontWeight(QFont::Bold);
         }
-        if(format.fontWeight() == QFont::Normal && gras->isChecked()){
+        if(format.fontWeight() == QFont::Normal && gras->isChecked() && !curseur.hasSelection()){
             gras->setChecked(false);
             find_edit()->setFontWeight(QFont::Normal);
         }
-        if(format.fontItalic() != italique->isChecked()){
+        if(format.fontItalic() != italique->isChecked() && !curseur.hasSelection()){
             italique->setChecked(format.fontItalic());
             find_edit()->setFontItalic(format.fontItalic());
         }
-        if(format.fontUnderline() != souligne->isChecked()){
+        if(format.fontUnderline() != souligne->isChecked() && !curseur.hasSelection()){
             souligne->setChecked(format.fontUnderline());
             find_edit()->setFontUnderline(format.fontUnderline());
         }

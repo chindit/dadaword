@@ -8,7 +8,7 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
 
-#define VERSION "1.2.0"
+#define VERSION "1.2.1"
 
 //Nombre de lignes à laisser dans le fichier de debug lors du délestage
 #define ITEMS_LOG 10
@@ -42,6 +42,6 @@ enum { GAUCHE, DROITE };
 enum { INT_AUTRE };
 
 //Énumération pour les settings
-enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons };
+enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents };
 
 #endif // CONSTANTES_H

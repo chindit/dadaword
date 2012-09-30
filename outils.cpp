@@ -238,12 +238,16 @@ void Outils::enregistre_config(){
 }
 
 //Enregistre un fichier ouvert dans les «récemment ouverts»
-void Outils::enregistre_fichiers(QString fichier){
+/*void Outils::enregistre_fichiers(QString fichier){
     //Lecture des préférences
     QSettings settings("DadaWord", "dadaword");
     //On récupère les derniers fichiers
 
     QStringList fichiers_recents = settings.value("recents").toStringList();
+    //Pas de fichiers en double
+    if(fichiers_recents.contains(fichier)){
+        return;
+    }
     //S'il y en a 10, on vire le premier (donc le plus ancien)
     if(fichiers_recents.size() >= 10){
         fichiers_recents.removeFirst();
@@ -263,7 +267,7 @@ QStringList Outils::fichiers_recents(){
     QSettings settings("DadaWord", "dadaword");
     //On récupère les derniers fichiers
     return settings.value("recents").toStringList();
-}
+}*/
 
 //Affiche la fenêtre de gestion du log
 void Outils::affiche_log(){

@@ -2,10 +2,14 @@ DadaWord - Changelog
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage
+- Ajout d'un raccourci pour les puces
+- Gestion des fichiers récents par settingsManager
 - BUG : non-affichage des styles lors d'une première utilisation
 - BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
 - BUG : impossible de défaire un style si sélection
-- BUG : non-adéquation des boutons de style en cas de sélection
+- BUG : doublons dans les fichiers récemment ouverts
+- BUG : impossible de change le style sans sélection si l'on est pas à la fin du document
+- BUG : présence de doublons dans les fichiers récents.
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque
