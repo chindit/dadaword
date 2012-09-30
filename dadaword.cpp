@@ -688,11 +688,10 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     }
     //Gestions des fichiers en mode texte simple
     else if(file.open(QFile::ReadOnly)){
-        QTextStream in(&file);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            contenu = contenu + line + "\n";
+        if(file.size() > (2*1024*1024) && settings->getSettings(Alertes).toBool() == HIGH){
+            QMessageBox::warning(this, tr("Fichier imposant"), tr("Le fichier que vous allez ouvrir est d'une grande taille.  Il se peut que vous notiez des ralentissements dans DadaWord jusqu'à sa fermeture."));
         }
+        contenu = file.readAll();
         file.close();
 
         //BUG : Fichier vide

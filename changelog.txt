@@ -10,6 +10,7 @@ Version 1.2.1 :
 - BUG : doublons dans les fichiers récemment ouverts
 - BUG : impossible de change le style sans sélection si l'on est pas à la fin du document
 - BUG : présence de doublons dans les fichiers récents.
+- BUG : impossible d'ouvrir des fichiers de grosse taille (ralentissement excessif).
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque
