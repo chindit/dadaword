@@ -87,7 +87,7 @@ private slots:
     void autoSave();
     void ouvrir_fichier(const QString &fichier = "null", bool autosave = false);
     void print(QPrinter *p);
-    void export_odt();
+    void export_odt(QString nom = "");
     void create_liste_puce(const int ordonne = 0);
     bool eventFilter(QObject *, QEvent *);
     void incremente_puce();

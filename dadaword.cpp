@@ -478,8 +478,11 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         else if(nom_info.completeSuffix() == "odt"){
             //ODT, et que ça saute!!!
             //Mais avant, faut indiquer le nom du fichier sinon ça bugue
-            fenetre_temp->setAccessibleDescription(nom_fichier);
-            export_odt();
+            /*if(find_onglet() == fenetre_temp){
+                find_onglet()->setAccessibleDescription(nom_fichier);
+            }else{
+            fenetre_temp->setAccessibleDescription(nom_fichier);}*/
+            export_odt(nom_fichier);
         }
         else{
             contenu_fichier = edit_temp->toHtml();
@@ -805,7 +808,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
 }
 
 //Export en ODT
-void DadaWord::export_odt(){
+void DadaWord::export_odt(QString nom){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -814,8 +817,8 @@ void DadaWord::export_odt(){
         QTextDocumentWriter *enregistrement_fichier;
         enregistrement_fichier = new QTextDocumentWriter;
         enregistrement_fichier->setFormat("odf");
-        QFile *test_nom = new QFile(find_onglet()->accessibleDescription());
-        QString fichier = find_onglet()->accessibleDescription();
+        QString fichier = nom;
+        QFile *test_nom = new QFile(fichier);
         if(!test_nom->isWritable()){
             erreur->Erreur_msg(tr("ODT : Emplacement non inscriptible"), QMessageBox::Ignore);
             fichier = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), settings->getSettings(Enregistrement).toString(), tr("Documents textes (*.odt)"));
@@ -1812,17 +1815,14 @@ void DadaWord::create_menus(){
 //Ouverture d'un nouvel onglet
 void DadaWord::ouvre_onglet(bool fichier, QString titre){
     //Titre du document
-    bool titre_ok = false;
     QString reponse;
     if(!fichier){
-        //reponse = QInputDialog::getText(this, tr("Titre du document"), tr("Quel est le titre du document?"), QLineEdit::Normal, QString(), &titre_ok);
         reponse = tr("Nouveau document");
     }
     else{
-        titre_ok = true;
         reponse = titre;
     }
-    if(titre_ok && !reponse.isEmpty()){
+    if(!reponse.isEmpty()){
         QTextEdit *document_onglet = new QTextEdit;
         document_onglet->installEventFilter(this);
         document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
