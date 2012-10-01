@@ -17,7 +17,7 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[Timer] = "timer";
     names[Enregistrement] = "enregistrement";
     names[Theme] = "themes";
-    names[Cles] = "ClésRemplacements";
+    names[Cles] = "ClesRemplacements";
     names[Valeurs] = "ValeursRemplacement";
     names[Autocorrection] = "Autocorrection";
     names[ToolbarIcons] = "showIconsToolbar";
@@ -76,6 +76,8 @@ void SettingsManager::saveSettings(){
     options.setValue(names[Timer], settings[Timer]);
     options.setValue(names[Enregistrement], settings[Enregistrement]);
     options.setValue(names[Theme], settings[Theme]);
+    options.setValue(names[Cles], settings[Cles]);
+    options.setValue(names[Valeurs], settings[Valeurs]);
     options.setValue(names[Autocorrection], settings[Autocorrection]);
     options.setValue(names[ToolbarIcons], settings[ToolbarIcons]);
     options.setValue(names[FichiersRecents], settings[FichiersRecents]);

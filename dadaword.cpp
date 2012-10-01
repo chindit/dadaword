@@ -3184,6 +3184,34 @@ void DadaWord::orth_stop(){
     return;
 }
 
+//Autocorrection
+void DadaWord::orth_autocorrection(QString remplacement){
+    QTextCursor cursor = find_edit()->textCursor();
+    cursor.select(QTextCursor::WordUnderCursor);
+    QString mot  = cursor.selectedText();
+    if(!mot.isEmpty() && !remplacement.isEmpty()){
+        QStringList listeCles = settings->getSettings(Cles).toStringList();
+        QStringList listeValeurs = settings->getSettings(Valeurs).toStringList();
+        if(listeCles.size() != listeValeurs.size()){
+            erreur->Erreur_msg(tr("Paires de remplacements invalide, impossible d'ajouter l'autocorrection"), QMessageBox::Warning);
+            return;
+        }
+        if(listeCles.contains(mot, Qt::CaseInsensitive)){
+            erreur->Erreur_msg(tr("Un clé nommée %1 existe déja.  L'autocorrection ne sera donc pas mise en place").arg(mot), QMessageBox::Information);
+            return;
+        }
+        listeCles.append(mot);
+        listeValeurs.append(remplacement);
+        settings->setSettings(Cles, listeCles);
+        settings->setSettings(Valeurs, listeValeurs);
+    }
+    else{
+        erreur->Erreur_msg(tr("Le mot à remplacer est vide, l'autocorrection ne sera donc pas mise en place."), QMessageBox::Warning);
+        return;
+    }
+    return;
+}
+
 //Couper
 void DadaWord::couper(){
     //Si pas de document ouvert, on quitte
@@ -3284,6 +3312,20 @@ void DadaWord::affiche_menu_perso(){
         //On ajoute "Ignorer" et "Ajouter au dictionnaire" au menu
         menu_contextuel->addAction(tr("Ignorer tout"), this, SLOT(orth_ignore()));
         menu_contextuel->addAction(tr("Ajouter au dictionnaire"), this, SLOT(orth_dico()));
+        QMenu *menu_contextuel_remplacement = menu_contextuel->addMenu(tr("Autocorrection"));
+        if(propositions.size() > 0){
+            for(int i=0; i<propositions.size(); i++){
+                QAction *temp = new QAction(propositions.at(i), menu_contextuel_remplacement);
+                menu_contextuel_remplacement->addAction(temp);
+                QSignalMapper *mapperAutocorrection = new QSignalMapper;
+                connect(temp, SIGNAL(triggered()), mapperAutocorrection, SLOT(map()));
+                mapperAutocorrection->setMapping(temp, propositions.at(i));
+                connect(mapperAutocorrection, SIGNAL(mapped(QString)), this, SLOT(orth_autocorrection(QString)));
+            }
+        }
+        else{
+            menu_contextuel_remplacement->setEnabled(false);
+        }
         //Et on ré-ajoute un séparateur
         menu_contextuel->addSeparator();
     }

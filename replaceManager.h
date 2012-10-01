@@ -9,6 +9,7 @@
 #include <QSettings>
 
 #include "errorManager.h"
+#include "settingsManager.h"
 
 class ReplaceManager : public QDialog
 {
@@ -25,6 +26,7 @@ private slots:
     void saveKeys();
 
 private:
+    SettingsManager *manSettings;
     QList<QLineEdit *> lineKeys, lineValues;
     QGridLayout *layout;
     QPushButton *addLineButton, *saveAllButton;

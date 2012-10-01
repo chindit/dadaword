@@ -3,9 +3,11 @@
 ReplaceManager::ReplaceManager(QWidget *parent) :
     QDialog(parent)
 {
+    manSettings = new SettingsManager;
 }
 
 ReplaceManager::~ReplaceManager(){
+    delete manSettings;
 }
 
 void ReplaceManager::showWindow(){
@@ -23,9 +25,8 @@ void ReplaceManager::showWindow(){
         layout->addWidget(title, 0, 0, 1, 2, Qt::AlignHCenter);
         layout->addWidget(key, 1, 0);
         layout->addWidget(value, 1, 1);
-        QSettings options("DadaWord", "dadaword");
-        QStringList replacementKeys = options.value("ClésRemplacements").toStringList();
-        QStringList replacementValues = options.value("ValeursRemplacement").toStringList();
+        QStringList replacementKeys = manSettings->getSettings(Cles).toStringList();
+        QStringList replacementValues = manSettings->getSettings(Valeurs).toStringList();
         if(replacementKeys.size() != replacementValues.size()){
             ErrorManager erreurs;
             erreurs.Erreur_msg(tr("Impossible de charger les clés de remplacement, fichier corrompu."), QMessageBox::Warning);
@@ -82,9 +83,8 @@ void ReplaceManager::saveKeys(){
             replacementValues.append(lineValues.at(i)->text());
         }
     }
-    QSettings options("DadaWord", "dadaword");
-    options.setValue("ClésRemplacements", replacementKeys);
-    options.setValue("ValeursRemplacement", replacementValues);
+    manSettings->setSettings(Cles, replacementKeys);
+    manSettings->setSettings(Valeurs, replacementValues);
     close();
     deleteLater();
     return;
