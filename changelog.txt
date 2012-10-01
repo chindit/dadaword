@@ -5,6 +5,7 @@ Version 1.2.1 :
 - Ajout d'un raccourci pour les puces
 - Gestion des fichiers récents par settingsManager
 - Implémentation de l'autocorrection
+- Pas de correction pour les mots en majuscules
 - BUG : non-affichage des styles lors d'une première utilisation
 - BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
 - BUG : impossible de défaire un style si sélection
@@ -13,6 +14,10 @@ Version 1.2.1 :
 - BUG : présence de doublons dans les fichiers récents.
 - BUG : impossible d'ouvrir des fichiers de grosse taille (ralentissement excessif).
 - BUG : erreur de segmentation si le dictionnaire est un lien symbolique (tous les dictionnaires sont pleinement fonctionnels!)
+- BUG : adresse de dictionnaire personnel invalide dans certaines condititons
+- BUG : pas de correction automatique en cas d'autocorrection
+- BUG : activation de la touche lors de l'incrémentation/désincrémetation des puces
+- BUG : Raccourci d'«Enregistrer sous» défectueux
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque

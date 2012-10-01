@@ -934,6 +934,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                     QChar char_test = contenu_selection.at(0);
                     if(char_test == QChar(8233)){
                         desincremente_puce();
+                        return true;
                     }
                 }
             }//Fin CurrentList
@@ -948,6 +949,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                     QChar char_test = contenu_selection.at(0);
                     if(char_test == QChar(8233)){
                         incremente_puce();
+                        return true;
                     }
                 }
             }//Fin CurrentList
@@ -982,11 +984,14 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                             }
                         }
                     }//Fin remplacement automatique
-                    else{
+                    if(settings->getSettings(Orthographe).toBool()){
                         if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
+                            if(temp.selectedText() == temp.selectedText().toUpper()){ //On ignore les majuscules
+                                return false;
+                            }
                             QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
                             if(!QFile::exists(userDict)){
-                                userDict = QDir::homePath() + ".dadaword/perso.dic";
+                                userDict = QDir::homePath() + "/.dadaword/perso.dic";
                             }
                             SpellChecker instance_orthographe(dictPath, userDict);
                             if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
@@ -1005,7 +1010,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 find_edit()->setExtraSelections(liste_erreurs);
                             } //IF : s'il y a une faute
                         }//IF : s'il y a sélection et qu'elle est valide
-                    }//IF : si on est pas dans le remplacement mais dans la correction
+                    }//IF : si on est dans la correction
                 }//IF : s'il y a un mot précédent
             }//IF : si la correction est activée
         }//IF : activation de la touche "Espace"
@@ -1161,7 +1166,7 @@ void DadaWord::create_menus(){
     status_is_modified->setEnabled(false);
 
     QAction *enregistrer_sous = menu_fichier->addAction(QIcon::fromTheme("document-save-as", QIcon(":/menus/images/enregistrer_sous.png")), tr("Enregistrer le fichier sous"));
-    enregistrer_sous->setShortcut(QKeySequence("Maj+Ctrl+S"));
+    enregistrer_sous->setShortcut(QKeySequence("Ctrl+Shift+S"));
     enregistrer_sous->setStatusTip(tr("Enregistrer le fichier courant sous…"));
     connect(enregistrer_sous, SIGNAL(triggered()), this, SLOT(enregistrer_sous()));
 
@@ -3036,7 +3041,7 @@ void DadaWord::orth_remplace_all(QString remplace){
     if(remplace.isEmpty()){
         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
         if(!QFile::exists(userDict)){
-            userDict = QDir::homePath() + ".dadaword/perso.dic";
+            userDict = QDir::homePath() + "/.dadaword/perso.dic";
         }
         SpellChecker instance_dico(dictPath, userDict);
         QStringList suggestions = instance_dico.suggest(orth_erreur);
@@ -3296,7 +3301,7 @@ void DadaWord::affiche_menu_perso(){
 
     QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
     if(!QFile::exists(userDict)){
-        userDict = QDir::homePath() + ".dadaword/perso.dic";
+        userDict = QDir::homePath() + "/.dadaword/perso.dic";
     }
     SpellChecker instance_orthographe(dictPath, userDict);
     QStringList propositions;
