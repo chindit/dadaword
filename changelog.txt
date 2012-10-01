@@ -18,6 +18,8 @@ Version 1.2.1 :
 - BUG : pas de correction automatique en cas d'autocorrection
 - BUG : activation de la touche lors de l'incrémentation/désincrémetation des puces
 - BUG : Raccourci d'«Enregistrer sous» défectueux
+- BUG : fichiers récents dans le sens inverse
+- BUG : erreur en cas d'absence des fichiers récents
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque

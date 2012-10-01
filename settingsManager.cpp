@@ -59,7 +59,7 @@ void SettingsManager::loadSettings(){
     settings[Valeurs] = options.value(names[Valeurs]);
     settings[Autocorrection] = options.value(names[Autocorrection], true);
     settings[ToolbarIcons] = options.value(names[ToolbarIcons], false);
-    settings[FichiersRecents] = options.value(names[FichiersRecents], "");
+    settings[FichiersRecents] = options.value(names[FichiersRecents]);
     return;
 }
 

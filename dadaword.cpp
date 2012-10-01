@@ -1140,7 +1140,7 @@ void DadaWord::create_menus(){
     }
     else{
         QAction *action_ouverts[recemment_ouverts.size()];
-        for(int i=(recemment_ouverts.size()-1); i>=0; i--){
+        for(int i=0; i<recemment_ouverts.size(); i++){
             QString temp = recemment_ouverts.at(i);
             if(!temp.isEmpty() && !temp.isNull()){
                 action_ouverts[i] = menu_recents->addAction(temp.split("/").last());
