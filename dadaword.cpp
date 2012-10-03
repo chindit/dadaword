@@ -2215,8 +2215,23 @@ void DadaWord::add_image(){
     //On enregistre le document par mesure de sécurité
     enregistrement();
 
+    //Redimensionnement pour Word
+    if(settings->getSettings(Word).toBool()){
+        QImage image(chemin_image);
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setPaperSize(QPrinter::A4);
+        if(image.width() > (printer.paperSize(QPrinter::Point)).toSize().rwidth()){
+            QImage image2 = image.scaledToWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()-60, Qt::FastTransformation);
+            QString extention = chemin_image.split(".").last();
+            QDateTime temps;
+            chemin_image = "/tmp/"+QString::number(temps.toTime_t())+"."+extention;
+            image2.save(chemin_image);
+        }
+    }
+
     //On insère l'image
     find_edit()->insertHtml(("<img src=\""+chemin_image+"\">"));
+
 
     return;
 }
@@ -3484,7 +3499,7 @@ void DadaWord::add_annexe(){
     QFile fichier(annexe);
     qint64 taille = fichier.size();
     if(taille > 2500000){
-        if(settings->getSettings(Alertes) != HIGH){
+        if(settings->getSettings(Alertes) == HIGH){
             QMessageBox::information(this, tr("Annexe trop volumineuse"), tr("L'annexe est trop volumineuse et ne sera pas insérée dans le document"));
         }
         return;

@@ -6,6 +6,7 @@ Version 1.2.1 :
 - Gestion des fichiers récents par settingsManager
 - Implémentation de l'autocorrection
 - Pas de correction pour les mots en majuscules
+- Redimensionnement des images en mode WORD pour ne pas qu'elles dépassent
 - BUG : non-affichage des styles lors d'une première utilisation
 - BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
 - BUG : impossible de défaire un style si sélection
@@ -22,6 +23,7 @@ Version 1.2.1 :
 - BUG : erreur en cas d'absence des fichiers récents
 - BUG : raccourci erroné pour le remplacement
 - BUG : possible fond de couleur pour le mode source
+- BUG : mauvais affichage des allertes d'annexes
 
 
 Version 1.2.0 :
