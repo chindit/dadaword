@@ -58,6 +58,13 @@ DadaWord::DadaWord(QWidget *parent)
         }
     }
 
+    //Création de l'instance du correcteur
+    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
+    if(!QFile::exists(userDict)){
+        userDict = QDir::homePath() + "/.dadaword/perso.dic";
+    }
+    correcteur = new SpellChecker(dictPath, userDict);
+
     //On crée le timer pour enregistrer automatiquement le fichier
     QTimer *timer_enregistrement = new QTimer;
     timer_enregistrement->setSingleShot(false); //Timer répétitif
@@ -974,27 +981,37 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 temp.movePosition(QTextCursor::PreviousWord);
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+                    QString word = temp.selectedText();
+                    while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
+                        int cursorPos = temp.position();
+                        temp.setPosition(temp.anchor() + 1, QTextCursor::MoveAnchor);
+                        temp.setPosition(cursorPos, QTextCursor::KeepAnchor);
+                        word = temp.selectedText();
+                    }
+
+                    //Nettoyage des éléments qui suivent
+                    while(!word.isEmpty() && !word.at(word.size()-1).isLetter()){
+                        word = word.remove(word.size()-1, word.size());
+                    }
+
                     if(settings->getSettings(Autocorrection).toBool()){
-                        QStringList clesRemplacement = settings->getSettings(Cles).toStringList();
-                        for(int i=0; i<clesRemplacement.size(); i++){
-                            if(temp.selectedText() == clesRemplacement.at(i)){
-                                temp.removeSelectedText();
-                                temp.insertText(settings->getSettings(Valeurs).toStringList().at(i));
-                                break;
+                        if(settings->getSettings(Cles).toStringList().contains(word)){ //On ne fait la boucle que si on a une chance de trouver quelque chose
+                            QStringList clesRemplacement = settings->getSettings(Cles).toStringList();
+                            for(int i=0; i<clesRemplacement.size(); i++){
+                                if(temp.selectedText() == clesRemplacement.at(i)){
+                                    temp.removeSelectedText();
+                                    temp.insertText(settings->getSettings(Valeurs).toStringList().at(i));
+                                    break;
+                                }
                             }
                         }
                     }//Fin remplacement automatique
                     if(settings->getSettings(Orthographe).toBool()){
-                        if(temp.hasSelection() && temp.selectedText().at(temp.selectedText().size()-1).isLetter()){
-                            if(temp.selectedText() == temp.selectedText().toUpper()){ //On ignore les majuscules
+                        if(!word.isEmpty() && word.at(word.size()-1).isLetter()){
+                            if(word == word.toUpper()){ //On ignore les majuscules
                                 return false;
                             }
-                            QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-                            if(!QFile::exists(userDict)){
-                                userDict = QDir::homePath() + "/.dadaword/perso.dic";
-                            }
-                            SpellChecker instance_orthographe(dictPath, userDict);
-                            if(!temp.selectedText().isEmpty() && !instance_orthographe.spell(temp.selectedText()) && !list_skip.contains(temp.selectedText())){
+                            if(!list_skip.contains(word) && !correcteur->spell(word)){
                                 // highlight the unknown word
                                 QTextCharFormat marquage_erreurs;
                                 QColor couleur(Qt::red);
@@ -1226,7 +1243,7 @@ void DadaWord::create_menus(){
     edition_redo = menu_edition->addAction(tr("Refaire"));
     edition_redo->setIcon(QIcon::fromTheme("edit-redo", QIcon(":/menus/images/redo.png")));
     edition_redo->setStatusTip(tr("Refaire l'action précédemment annulée"));
-    edition_redo->setShortcut(QKeySequence("Ctrl+Maj+Z"));
+    edition_redo->setShortcut(QKeySequence("Ctrl+Shift+Z"));
     connect(edition_redo, SIGNAL(triggered()), this, SLOT(make_redo()));
 
     QAction *edition_couper = menu_edition->addAction(tr("Couper"));
@@ -1257,7 +1274,7 @@ void DadaWord::create_menus(){
     //Remplacer
     QAction *remplacer = menu_edition->addAction(tr("Remplacer"));
     remplacer->setStatusTip(tr("Remplacer du texte"));
-    remplacer->setShortcut(QKeySequence("Ctrl+Maj+F"));
+    remplacer->setShortcut(QKeySequence("Ctrl+Shift+F"));
     remplacer->setIcon(QIcon::fromTheme("edit-find-replace", QIcon(":/programme/images/remplace.png")));
     connect(remplacer, SIGNAL(triggered()), this, SLOT(call_remplace()));
 
@@ -2350,7 +2367,11 @@ void DadaWord::to_plain_text(){
         find_edit()->setFontItalic(false);
         find_edit()->setFontUnderline(false);
         find_edit()->setFontWeight(QFont::Normal);
+        QTextCharFormat format = find_edit()->currentCharFormat();
+        format.clearBackground();
+        find_edit()->setCurrentCharFormat(format);
         find_edit()->textCursor().clearSelection();
+        find_edit()->currentCharFormat().clearBackground();
     }
     else if(to_text->isChecked() && !find_edit()->acceptRichText()){
         to_text->setChecked(false);
@@ -2859,11 +2880,6 @@ void DadaWord::verif_orthographe(){
     if(find_edit() == 0){
         return;
     }
-    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-    if(!QFile::exists(userDict)){
-        userDict = QDir::homePath() + ".dadaword/perso.dic";
-    }
-    SpellChecker *spellChecker = new SpellChecker(dictPath, userDict);
 
     QTextCharFormat highlightFormat;
     highlightFormat.setBackground(QBrush(QColor("#ff6060")));
@@ -2905,7 +2921,7 @@ void DadaWord::verif_orthographe(){
         }
 
         //Il n'y a erreur QUE si le mot n'est pas vide, n'est pas présent dans le dictionnaire ET n'est pas ignoré
-        if(!word.isEmpty() && !spellChecker->spell(word) && !list_skip.contains(word)){
+        if(!word.isEmpty() && !correcteur->spell(word) && !list_skip.contains(word)){
             //Affichage de la barre d'outils,
             barre_orthographe->show();
 
@@ -2928,7 +2944,7 @@ void DadaWord::verif_orthographe(){
             QCoreApplication::processEvents();
 
             //On met à jour la liste de suggestions
-            QStringList suggestions = spellChecker->suggest(word);
+            QStringList suggestions = correcteur->suggest(word);
             orth_suggest->setEnabled(true);
             for(int i=0; i<suggestions.size(); i++){
                 orth_suggest->addItem(suggestions.at(i));
@@ -2995,8 +3011,7 @@ void DadaWord::orth_dico(){
         if(!QFile::exists(userDict)){
             userDict = QDir::homePath() + "/.dadaword/perso.dic";
         }
-        SpellChecker instance_dico(dictPath, userDict);
-        instance_dico.addToUserWordlist(orth_erreur);
+        correcteur->addToUserWordlist(orth_erreur);
         pos_orth.movePosition(QTextCursor::NextWord);
         verif_orthographe();
 
@@ -3043,8 +3058,7 @@ void DadaWord::orth_remplace_all(QString remplace){
         if(!QFile::exists(userDict)){
             userDict = QDir::homePath() + "/.dadaword/perso.dic";
         }
-        SpellChecker instance_dico(dictPath, userDict);
-        QStringList suggestions = instance_dico.suggest(orth_erreur);
+        QStringList suggestions = correcteur->suggest(orth_erreur);
         for(int i=0; i<suggestions.size(); i++){
             select_words->addItem(suggestions.at(i));
         }
@@ -3156,13 +3170,22 @@ void DadaWord::orth_langue(){
     QCoreApplication::processEvents();
 
     //On met à jour le dico
-    dictPath = "/usr/share/hunspell/"+liste->currentText()+".dic";
-    //Vérification des liens symboliques
-    QFileInfo testDico(dictPath);
-    if(testDico.isSymLink())
-        dictPath = testDico.symLinkTarget();
-    //Et le bouton
-    status_langue->setText(liste->currentText());
+    if(!dictPath.contains(liste->currentText())){
+        dictPath = "/usr/share/hunspell/"+liste->currentText()+".dic";
+        //Vérification des liens symboliques
+        QFileInfo testDico(dictPath);
+        if(testDico.isSymLink())
+            dictPath = testDico.symLinkTarget();
+        //Et le bouton
+        status_langue->setText(liste->currentText());
+        //On re-déclare le correcteur
+        delete correcteur;
+        QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
+        if(!QFile::exists(userDict)){
+            userDict = QDir::homePath() + "/.dadaword/perso.dic";
+        }
+        correcteur = new SpellChecker(dictPath, userDict);
+    }
     return;
 }
 
@@ -3299,14 +3322,9 @@ void DadaWord::affiche_menu_perso(){
     cursor.select(QTextCursor::WordUnderCursor);
     QString mot  = cursor.selectedText();
 
-    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-    if(!QFile::exists(userDict)){
-        userDict = QDir::homePath() + "/.dadaword/perso.dic";
-    }
-    SpellChecker instance_orthographe(dictPath, userDict);
     QStringList propositions;
-    if(!mot.isEmpty() && !instance_orthographe.spell(mot) && !list_skip.contains(mot)){
-        propositions = instance_orthographe.suggest(mot);
+    if(!mot.isEmpty() && !list_skip.contains(mot) && !correcteur->spell(mot)){
+        propositions = correcteur->suggest(mot);
         orth_erreur = mot;
         //On parcourt la boucle
         for(int i=0; i<propositions.size(); i++){

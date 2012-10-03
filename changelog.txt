@@ -20,6 +20,9 @@ Version 1.2.1 :
 - BUG : Raccourci d'«Enregistrer sous» défectueux
 - BUG : fichiers récents dans le sens inverse
 - BUG : erreur en cas d'absence des fichiers récents
+- BUG : raccourci erroné pour le remplacement
+- BUG : possible fond de couleur pour le mode source
+
 
 Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque

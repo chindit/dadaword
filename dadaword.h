@@ -153,6 +153,7 @@ private:
     Outils *outils;
     SettingsManager *settings;
     ErrorManager *erreur;
+    SpellChecker *correcteur;
     QMdiArea *zone_centrale;
     QAction *enregistrer;
     QToolBar *puces;
