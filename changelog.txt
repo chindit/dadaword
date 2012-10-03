@@ -8,6 +8,7 @@ Version 1.2.1 :
 - Pas de correction pour les mots en majuscules
 - Redimensionnement des images en mode WORD pour ne pas qu'elles dépassent
 - Annexes DDZ : affichage uniquement du nom de fichier
+- Ajout d'exposants et d'indices dans les styles
 - BUG : non-affichage des styles lors d'une première utilisation
 - BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
 - BUG : impossible de défaire un style si sélection

@@ -144,6 +144,8 @@ private slots:
     void ouvre_programme(QString fichier);
     void openById(int id);
     void insertSpecialChars();
+    void setSuperScript(bool etat);
+    void setSubScript(bool etat);
 
 private:
     void create_menus();
@@ -172,6 +174,8 @@ private:
     QAction *desincremente_puce_bouton;
     QAction *lecture_seule;
     QAction *to_text;
+    QAction *exposant;
+    QAction *sousExposant;
     QStatusBar *barre_etat;
     QAction *affichage_default;
     QAction *affichage_puces;

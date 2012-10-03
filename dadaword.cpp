@@ -1713,6 +1713,14 @@ void DadaWord::create_menus(){
     menu_format->addAction(gras);
     menu_format->addAction(italique);
     menu_format->addAction(souligne);
+    exposant = new QAction(tr("Exposant"), menu_format);
+    menu_format->addAction(exposant);
+    connect(exposant, SIGNAL(triggered(bool)), this, SLOT(setSuperScript(bool)));
+    exposant->setCheckable(true);
+    sousExposant = new QAction(tr("Indice"), menu_format);
+    menu_format->addAction(sousExposant);
+    sousExposant->setCheckable(true);
+    connect(sousExposant, SIGNAL(triggered(bool)), this, SLOT(setSubScript(bool)));
     menu_format->addAction(couleur_texte);
     QAction *action_highlight = new QAction(QIcon::fromTheme("fill-color", QIcon(":/menus/images/couleur_highlight.png")), tr("Surligner"), menu_format);
     QSignalMapper *mappeur_couleur4 = new QSignalMapper;
@@ -3662,4 +3670,26 @@ void DadaWord::insertSpecialChars(){
     options.setValue("specialChars", QVariant(preList));
     QTextCursor curseur = find_edit()->textCursor();
     curseur.insertText(caracteres);
+}
+
+void DadaWord::setSuperScript(bool etat){
+    QTextCharFormat format;
+    if(find_edit()->textCursor().hasSelection())
+        exposant->setChecked(false);
+    if(etat)
+        format.setVerticalAlignment(QTextCharFormat::AlignSuperScript);
+    else
+        format.setVerticalAlignment(QTextCharFormat::AlignNormal);
+    find_edit()->textCursor().mergeCharFormat(format);
+}
+
+void DadaWord::setSubScript(bool etat){
+    QTextCharFormat format;
+    if(find_edit()->textCursor().hasSelection())
+        sousExposant->setChecked(false);
+    if(etat)
+        format.setVerticalAlignment(QTextCharFormat::AlignSubScript);
+    else
+        format.setVerticalAlignment(QTextCharFormat::AlignNormal);
+    find_edit()->textCursor().mergeCharFormat(format);
 }

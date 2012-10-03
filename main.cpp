@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     // On vérifie à la création de cette zone mémoire si celle-ci existe
     if(sharedMemory.create(sizeof(int))==false){
         QMessageBox::warning(0, QObject::tr("Programme en cours d'exécution"), QObject::tr("Dadaword est déjà en cours d'exécution.  Veuillez fermer l'instance ouverte avant de le lance à nouveau."));
-        //exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
 
     DadaWord instance;
