@@ -365,9 +365,9 @@ void DadaWord::imprimer(){
         return;
     }
     QPrinter printer(QPrinter::HighResolution);
-    if(settings->getSettings(Word).toBool()){
+    /*if(settings->getSettings(Word).toBool()){
         printer.setPageMargins(0, 0, 0, 0, QPrinter::Pica);
-    }
+    }*/
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
     //On imprime que la sélection
     if(find_edit()->textCursor().hasSelection()){

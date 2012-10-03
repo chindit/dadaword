@@ -27,6 +27,7 @@ Version 1.2.1 :
 - BUG : possible fond de couleur pour le mode source
 - BUG : mauvais affichage des alertes d'annexes
 - BUG : impossible d'ajouter une annexe s'il n'en existe pas déjà une
+- BUG : pas de marges lors de l'impression d'un fichier en style WORD
 
 
 Version 1.2.0 :
