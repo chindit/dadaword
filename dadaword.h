@@ -142,6 +142,7 @@ private slots:
     void make_rm_annexe(QString annexe);
     void show_annexes();
     void ouvre_programme(QString fichier);
+    void openById(int id);
     void insertSpecialChars();
 
 private:

@@ -64,7 +64,7 @@ DadaWord::DadaWord(QWidget *parent)
         userDict = QDir::homePath() + "/.dadaword/perso.dic";
     }
     correcteur = new SpellChecker(dictPath, userDict);
-
+    qsrand(QDateTime::currentDateTime().toTime_t());
     //On crée le timer pour enregistrer automatiquement le fichier
     QTimer *timer_enregistrement = new QTimer;
     timer_enregistrement->setSingleShot(false); //Timer répétitif
@@ -2213,7 +2213,7 @@ void DadaWord::add_image(){
     }
 
     //On enregistre le document par mesure de sécurité
-    enregistrement();
+    enregistrement(find_onglet(), false, true);
 
     //Redimensionnement pour Word
     if(settings->getSettings(Word).toBool()){
@@ -2221,11 +2221,16 @@ void DadaWord::add_image(){
         QPrinter printer(QPrinter::HighResolution);
         printer.setPaperSize(QPrinter::A4);
         if(image.width() > (printer.paperSize(QPrinter::Point)).toSize().rwidth()){
-            QImage image2 = image.scaledToWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()-60, Qt::FastTransformation);
+            image = image.scaledToWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()-60, Qt::FastTransformation);
             QString extention = chemin_image.split(".").last();
-            QDateTime temps;
-            chemin_image = "/tmp/"+QString::number(temps.toTime_t())+"."+extention;
-            image2.save(chemin_image);
+            chemin_image = "/tmp/"+QString::number(qrand())+"."+extention;
+            image.save(chemin_image);
+        }
+        if(image.height() > (printer.paperSize(QPrinter::Point)).toSize().rheight()){
+            image = image.scaledToWidth((printer.paperSize(QPrinter::Point)).toSize().rheight()-60, Qt::FastTransformation);
+            QString extention = chemin_image.split(".").last();
+            chemin_image = "/tmp/"+QString::number(qrand())+"."+extention;
+            image.save(chemin_image);
         }
     }
 
@@ -3513,6 +3518,9 @@ void DadaWord::add_annexe(){
             i = 100000;
         }
     }
+    if(annexes.isEmpty()){
+        annexes.append(find_onglet()->accessibleName());
+    }
     if(annexes.size() < 11){
         annexes.append(annexe);
         liste_annexes.append(annexes);
@@ -3541,10 +3549,12 @@ void DadaWord::show_annexes(){
     }
     if(annexes.size() > 0){
         ddz_annexes->clear();
-        ddz_annexes->addItems(annexes);
+        for(int i=0; i<annexes.size(); i++){
+            ddz_annexes->addItem(annexes.at(i).split("/").last(), annexes.at(i));
+        }
         ddz_annexes->setEnabled(true);
     }
-    connect(ddz_annexes, SIGNAL(activated(QString)), this, SLOT(ouvre_programme(QString)));
+    connect(ddz_annexes, SIGNAL(activated(int)), this, SLOT(openById(int)));
     return;
 }
 
@@ -3552,6 +3562,16 @@ void DadaWord::show_annexes(){
 void DadaWord::ouvre_programme(QString fichier){
     QDesktopServices::openUrl(QUrl(fichier));
     return;
+}
+
+void DadaWord::openById(int id){
+    if(ddz_annexes->count() > id && id >= 0){
+        ouvre_programme(ddz_annexes->itemData(id).toString());
+    }
+    else{
+        erreur->Erreur_msg(tr("Id d'annexe incorrecte"), QMessageBox::Information);
+        return;
+    }
 }
 
 //Supprime un annexe
