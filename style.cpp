@@ -30,7 +30,7 @@ Style::Style(QWidget *parent) :
         settings.setValue("taille", taille_defaut);
         settings.setValue("gras", QFont::Normal);
         settings.setValue("italique", false);
-        settings.setValue("souligne", true);
+        settings.setValue("souligne", false);
         settings.setValue("noForeground", true);
         settings.setValue("foreground", QColor(Qt::black));
         settings.setValue("noBackground", true);
