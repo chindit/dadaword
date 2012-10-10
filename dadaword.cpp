@@ -1385,6 +1385,7 @@ void DadaWord::create_menus(){
     QAction *insere_caractere = menu_insertion->addAction(tr("Caractères spéciaux"));
     insere_caractere->setIcon(QIcon::fromTheme("character-set", QIcon(":/menus/images/specialchars.png")));
     insere_caractere->setStatusTip(tr("Insérer des caractères spéciaux"));
+    insere_caractere->setShortcut(QKeySequence("Shift+F5"));
     connect(insere_caractere, SIGNAL(triggered()), this, SLOT(insertSpecialChars()));
 
     QAction *insere_image = menu_insertion->addAction(tr("Insérer une image"));
@@ -1748,7 +1749,7 @@ void DadaWord::create_menus(){
 
     //Création de la toolbar des puces
     puces = new QToolBar;
-    addToolBar(Qt::BottomToolBarArea, puces);
+    addToolBar(Qt::TopToolBarArea, puces);
     incremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-more", QIcon(":/menus/images/suivant.png")));
     desincremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-less", QIcon(":/menus/images/precedent.png")));
     puces->addAction(incremente_puce_bouton);
@@ -2022,7 +2023,9 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         if(find_onglet()->accessibleDescription().contains(".ddz", Qt::CaseInsensitive)){
             add_ddz_annexe->setVisible(true);
             rm_ddz_annexe->setVisible(true);
-            ddz_annexes->setEnabled(true);
+            show_annexes();
+            if(ddz_annexes->count() > 0)
+                ddz_annexes->setEnabled(true);
         }
         else{
             add_ddz_annexe->setVisible(false);
@@ -2044,6 +2047,15 @@ void DadaWord::fermer_fichier(){
     QTextDocument *document_actif = text_edit_actif->document();
     if(document_actif->isModified()){
         alerte_enregistrement(onglet_actif);
+    }
+    //Annexes DDZ
+    if(onglet_actif->accessibleDescription().contains(".ddz", Qt::CaseInsensitive)){
+        for(int i=0; i<liste_annexes.size(); i++){
+            if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
+                liste_annexes.removeAt(i);
+                break;
+            }
+        }
     }
     onglet_actif->close();
     return;
