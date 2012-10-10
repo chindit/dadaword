@@ -22,7 +22,7 @@ void autoLoad::showFiles(){
 
     setWindowModality(Qt::ApplicationModal);
     setWindowTitle(tr("DadaWord : Récupération de fichiers"));
-    setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+    setWindowIcon(QIcon(":/programme/images/dadaword.png"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     QLabel *title = new QLabel(tr("<h1>Récupération de documents</h1>"));

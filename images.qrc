@@ -61,12 +61,12 @@
         <file>images/document-close.png</file>
     </qresource>
     <qresource prefix="/programme">
-        <file>images/dadaword.gif</file>
         <file>images/edit.png</file>
         <file>images/ajouter.png</file>
         <file>images/remplace.png</file>
         <file>images/configure.png</file>
         <file>images/textedit.png</file>
+        <file>images/dadaword.png</file>
     </qresource>
     <qresource prefix="/">
         <file>images/chargement.png</file>
