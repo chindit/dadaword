@@ -9,6 +9,12 @@ QT       += core gui \
 	    network
 
 TARGET = dadaword
+!isEmpty(PREFIX) {
+TARGET.path = $$PREFIX/
+}
+
+TARGET.path = $$PREFIX/
+
 TEMPLATE = app
 
 
