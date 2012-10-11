@@ -51,7 +51,7 @@ RESOURCES += \
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
 #LIBS += /usr/local/lib/libhunspell-1.3.a
-LIBS += /usr/lib/libhunspell-1.3.so.1
+LIBS += /usr/lib/libhunspell-1.3.so
 
 #Zlib
 #INCLUDEPATH += zlib
