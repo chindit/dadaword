@@ -51,11 +51,11 @@ RESOURCES += \
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
 #LIBS += /usr/local/lib/libhunspell-1.3.a
-LIBS += hunspell/src/hunspell/.libs/libhunspell-1.3.a
+LIBS += /usr/lib/libhunspell-1.3.so.1
 
 #Zlib
-INCLUDEPATH += zlib
-LIBS += zlib/libz.so.1
+#INCLUDEPATH += zlib
+LIBS += /usr/lib/libz.so.1
 
 #Traductions
 TRANSLATIONS = dadaword_es.ts
