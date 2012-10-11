@@ -55,6 +55,7 @@ LIBS += hunspell/src/hunspell/.libs/libhunspell-1.3.a
 
 #Zlib
 INCLUDEPATH += zlib
+LIBS += zlib/libz.so.1
 
 #Traductions
 TRANSLATIONS = dadaword_es.ts
