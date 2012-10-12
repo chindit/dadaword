@@ -44,9 +44,11 @@ bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
 
         //Si on est ici, c'est que tout roule
         //On ajoute les images détectées au zip
+        ddz_global.addDirectory("images");
         for(int i=0; i<list.size(); i++){
             QString liste_temp = list.at(i);
             QString nom_fichier = liste_temp.split("/").last();
+            nom_fichier.prepend("images/");
             //On récupère l'extention
             QString extention = list.at(i).section('.', -1);
             QImageReader image(list.at(i), extention.toUpper().toStdString().c_str());
@@ -143,7 +145,7 @@ QStringList DDZ::ouvre(QString nom){
         //On change le chemin des images
         for(int i=0; i<list.size(); i++){
             QString nom_image = list.at(i).split("/").last();
-            contenu.replace(list.at(i), QDir::tempPath()+QDir::separator()+nom_image);
+            contenu.replace(list.at(i), QDir::tempPath()+"/images/"+nom_image);
         }
     }
 

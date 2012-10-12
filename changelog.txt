@@ -3,6 +3,7 @@ DadaWord - Changelog
 Version 1.2.2 :
 - Meilleure gestion des annexes
 - Déplacement de la barre de puces pour qu'elle gène moins
+- BUG : alerte inopinée lors de l'enregistrement du style
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage

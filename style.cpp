@@ -427,7 +427,7 @@ void Style::enregistre_style(){
 
     //S'il y a un champ vide, on arrête
     for(int i=0; i<nb_styles; i++){
-        if(boxPolice.at(i)->currentText().isEmpty() || boxPolice.at(i)->currentText().isNull() || boxSize.at(i)->value() <= 0){
+        if(((boxPolice.at(i)->currentText().isEmpty() || boxPolice.at(i)->currentText().isNull()) && !boxSavePolice.at(i)->isChecked()) || (boxSize.at(i)->value() <= 0 && !boxSaveSize.at(i)->isChecked())){
             QMessageBox::warning(this, tr("Champs non-remplis"), tr("Veuillez compléter les champs \"Police\" et \"Taille\" avant de poursuivre.\nMerci"));
             return;
         }

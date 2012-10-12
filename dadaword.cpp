@@ -825,24 +825,30 @@ void DadaWord::export_odt(QString nom){
         return;
     }
     //Enregistrement ODT
-        QTextDocumentWriter *enregistrement_fichier;
-        enregistrement_fichier = new QTextDocumentWriter;
-        enregistrement_fichier->setFormat("odf");
-        QString fichier = nom;
-        QFile *test_nom = new QFile(fichier);
-        if(!test_nom->isWritable()){
-            erreur->Erreur_msg(tr("ODT : Emplacement non inscriptible"), QMessageBox::Ignore);
-            fichier = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), settings->getSettings(Enregistrement).toString(), tr("Documents textes (*.odt)"));
+    QFile fichier;
+    while (nom.isNull()){
+        nom = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), settings->getSettings(Enregistrement).toString(), tr("Documents textes (*.odt)"));
+        if(nom.isNull()) {
+            // Annulation de la sauvegarde par l'utilisateur
+            return;
+        }
+        // Test d'ouverture
+        fichier.setFileName(nom);
+        if(!fichier.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            qDebug("ODT : Emplacement non inscriptible");
+            // QMessageBox::warning(...);
+            nom = QString(); // remet un QString nul
         }
         else{
-            fichier = find_onglet()->accessibleDescription();
+            fichier.close();
         }
-        enregistrement_fichier->setFileName(fichier);
-        //On exporte l'onglet actuel :
-        QTextEdit *current_text_edit = find_edit();
-        QTextDocument *current_text_document = current_text_edit->document();
-        enregistrement_fichier->write(current_text_document);
-        return;
+    }
+    QTextDocumentWriter enregistrement_fichier(nom, "odf");
+    //On exporte l'onglet actuel :
+    QTextEdit *current_text_edit = find_edit(); //On reçoit le QTextEdit grâce à la fonction "getEdit()"
+    QTextDocument *current_text_document = current_text_edit->document();
+    enregistrement_fichier.write(current_text_document);
+    return;
 }
 
 //Export en PDF
