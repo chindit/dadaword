@@ -35,7 +35,8 @@ void SettingsManager::setSettings(Setting s, QVariant v){
     if(settings[s] != v){
         settings[s] = v;
         //Enregistrement
-        saveSettings();
+        QSettings options("DadaWord", "dadaword");
+        options.setValue(names[s], settings[s]);
     }
     else{
         return;
@@ -63,23 +64,3 @@ void SettingsManager::loadSettings(){
     return;
 }
 
-void SettingsManager::saveSettings(){
-    QSettings options("DadaWord", "dadaword");
-    options.setValue(names[Onglets], settings[Onglets]);
-    options.setValue(names[FichiersVides], settings[FichiersVides]);
-    options.setValue(names[Dico], settings[Dico]);
-    options.setValue(names[Police], settings[Police]);
-    options.setValue(names[Taille], settings[Taille]);
-    options.setValue(names[Alertes], settings[Alertes]);
-    options.setValue(names[Orthographe], settings[Orthographe]);
-    options.setValue(names[Word], settings[Word]);
-    options.setValue(names[Timer], settings[Timer]);
-    options.setValue(names[Enregistrement], settings[Enregistrement]);
-    options.setValue(names[Theme], settings[Theme]);
-    options.setValue(names[Cles], settings[Cles]);
-    options.setValue(names[Valeurs], settings[Valeurs]);
-    options.setValue(names[Autocorrection], settings[Autocorrection]);
-    options.setValue(names[ToolbarIcons], settings[ToolbarIcons]);
-    options.setValue(names[FichiersRecents], settings[FichiersRecents]);
-    return;
-}

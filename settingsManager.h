@@ -21,10 +21,9 @@ public:
 signals:
     
 public slots:
+    void loadSettings();
 
 private:
-    void loadSettings();
-    void saveSettings();
     QVariant *settings;
     QString *names;
     

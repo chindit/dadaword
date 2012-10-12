@@ -51,6 +51,9 @@ private slots:
     bool clean_log();
     void returnDir();
 
+signals:
+    void settingsUpdated();
+
 private:
     SettingsManager *settings;
     QWidget *log_fen;

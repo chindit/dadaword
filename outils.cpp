@@ -208,14 +208,14 @@ void Outils::fenetre_config(){
 
 void Outils::enregistre_config(){
     //S'il y a eu un changement, on affiche une alerte.
-    if((settings->getSettings(Onglets).toBool() && !checkbox_onglets->isChecked()) || (!settings->getSettings(Onglets).toBool() && checkbox_onglets->isChecked()) || (settings->getSettings(Word).toBool() && !checkbox_word->isChecked()) || (!settings->getSettings(Word).toBool() && checkbox_word->isChecked())){
+    /*if((settings->getSettings(Onglets).toBool() && !checkbox_onglets->isChecked()) || (!settings->getSettings(Onglets).toBool() && checkbox_onglets->isChecked()) || (settings->getSettings(Word).toBool() && !checkbox_word->isChecked()) || (!settings->getSettings(Word).toBool() && checkbox_word->isChecked())){
         //Avertissement
         if(settings->getSettings(Alertes).toInt() != LOW){
             QMessageBox::information(0, tr("Configuration modifiée"), tr("Attention, la modification de certains paramètres ne sera prise en compte que lors du redémarrage du programme."));
         }
-    }
+    }*/
     if(settings->getSettings(Alertes).toInt() == HIGH && settings->getSettings(Theme).toString() != liste_themes->currentText() && !liste_themes->currentText().contains("dadaword", Qt::CaseInsensitive)){
-        QMessageBox::warning(0, tr("Thème changé"), tr("Vous avez choisis un thème qui n'a pas été vérifié.\nIl se peut qu'il manque certaines icônes."));
+        QMessageBox::warning(0, tr("Thème changé"), tr("Vous avez choisi un thème qui n'a pas été vérifié.\nIl se peut qu'il manque certaines icônes."));
     }//Fin des "alertes"
 
     settings->setSettings(Onglets, checkbox_onglets->isChecked());
@@ -233,41 +233,12 @@ void Outils::enregistre_config(){
         settings->setSettings(Theme, liste_themes->currentText());
     settings->setSettings(ToolbarIcons, checkbox_icons->isChecked());
 
+    //On émet le signal
+    emit settingsUpdated();
+
     configure_fen->close();
     return;
 }
-
-//Enregistre un fichier ouvert dans les «récemment ouverts»
-/*void Outils::enregistre_fichiers(QString fichier){
-    //Lecture des préférences
-    QSettings settings("DadaWord", "dadaword");
-    //On récupère les derniers fichiers
-
-    QStringList fichiers_recents = settings.value("recents").toStringList();
-    //Pas de fichiers en double
-    if(fichiers_recents.contains(fichier)){
-        return;
-    }
-    //S'il y en a 10, on vire le premier (donc le plus ancien)
-    if(fichiers_recents.size() >= 10){
-        fichiers_recents.removeFirst();
-    }
-    //On ajoute la nouvelle URL
-    fichiers_recents.append(fichier);
-
-    //On enregistre les valeurs
-    settings.setValue("recents", QVariant(fichiers_recents));
-
-    return;
-}
-
-//Lire les fichiers récemment ouverts
-QStringList Outils::fichiers_recents(){
-    //Lecture des préférences
-    QSettings settings("DadaWord", "dadaword");
-    //On récupère les derniers fichiers
-    return settings.value("recents").toStringList();
-}*/
 
 //Affiche la fenêtre de gestion du log
 void Outils::affiche_log(){

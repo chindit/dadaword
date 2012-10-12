@@ -7,7 +7,7 @@ ReplaceManager::ReplaceManager(QWidget *parent) :
 }
 
 ReplaceManager::~ReplaceManager(){
-    delete manSettings;
+    //delete manSettings;
 }
 
 void ReplaceManager::showWindow(){

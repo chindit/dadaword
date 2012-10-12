@@ -19,6 +19,7 @@ DadaWord::DadaWord(QWidget *parent)
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
     outils = new Outils;
+    connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
 
     //Initialisation du thème
     QStringList locateThemes;
