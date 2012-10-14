@@ -6,6 +6,8 @@ Version 1.2.2 :
 - BUG : alerte inopinée lors de l'enregistrement du style
 - Optimisations des settings
 - Recharge automatique des settings après modification
+- BUG : résultat de recherche non positionné en «visible»
+- BUG : boutons de recherche inversés
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage

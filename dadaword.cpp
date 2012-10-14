@@ -1807,11 +1807,11 @@ void DadaWord::create_menus(){
     connect(ferme_recherche, SIGNAL(triggered()), this, SLOT(hide_searchbar()));
     QSignalMapper *mappeur_toolbar6 = new QSignalMapper;
     connect(recherche_avant, SIGNAL(triggered()), mappeur_toolbar6, SLOT(map()));
-    mappeur_toolbar6->setMapping(recherche_avant, GAUCHE);
+    mappeur_toolbar6->setMapping(recherche_avant, DROITE);
     connect(mappeur_toolbar6, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
     QSignalMapper *mappeur_toolbar7 = new QSignalMapper;
     connect(recherche_apres, SIGNAL(triggered()), mappeur_toolbar7, SLOT(map()));
-    mappeur_toolbar7->setMapping(recherche_apres, DROITE);
+    mappeur_toolbar7->setMapping(recherche_apres, GAUCHE);
     connect(mappeur_toolbar7, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
 
     //Création de la barre d'orthographe
@@ -2630,7 +2630,8 @@ void DadaWord::make_search(const int from){
 
     //On regarde si on est déjà en train de vérifier:
     if(!pos_recherche.isNull() && !pos_recherche.atStart()){
-        pos_recherche.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+        if(!rebours)
+            pos_recherche.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
         newCursor = pos_recherche;
     }
 
@@ -2739,7 +2740,12 @@ void DadaWord::make_search(const int from){
         }
     }
 
-    //Dans tous les cas, on laisse le curseur visible
+    //Dans tous les cas, on bouge le curseur et on le laisse visible
+    //pos_recherche.movePosition(QTextCursor::NextWord);
+    newCursor.clearSelection();
+    QTextCursor movingCursor = find_edit()->textCursor();
+    movingCursor.setPosition(newCursor.position());
+    find_edit()->setTextCursor(movingCursor);
     find_edit()->ensureCursorVisible();
 
     return;
