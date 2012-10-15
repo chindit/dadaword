@@ -1473,6 +1473,9 @@ void DadaWord::create_menus(){
     affichage_format = affichage->addAction(tr("Format"));
     affichage_format->setCheckable(true);
     affichage_format->setChecked(true);
+    affichage_edition = affichage->addAction(tr("Édition"));
+    affichage_edition->setCheckable(true);
+    affichage_edition->setChecked(false);
 
     //On connecte les affichages au slot
     QSignalMapper *mappeur_toolbar = new QSignalMapper;
@@ -1495,6 +1498,10 @@ void DadaWord::create_menus(){
     connect(affichage_format, SIGNAL(triggered()), mappeur_toolbar8, SLOT(map()));
     mappeur_toolbar8->setMapping(affichage_format, FORMAT);
     connect(mappeur_toolbar8, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
+    QSignalMapper *mappeur_toolbar10 = new QSignalMapper;
+    connect(affichage_edition, SIGNAL(triggered()), mappeur_toolbar10, SLOT(map()));
+    mappeur_toolbar10->setMapping(affichage_edition, EDITION);
+    connect(mappeur_toolbar10, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
 
     //Lecture seule
     lecture_seule = menu_outils->addAction(tr("Lecture seule"));
@@ -1850,6 +1857,13 @@ void DadaWord::create_menus(){
     connect(fin_orth, SIGNAL(clicked()), this, SLOT(orth_stop()));
     //On cache la barre par défaut
     barre_orthographe->hide();
+
+    //Barre d'édition
+    barre_edition = new QToolBar;
+    addToolBar(Qt::TopToolBarArea, barre_edition);
+    barre_edition->addAction(edition_undo);
+    barre_edition->addAction(edition_redo);
+    barre_edition->hide();
 
     return;
 }
@@ -2442,46 +2456,24 @@ void DadaWord::hide_toolbar(const int identifiant){
     switch(identifiant){
     case DEFAULT:
         //On récupère l'état du bouton
-        if(affichage_default->isChecked()){
-            barre_standard->show();
-        }
-        else{
-            barre_standard->hide();
-        }
+        (affichage_default->isChecked()) ? barre_standard->show() : barre_standard->hide();
         break;
     case PUCES:
         //On récupère l'état du bouton (encore)
-        if(affichage_puces->isChecked()){
-            puces->show();
-        }
-        else{
-            puces->hide();
-        }
+        (affichage_puces->isChecked()) ? puces->show() : puces->hide();
         break;
     case TABLEAUX:
         //Et c'est parti pour les tableaux (je me demande pourquoi je commente ça, c'est évident!)
-        if(affichage_tableau->isChecked()){
-            barre_tableau->show();
-        }
-        else{
-            barre_tableau->hide();
-        }
+        (affichage_tableau->isChecked()) ? barre_tableau->show() : barre_tableau->hide();
         break;
     case RECHERCHE:
-        if(affichage_recherche->isChecked()){
-            barre_recherche->show();
-        }
-        else{
-            barre_recherche->hide();
-        }
+        (affichage_recherche->isChecked()) ? barre_recherche->show() : barre_recherche->hide();
         break;
     case FORMAT:
-        if(affichage_format->isChecked()){
-            bar_format->show();
-        }
-        else{
-            bar_format->hide();
-        }
+        (affichage_format->isChecked()) ? bar_format->show() : bar_format->hide();
+        break;
+    case EDITION:
+        (affichage_edition->isChecked()) ? barre_edition->show() : barre_edition->hide();
         break;
     default:
         erreur->Erreur_msg(tr("Exception lors de la gestion de la visibilité des barres d'outils"), QMessageBox::Information);

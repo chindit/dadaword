@@ -6,6 +6,7 @@ Version 1.2.2 :
 - BUG : alerte inopinée lors de l'enregistrement du style
 - Optimisations des settings
 - Recharge automatique des settings après modification
+- Ajout d'une barre d'outils «Édition» comportant «Annuler» et «Refaire»
 - BUG : résultat de recherche non positionné en «visible»
 - BUG : boutons de recherche inversés
 

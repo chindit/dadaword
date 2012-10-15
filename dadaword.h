@@ -213,6 +213,8 @@ private:
     QAction *rm_ddz_annexe;
     QComboBox *ddz_annexes;
     QList< QStringList > liste_annexes;
+    QToolBar *barre_edition;
+    QAction *affichage_edition;
 
 };
 

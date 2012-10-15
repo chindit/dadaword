@@ -30,7 +30,7 @@ enum { LOW, MEDIUM, HIGH };
 enum { COLL, ROW };
 
 //Énumérations pour les toolbars
-enum { DEFAULT, PUCES, TABLEAUX, RECHERCHE, FORMAT };
+enum { DEFAULT, PUCES, TABLEAUX, RECHERCHE, FORMAT, EDITION };
 
 //Énumérations pour la recherche
 enum { FENETRE, QTOOLBAR };
