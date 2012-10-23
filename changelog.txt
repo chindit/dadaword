@@ -9,6 +9,7 @@ Version 1.2.2 :
 - Ajout d'une barre d'outils «Édition» comportant «Annuler» et «Refaire»
 - BUG : résultat de recherche non positionné en «visible»
 - BUG : boutons de recherche inversés
+- BUG : icônes de puces incorrectes lors de la désincrémentation
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage

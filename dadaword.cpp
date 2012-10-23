@@ -983,6 +983,12 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             }
         }//Fin du "if" de "Escape"
         if(keyEvent->key() == Qt::Key_Space){
+            //Protection contre l'extra-selection
+            if(find_edit()->textCursor().charFormat().underlineStyle() == QTextCharFormat::WaveUnderline){
+                QTextCharFormat format = find_edit()->textCursor().charFormat();
+                format.setUnderlineStyle(QTextCharFormat::DashUnderline);
+                find_edit()->textCursor().setCharFormat(format);
+            }
             if(settings->getSettings(Orthographe).toBool() || settings->getSettings(Autocorrection).toBool()){
                 QTextCursor temp = find_edit()->textCursor();
                 temp.movePosition(QTextCursor::PreviousWord);
@@ -1029,7 +1035,6 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 QTextEdit::ExtraSelection es;
                                 es.cursor = temp;
                                 es.format = marquage_erreurs;
-
                                 liste_erreurs << es;
                                 find_edit()->setExtraSelections(liste_erreurs);
                             } //IF : s'il y a une faute
@@ -1075,10 +1080,10 @@ void DadaWord::desincremente_puce(){
         liste_puce.setStyle(QTextListFormat::ListUpperRoman);
     }
     else{
-        if(liste_puce.indent()%3 == 0){
+        if((liste_puce.indent()+1)%3 == 0){
             liste_puce.setStyle(QTextListFormat::ListDisc);
         }
-        else if(liste_puce.indent()%3 == 1){
+        else if((liste_puce.indent()+1)%3 == 1){
             liste_puce.setStyle(QTextListFormat::ListCircle);
         }
         else{
