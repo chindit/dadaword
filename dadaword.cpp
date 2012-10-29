@@ -250,6 +250,12 @@ void DadaWord::change_police(QFont nouvelle_police){
     return;
 }
 
+//Surcharge
+void DadaWord::change_police(QString police){
+    QFont newFont(police);
+    change_police(newFont);
+}
+
 //Surcharge pour le menu
 void DadaWord::change_police(){
     bool ok = true;
@@ -1508,6 +1514,10 @@ void DadaWord::create_menus(){
     mappeur_toolbar10->setMapping(affichage_edition, EDITION);
     connect(mappeur_toolbar10, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
 
+    QAction *hideMenuBar = menu_outils->addAction(tr("Cacher la barre de menu"));
+    hideMenuBar->setShortcut(QKeySequence("Ctrl+L"));
+    connect(hideMenuBar, SIGNAL(triggered()), this, SLOT(hide_menubar()));
+
     //Lecture seule
     lecture_seule = menu_outils->addAction(tr("Lecture seule"));
     lecture_seule->setStatusTip(tr("Bloque l'accès en écriture au document courant"));
@@ -1611,7 +1621,7 @@ void DadaWord::create_menus(){
     choix_police->setCurrentFont(settings->getSettings(Police).value<QFont>());
     barre_standard->addWidget(choix_police);
     //Connection du slot
-    connect(choix_police, SIGNAL(currentFontChanged(QFont)), this, SLOT(change_police(QFont)));
+    connect(choix_police, SIGNAL(activated(QString)), this, SLOT(change_police(QString)));
 
     taille_police = new QSpinBox;
     taille_police->setValue(settings->getSettings(Taille).toInt());
@@ -3714,4 +3724,8 @@ void DadaWord::setSubScript(bool etat){
     else
         format.setVerticalAlignment(QTextCharFormat::AlignNormal);
     find_edit()->textCursor().mergeCharFormat(format);
+}
+
+void DadaWord::hide_menubar(){
+    (menuBar()->isVisible()) ? menuBar()->hide() : menuBar()->show();
 }

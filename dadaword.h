@@ -76,6 +76,7 @@ signals:
 private slots:
     void affiche_about();
     void change_police(QFont nouvelle_police);
+    void change_police(QString police);
     void change_police();
     void graisse_police(bool etat);
     void italique_police(bool etat);
@@ -146,6 +147,7 @@ private slots:
     void insertSpecialChars();
     void setSuperScript(bool etat);
     void setSubScript(bool etat);
+    void hide_menubar();
 
 private:
     void create_menus();
