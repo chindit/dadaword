@@ -52,10 +52,10 @@ RESOURCES += \
 
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
-LIBS += /usr/local/lib/libhunspell-1.3.so
+LIBS += /usr/lib/x86_64-linux-gnu/libhunspell-1.3.so.0
 
 #Zlib
-LIBS += /usr/local/lib/libz.so.1
+LIBS += /lib/x86_64-linux-gnu/libz.so.1
 
 #Traductions
 TRANSLATIONS = dadaword_es.ts

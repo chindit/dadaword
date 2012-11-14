@@ -10,6 +10,7 @@ Version 1.2.2 :
 - BUG : résultat de recherche non positionné en «visible»
 - BUG : boutons de recherche inversés
 - BUG : icônes de puces incorrectes lors de la désincrémentation
+- BUG : auto-correction non fonctionnelle pour les caractères non alphanumériques
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage

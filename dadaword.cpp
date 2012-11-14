@@ -1001,6 +1001,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
                     QString word = temp.selectedText();
+                    QTextCursor alternateWord = temp;
                     while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
                         int cursorPos = temp.position();
                         temp.setPosition(temp.anchor() + 1, QTextCursor::MoveAnchor);
@@ -1014,12 +1015,17 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                     }
 
                     if(settings->getSettings(Autocorrection).toBool()){
-                        if(settings->getSettings(Cles).toStringList().contains(word)){ //On ne fait la boucle que si on a une chance de trouver quelque chose
+                        if(settings->getSettings(Cles).toStringList().contains(word) || settings->getSettings(Cles).toStringList().contains(alternateWord.selectedText())){ //On ne fait la boucle que si on a une chance de trouver quelque chose
                             QStringList clesRemplacement = settings->getSettings(Cles).toStringList();
                             for(int i=0; i<clesRemplacement.size(); i++){
                                 if(temp.selectedText() == clesRemplacement.at(i)){
                                     temp.removeSelectedText();
                                     temp.insertText(settings->getSettings(Valeurs).toStringList().at(i));
+                                    break;
+                                }
+                                else if(alternateWord.selectedText() == clesRemplacement.at(i)){
+                                    alternateWord.removeSelectedText();
+                                    alternateWord.insertText(settings->getSettings(Valeurs).toStringList().at(i));
                                     break;
                                 }
                             }
