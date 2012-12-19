@@ -11,6 +11,7 @@ Version 1.2.2 :
 - BUG : boutons de recherche inversés
 - BUG : icônes de puces incorrectes lors de la désincrémentation
 - BUG : auto-correction non fonctionnelle pour les caractères non alphanumériques
+- BUG : ouverture de la fenêtre de correction lors de l'ajout d'un mot au dictionnaire depuis le menu contextuel.
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage

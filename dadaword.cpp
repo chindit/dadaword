@@ -3079,7 +3079,9 @@ void DadaWord::orth_dico(){
         }
         correcteur->addToUserWordlist(orth_erreur);
         pos_orth.movePosition(QTextCursor::NextWord);
-        verif_orthographe();
+        if(!pos_orth.isNull() && !pos_orth.atStart()){ //Si on ne vient pas du menu contextuel, on continue
+            verif_orthographe();
+        }
 
         return;
     }
