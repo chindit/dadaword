@@ -59,7 +59,7 @@ private:
     QWidget *log_fen;
     QWidget *configure_fen;
     QCheckBox *checkbox_onglets, *checkbox_fichiers_vides, *checkbox_word, *checkbox_orthographe, *checkbox_autocorrection, *checkbox_icons;
-    QLineEdit *saving_edit;
+    QLineEdit *saving_edit, *lr_gras, *lr_italique, *lr_souligne;;
     QSpinBox *taille_police_default, *spinbox_timer;
     QFontComboBox *police_default;
     QComboBox *alertes, *liste_dicos, *liste_themes;

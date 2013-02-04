@@ -1638,21 +1638,21 @@ void DadaWord::create_menus(){
     gras = new QAction(QIcon::fromTheme("format-text-bold", QIcon(":/menus/images/text_bold.png")), tr("Gras"), menu_format);
     if((QIcon::hasThemeIcon("format-text-bold") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(gras);
-    gras->setShortcut(QKeySequence("Ctrl+B"));
+    gras->setShortcut(QKeySequence(settings->getSettings(RGras).toString()));
     connect(gras, SIGNAL(triggered(bool)), this, SLOT(graisse_police(bool)));
     gras->setCheckable(true);
 
     italique = new QAction(QIcon::fromTheme("format-text-italic", QIcon(":/menus/images/text_italic.png")), tr("Italique"), menu_format);
     if((QIcon::hasThemeIcon("format-text-italic") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(italique);
-    italique->setShortcut(QKeySequence("Ctrl+I"));
+    italique->setShortcut(QKeySequence(settings->getSettings(RItalique).toString()));
     connect(italique, SIGNAL(triggered(bool)), this, SLOT(italique_police(bool)));
     italique->setCheckable(true);
 
     souligne = new QAction(QIcon::fromTheme("format-text-underline", QIcon(":/menus/images/text_under.png")), tr("Souligné"), menu_format);
     if((QIcon::hasThemeIcon("format-text-underline") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(souligne);
-    souligne->setShortcut(QKeySequence("Ctrl+U"));
+    souligne->setShortcut(QKeySequence(settings->getSettings(RSouligne).toString()));
     connect(souligne, SIGNAL(triggered(bool)), this, SLOT(souligne_police(bool)));
     souligne->setCheckable(true);
 

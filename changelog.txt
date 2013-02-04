@@ -7,6 +7,7 @@ Version 1.2.2 :
 - Optimisations des settings
 - Recharge automatique des settings après modification
 - Ajout d'une barre d'outils «Édition» comportant «Annuler» et «Refaire»
+- EN COURS : Modification de raccourcis basiques
 - BUG : résultat de recherche non positionné en «visible»
 - BUG : boutons de recherche inversés
 - BUG : icônes de puces incorrectes lors de la désincrémentation

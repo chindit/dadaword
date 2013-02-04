@@ -43,8 +43,10 @@ void Outils::fenetre_config(){
 
     QListWidgetItem *itemEdit = new QListWidgetItem(QIcon::fromTheme("document-edit", QIcon(":/programme/images/textedit.png")), tr("Édition"));
     QListWidgetItem *itemGeneral = new QListWidgetItem(QIcon::fromTheme("applications-development", QIcon(":/programme/images/configure.png")), tr("Général"));
+    QListWidgetItem *itemRaccourcis = new QListWidgetItem(tr("Raccourcis"));
     settingsList->addItem(itemEdit);
     settingsList->addItem(itemGeneral);
+    settingsList->addItem(itemRaccourcis);
 
     settingsWidgetLayout->addWidget(settingsList, 0, 0, 1, 1);
     settingsWidgetLayout->addWidget(settingsView, 0, 1, 1, 2);
@@ -201,6 +203,34 @@ void Outils::fenetre_config(){
     layoutGeneral->addWidget(label_icons, 6, 0);
     layoutGeneral->addWidget(checkbox_icons, 6, 1);
 
+    //---------------------------------------------------
+    //Raccourcis
+    //---------------------------------------------------
+    QWidget *fen_raccourcis = new QWidget(settingsView);
+    settingsView->addWidget(fen_raccourcis);
+    QGridLayout *layoutRaccourcis = new QGridLayout(fen_raccourcis);
+    QLabel *racc_titre, *racc_info, *racc_info_info, *racc_gras, *racc_italique, *racc_souligne;
+    racc_titre = new QLabel(tr("<h3>Raccourcis de DadaWord</h3>"));
+    racc_info = new QLabel(tr("Majuscule : <i>Shift</i>, Contrôle : <i>Ctrl</i>, Conjonction de touches : <i>+</i>"));
+    racc_info_info = new QLabel(tr("Exemple : <i>Ctrl+Shift+F2"));
+    racc_gras = new QLabel(tr("Gras"));
+    racc_italique = new QLabel(tr("Italique"));
+    racc_souligne = new QLabel(tr("Souligné"));
+    lr_gras = new QLineEdit;  lr_italique = new QLineEdit;  lr_souligne = new QLineEdit;
+    lr_gras->setText(settings->getSettings(RGras).toString());
+    lr_italique->setText(settings->getSettings(RItalique).toString());
+    lr_souligne->setText(settings->getSettings(RSouligne).toString());
+    layoutRaccourcis->addWidget(racc_titre, 0, 0, 1, 4, Qt::AlignHCenter);
+    layoutRaccourcis->addWidget(racc_info, 1, 0, 1, 4, Qt::AlignLeft);
+    layoutRaccourcis->addWidget(racc_info_info, 2, 0, 1, 4, Qt::AlignLeft);
+    layoutRaccourcis->addWidget(racc_gras, 3, 0);
+    layoutRaccourcis->addWidget(lr_gras, 3, 1);
+    layoutRaccourcis->addWidget(racc_italique, 3, 2);
+    layoutRaccourcis->addWidget(lr_italique, 3, 3);
+    layoutRaccourcis->addWidget(racc_souligne, 4, 0);
+    layoutRaccourcis->addWidget(lr_souligne, 4, 1);
+
+
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
     configure_fen->show();
     return;
@@ -232,6 +262,9 @@ void Outils::enregistre_config(){
     if(!liste_themes->currentText().isEmpty())
         settings->setSettings(Theme, liste_themes->currentText());
     settings->setSettings(ToolbarIcons, checkbox_icons->isChecked());
+    settings->setSettings(RGras, lr_gras->text());
+    settings->setSettings(RItalique, lr_italique->text());
+    settings->setSettings(RSouligne, lr_souligne->text());
 
     //On émet le signal
     emit settingsUpdated();
