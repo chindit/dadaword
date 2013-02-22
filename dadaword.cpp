@@ -958,6 +958,16 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                     }
                 }
             }//Fin CurrentList
+            else{
+                //Si il y a un style, on le supprime
+                if(settings->getSettings(DelTitre).toBool()){
+                    int position = nom_format->currentIndex();
+                   if(position != 0){
+                      nom_format->setCurrentIndex(0);
+                        change_style(0);
+                    }
+                }
+            }
         }//Fin du "if" de la QKey
         if(keyEvent->key() == Qt::Key_Tab){
             QTextCursor curseur = find_edit()->textCursor();

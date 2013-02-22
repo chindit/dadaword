@@ -53,7 +53,7 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection, *label_icons;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection, *label_icons, *label_titre;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
@@ -65,6 +65,7 @@ void Outils::fenetre_config(){
     label_timer = new QLabel(tr("Sauvegarde automatique (en secondes)"));
     label_saving = new QLabel(tr("Répertoire d'enregistrement par défaut"));
     label_theme = new QLabel(tr("Thème d'icônes"));
+    label_titre = new QLabel(tr("Désactiver les titres lors du retour à la ligne"));
     label_autocorrection = new QLabel(tr("Activer l'autocorrection"));
     label_icons = new QLabel(tr("Masquer les actions pour lesquelles le thème n'a pas d'icônes"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
@@ -75,6 +76,7 @@ void Outils::fenetre_config(){
     label_theme->setToolTip(tr("Le thème définit les icones du programme."));
     label_autocorrection->setToolTip(tr("Active l'autocorrection pour les éléments listés dans le panel"));
     label_icons->setToolTip(tr("Ne masque que les icônes de la barre d'outils.  Les actions restent disponibles dans les menus"));
+    label_titre->setToolTip(tr("Désactive automatiquement les styles de titre lors du retour à la ligne"));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
@@ -82,6 +84,7 @@ void Outils::fenetre_config(){
     checkbox_orthographe = new QCheckBox;
     checkbox_autocorrection = new QCheckBox;
     checkbox_icons = new QCheckBox;
+    checkbox_titre = new QCheckBox;
     //On y met la configuration déjà existante :
     checkbox_onglets->setChecked(settings->getSettings(Onglets).toBool());
     checkbox_fichiers_vides->setChecked(settings->getSettings(FichiersVides).toBool());
@@ -89,6 +92,7 @@ void Outils::fenetre_config(){
     checkbox_word->setChecked(settings->getSettings(Word).toBool());
     checkbox_autocorrection->setChecked(settings->getSettings(Autocorrection).toBool());
     checkbox_icons->setChecked(settings->getSettings(ToolbarIcons).toBool());
+    checkbox_titre->setChecked(settings->getSettings(DelTitre).toBool());
 
     alertes = new QComboBox;
     alertes->addItem(tr("Aucunes"), LOW);
@@ -178,6 +182,8 @@ void Outils::fenetre_config(){
     layoutEdition->addWidget(checkbox_orthographe, 4, 1);
     layoutEdition->addWidget(label_autocorrection, 5, 0);
     layoutEdition->addWidget(checkbox_autocorrection, 5, 1);
+    layoutEdition->addWidget(label_titre, 6, 0);
+    layoutEdition->addWidget(checkbox_titre, 6, 1);
 
     //---------------------------------------------------
     // Général
@@ -262,6 +268,7 @@ void Outils::enregistre_config(){
     if(!liste_themes->currentText().isEmpty())
         settings->setSettings(Theme, liste_themes->currentText());
     settings->setSettings(ToolbarIcons, checkbox_icons->isChecked());
+    settings->setSettings(DelTitre, checkbox_titre->isChecked());
     settings->setSettings(RGras, lr_gras->text());
     settings->setSettings(RItalique, lr_italique->text());
     settings->setSettings(RSouligne, lr_souligne->text());

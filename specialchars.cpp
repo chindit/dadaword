@@ -80,7 +80,7 @@ void specialChars::updateTable(int row, int coll){
 }
 
 void specialChars::updateTable2(int row, int coll){
-    updateTable(-1, coll); //If we send en negatif row, updateTable'll know we're adding from recents
+    updateTable(-1, coll); //If we send a negative row, updateTable'll know we're adding from recents
 }
 
 QString specialChars::getChars(){
