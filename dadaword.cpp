@@ -188,6 +188,7 @@ void DadaWord::cree_iu(){
         connect(tab_bar_area, SIGNAL(tabCloseRequested(int)), this, SLOT(close_tab_button(int)));
     }
 
+
     //Placement du widget comme zone centrale
     this->setCentralWidget(zone_centrale);
 
@@ -821,6 +822,11 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         tff.setMargin(MARGIN_WORD);
         tf->setFrameFormat(tff);
         find_edit()->document()->setModified(false);
+    }
+
+    //Taille minimum pour les fenêtres
+    if(settings->getSettings(Onglets).toBool()){
+        find_onglet()->setMinimumSize(75, 75);
     }
     return;
 }
@@ -1968,6 +1974,10 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
         zone_document_onglet->setFocus();
         document_onglet->setFocus();
         zone_document_onglet->show();
+        //Taille minimum pour les fenêtres
+        if(settings->getSettings(Onglets).toBool()){
+            zone_document_onglet->setMinimumSize(75, 75);
+        }
     }
     else{
         return;
@@ -3525,7 +3535,10 @@ void DadaWord::curseur_change(){
 //Change l'interligne
 void DadaWord::set_interligne(int interligne){
     QTextBlockFormat format;
-    QTextCursor curseur = find_edit()->textCursor();
+    QTextCursor curseur;
+    if(find_edit() != 0){ //Le signal est émis lors de la fermeture d'un document
+        curseur = find_edit()->textCursor();
+    }
 
     //----------------------------------------------
     //Détection de l'interligne
@@ -3592,6 +3605,8 @@ void DadaWord::add_annexe(){
 
     //Actualisation de la liste des annexes
     show_annexes();
+    enregistrer->setEnabled(true);
+
     return;
 }
 

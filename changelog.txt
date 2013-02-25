@@ -14,6 +14,8 @@ Version 1.2.2 :
 - BUG : icônes de puces incorrectes lors de la désincrémentation
 - BUG : auto-correction non fonctionnelle pour les caractères non alphanumériques
 - BUG : ouverture de la fenêtre de correction lors de l'ajout d'un mot au dictionnaire depuis le menu contextuel.
+- BUG : SIGSEGV si changement d'interligne lorsqu'aucun document n'est ouvert.
+- BUG : pas d'option d'enregistrement après l'ajout d'annexes.
 
 Version 1.2.1 :
 - Ajout de la couleur vert clair dans le menu déroulant de surlignage
