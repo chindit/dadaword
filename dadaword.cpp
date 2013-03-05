@@ -121,6 +121,8 @@ DadaWord::~DadaWord()
     delete affichage_recherche;
     delete barre_orthographe;
     delete add_ddz_annexe;
+    delete fichier_fermer;
+    delete menu_format;
 
 }
 
@@ -809,6 +811,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         if(!nom_fichier.endsWith(".xml", Qt::CaseInsensitive)){
             colore_html->setEnabled(true);
         }
+        menu_format->setEnabled(false);
     }
     else{
         erreur->Erreur_msg(tr("Erreur lors de l'ouverture de fichier : il n'a pu être déterminé si le fichier s'ouvrait ou non en mode texte"), QMessageBox::Warning);
@@ -827,6 +830,11 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Taille minimum pour les fenêtres
     if(settings->getSettings(Onglets).toBool()){
         find_onglet()->setMinimumSize(75, 75);
+    }
+
+    //Activation du bouton de fermeture si désactivé
+    if(!fichier_fermer->isEnabled()){
+        fichier_fermer->setEnabled(true);
     }
     return;
 }
@@ -1253,7 +1261,7 @@ void DadaWord::create_menus(){
     impression->setShortcut(QKeySequence("Ctrl+P"));
     connect(impression, SIGNAL(triggered()), this, SLOT(imprimer()));
 
-    QAction *fichier_fermer = menu_fichier->addAction(tr("Fermer"));
+    fichier_fermer = menu_fichier->addAction(tr("Fermer"));
     fichier_fermer->setToolTip(tr("Fermer le document actif"));
     fichier_fermer->setShortcut(QKeySequence("Ctrl+W"));
     QString nomIcone = QIcon::hasThemeIcon("document-close") ? "document-close" : "process-stop";
@@ -1393,7 +1401,7 @@ void DadaWord::create_menus(){
 
 
     //Création de la barre de menu "Format"
-    QMenu *menu_format = menuBar()->addMenu(tr("Format"));
+    menu_format = menuBar()->addMenu(tr("Format"));
 
 
     //Création de la barre de menu "Insertion"
@@ -1784,6 +1792,7 @@ void DadaWord::create_menus(){
     //Création de la toolbar de format
     bar_format = new QToolBar;
     addToolBar(Qt::TopToolBarArea, bar_format);
+    bar_format->setWindowTitle(tr("Format"));
     nom_format = new QComboBox;
     QSettings settings("DadaWord", "dadaword");
     QStringList noms_styles = settings.value("noms_styles").toStringList();
@@ -1800,6 +1809,7 @@ void DadaWord::create_menus(){
 
     //Création de la toolbar des puces
     puces = new QToolBar;
+    puces->setWindowTitle(tr("Puces"));
     addToolBar(Qt::TopToolBarArea, puces);
     incremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-more", QIcon(":/menus/images/suivant.png")));
     desincremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-less", QIcon(":/menus/images/precedent.png")));
@@ -1809,6 +1819,7 @@ void DadaWord::create_menus(){
 
     //Création de la toolbar des tableaux
     barre_tableau = new QToolBar;
+    barre_tableau->setWindowTitle(tr("Tableaux"));
     addToolBar(Qt::BottomToolBarArea, barre_tableau);
     barre_tableau->addAction(insere_tableau);
     barre_tableau->addAction(ajoute_ligne);
@@ -1821,6 +1832,7 @@ void DadaWord::create_menus(){
 
     //Création de la toolbar de recherche
     barre_recherche = new QToolBar;
+    barre_recherche->setWindowTitle(tr("Recherche"));
     addToolBar(Qt::BottomToolBarArea, barre_recherche);
     champ_recherche = new QLineEdit();
     barre_recherche->addAction(rechercher);
@@ -1860,6 +1872,7 @@ void DadaWord::create_menus(){
 
     //Création de la barre d'orthographe
     barre_orthographe = new QToolBar;
+    barre_orthographe->setWindowTitle(tr("Orthographe"));
     addToolBar(Qt::LeftToolBarArea, barre_orthographe);
     orth_suggest = new QComboBox;
     orth_mot = new QLabel("N/A");
@@ -1897,6 +1910,7 @@ void DadaWord::create_menus(){
 
     //Barre d'édition
     barre_edition = new QToolBar;
+    barre_edition->setWindowTitle(tr("Édition"));
     addToolBar(Qt::TopToolBarArea, barre_edition);
     barre_edition->addAction(edition_undo);
     barre_edition->addAction(edition_redo);
@@ -1915,40 +1929,39 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
     else{
         reponse = titre;
     }
-    if(!reponse.isEmpty()){
-        QTextEdit *document_onglet = new QTextEdit;
-        document_onglet->installEventFilter(this);
-        document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
-        connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso()));//Connection au slot d'affichage du menu
-        connect(document_onglet, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
-        QTextDocument *doc_principal_onglet = new QTextDocument;
-        document_onglet->setDocument(doc_principal_onglet);
-        QMdiSubWindow *zone_document_onglet;
-        if(settings->getSettings(Word).toBool()){
-            zone_document_onglet = new QMdiSubWindow;
-            zone_centrale->addSubWindow(zone_document_onglet);
-            QPrinter printer(QPrinter::HighResolution);
-            printer.setPaperSize(QPrinter::A4);
-            document_onglet->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
-            document_onglet->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
-            document_onglet->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
-            QVBoxLayout *layout_horizontal = new QVBoxLayout;
-            QScrollArea *widget = new QScrollArea; //Sert juste pour le layout
-            layout_horizontal->addWidget(document_onglet, 0, Qt::AlignHCenter);
-            document_onglet->setFrameShape(QFrame::NoFrame);
-            widget->setLayout(layout_horizontal);
-            zone_document_onglet->setWidget(widget);
-            QTextFrame *tf = doc_principal_onglet->rootFrame();
-            QTextFrameFormat tff = tf->frameFormat();
-            tff.setMargin(MARGIN_WORD);
-            tf->setFrameFormat(tff);
+    QTextEdit *document_onglet = new QTextEdit;
+    document_onglet->installEventFilter(this);
+    document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
+    connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso()));//Connection au slot d'affichage du menu
+    connect(document_onglet, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
+    QTextDocument *doc_principal_onglet = new QTextDocument;
+    document_onglet->setDocument(doc_principal_onglet);
+    QMdiSubWindow *zone_document_onglet;
+    if(settings->getSettings(Word).toBool()){
+        zone_document_onglet = new QMdiSubWindow;
+        zone_centrale->addSubWindow(zone_document_onglet);
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setPaperSize(QPrinter::A4);
+        document_onglet->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
+        document_onglet->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
+        document_onglet->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
+        QVBoxLayout *layout_horizontal = new QVBoxLayout;
+        QScrollArea *widget = new QScrollArea; //Sert juste pour le layout
+        layout_horizontal->addWidget(document_onglet, 0, Qt::AlignHCenter);
+        document_onglet->setFrameShape(QFrame::NoFrame);
+        widget->setLayout(layout_horizontal);
+        zone_document_onglet->setWidget(widget);
+        QTextFrame *tf = doc_principal_onglet->rootFrame();
+        QTextFrameFormat tff = tf->frameFormat();
+        tff.setMargin(MARGIN_WORD);
+        tf->setFrameFormat(tff);
 
-            doc_principal_onglet->setModified(false);
+        doc_principal_onglet->setModified(false);
 
-            //--------------------------------
-            // Ajout d'une nouvelle page
-            //--------------------------------
-            /*QTextEdit *o2 = new QTextEdit;
+        //--------------------------------
+        // Ajout d'une nouvelle page
+        //--------------------------------
+        /*QTextEdit *o2 = new QTextEdit;
             o2->installEventFilter(this);
             //o2->setFrameShape(QFrame::NoFrame);
             o2->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -1960,27 +1973,27 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
             QTextFrameFormat tff2 = tf2->frameFormat();
             tff2.setMargin(MARGIN_WORD);
             tf2->setFrameFormat(tff2);*/
-        }
-        else{
-            zone_document_onglet = zone_centrale->addSubWindow(document_onglet);
-        }
-        zone_document_onglet->setWindowTitle(reponse);
-        zone_document_onglet->setAccessibleName(reponse);
-        //On delete en plus de fermer
-        zone_document_onglet->setAttribute(Qt::WA_DeleteOnClose);
-        connect(doc_principal_onglet, SIGNAL(contentsChanged()), this, SLOT(indicateur_modifications()));
-        connect(document_onglet, SIGNAL(undoAvailable(bool)), this, SLOT(slot_undo(bool)));
-        connect(document_onglet, SIGNAL(redoAvailable(bool)), this, SLOT(slot_redo(bool)));
-        zone_document_onglet->setFocus();
-        document_onglet->setFocus();
-        zone_document_onglet->show();
-        //Taille minimum pour les fenêtres
-        if(settings->getSettings(Onglets).toBool()){
-            zone_document_onglet->setMinimumSize(75, 75);
-        }
     }
     else{
-        return;
+        zone_document_onglet = zone_centrale->addSubWindow(document_onglet);
+    }
+    zone_document_onglet->setWindowTitle(reponse);
+    zone_document_onglet->setAccessibleName(reponse);
+    //On delete en plus de fermer
+    zone_document_onglet->setAttribute(Qt::WA_DeleteOnClose);
+    connect(doc_principal_onglet, SIGNAL(contentsChanged()), this, SLOT(indicateur_modifications()));
+    connect(document_onglet, SIGNAL(undoAvailable(bool)), this, SLOT(slot_undo(bool)));
+    connect(document_onglet, SIGNAL(redoAvailable(bool)), this, SLOT(slot_redo(bool)));
+    zone_document_onglet->setFocus();
+    document_onglet->setFocus();
+    zone_document_onglet->show();
+    //Taille minimum pour les fenêtres
+    if(settings->getSettings(Onglets).toBool()){
+        zone_document_onglet->setMinimumSize(75, 75);
+    }
+    //Activation de l'onglet de fermetur
+    if(!fichier_fermer->isEnabled()){
+        fichier_fermer->setEnabled(true);
     }
     return;
 }
@@ -2070,6 +2083,12 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         }
         //Mode texte
         to_text->setChecked(!find_edit()->acceptRichText());
+        if(find_edit()->acceptRichText() && !menu_format->isEnabled()){
+            menu_format->setEnabled(true);
+        }
+        if(!find_edit()->acceptRichText() && menu_format->isEnabled()){
+            menu_format->setEnabled(false);
+        }
         //Reset du curseur pour la correction orthographique
         pos_orth.movePosition(QTextCursor::Start);
 
@@ -2120,6 +2139,11 @@ void DadaWord::fermer_fichier(){
         }
     }
     onglet_actif->close();
+
+    //Si plus d'onglets ouverts, on désactive le bouton
+    if(zone_centrale->subWindowList().isEmpty()){
+        fichier_fermer->setEnabled(false);
+    }
     return;
 }
 

@@ -161,6 +161,7 @@ private:
     SpellChecker *correcteur;
     QMdiArea *zone_centrale;
     QAction *enregistrer;
+    QMenu *menu_format;
     QToolBar *puces;
     QToolBar *barre_tableau;
     QString *titre_doc;
@@ -169,6 +170,7 @@ private:
     QAction *gras;
     QAction *italique;
     QAction *souligne;
+    QAction *fichier_fermer;
     QColor *couleur_actuelle;
     QAction *edition_redo;
     QAction *edition_undo;

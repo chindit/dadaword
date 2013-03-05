@@ -6,11 +6,18 @@ ReplaceManager::ReplaceManager(QWidget *parent) :
     manSettings = new SettingsManager;
 }
 
-ReplaceManager::~ReplaceManager(){
+/*ReplaceManager::~ReplaceManager(){
     //delete manSettings;
-}
+}*/
 
 void ReplaceManager::showWindow(){
+    if(!this->windowTitle().isEmpty()){
+        QMessageBox::information(this, "o", "oui");
+    }
+    else{
+        QMessageBox::information(this, "n", "non");
+    }
+
     if(this->windowTitle().isEmpty()){
         setWindowModality(Qt::ApplicationModal);
         setWindowTitle(tr("Autocorrection"));

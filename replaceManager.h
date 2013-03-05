@@ -14,9 +14,10 @@
 class ReplaceManager : public QDialog
 {
     Q_OBJECT
+
 public:
     explicit ReplaceManager(QWidget *parent = 0);
-    ~ReplaceManager();
+    //~ReplaceManager();
 
 public slots:
     void showWindow();
