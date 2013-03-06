@@ -172,7 +172,7 @@ void DadaWord::cree_iu(){
     //Création des menus
     create_menus();
 
-    this->setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+    this->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
 
     //Création du MDI
     zone_centrale = new QMdiArea;
@@ -2378,6 +2378,12 @@ void DadaWord::slot_lecture_seule(){
         return;
     }
     find_edit()->setReadOnly(lecture_seule->isChecked());
+    if(lecture_seule->isChecked()){
+        find_onglet()->setWindowIcon(QIcon::fromTheme("document-encrypt", QIcon(":/programme/images/document-encrypt.png")));
+    }
+    else{
+        find_onglet()->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
+    }
     return;
 }
 
