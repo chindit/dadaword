@@ -85,6 +85,7 @@ private slots:
     void change_taille();
     void apercu_avant_impression();
     void enregistrement(QMdiSubWindow* fenetre_active = 0, bool saveas = false, bool autosave = false);
+    void enregistrer_tout();
     void autoSave();
     void ouvrir_fichier(const QString &fichier = "null", bool autosave = false);
     void print(QPrinter *p);
@@ -161,6 +162,7 @@ private:
     SpellChecker *correcteur;
     QMdiArea *zone_centrale;
     QAction *enregistrer;
+    QAction *enregistrerTout;
     QMenu *menu_format;
     QToolBar *puces;
     QToolBar *barre_tableau;

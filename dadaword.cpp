@@ -589,6 +589,15 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         temp_document = edit_temp->document();
         temp_document->setModified(false);
         enregistrer->setEnabled(false);
+        QList<QMdiSubWindow*> fenetres_ouvertes = zone_centrale->subWindowList();
+        bool all_saved = true;
+        for(int i = 0; i < fenetres_ouvertes.size(); i++){
+            QTextEdit *edit_temp = fenetres_ouvertes.at(i)->findChild<QTextEdit *>();
+            if(edit_temp->document()->isModified()){
+                all_saved = false;
+            }
+        }
+        enregistrerTout->setEnabled(!all_saved);
         fenetre_temp->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
         status_is_modified->setEnabled(false);
     }
@@ -1230,6 +1239,12 @@ void DadaWord::create_menus(){
     enregistrer->setEnabled(false);
     //status_is_modified->setText(tr("Pas de modifications"));
     status_is_modified->setEnabled(false);
+
+    enregistrerTout = menu_fichier->addAction(tr("Enregistrer tout"));
+    enregistrerTout->setIcon(QIcon::fromTheme("document-save-all", QIcon(":/menus/images/document-save-all.png")));
+    enregistrerTout->setStatusTip(tr("Enregistre tous les fichiers ouverts"));
+    connect(enregistrerTout, SIGNAL(triggered()), this, SLOT(enregistrer_tout()));
+    enregistrerTout->setEnabled(false);
 
     QAction *enregistrer_sous = menu_fichier->addAction(QIcon::fromTheme("document-save-as", QIcon(":/menus/images/enregistrer_sous.png")), tr("Enregistrer le fichier sous"));
     enregistrer_sous->setShortcut(QKeySequence("Ctrl+Shift+S"));
@@ -2007,6 +2022,9 @@ void DadaWord::indicateur_modifications(){
         find_onglet()->setWindowIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
         //status_is_modified->setText(tr("Document modifié"));
         status_is_modified->setEnabled(true);
+        if(!enregistrerTout->isEnabled()){
+            enregistrerTout->setEnabled(true);
+        }
     }
     return;
 }
@@ -2115,6 +2133,8 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
             rm_ddz_annexe->setVisible(false);
             ddz_annexes->setEnabled(false);
         }
+        //Bouton d'enregistrement
+        enregistrer->setEnabled(text_edit_temp->document()->isModified());
     }//Fin du "if" fenêtre valide
     else{
         //On masque le bouton "Enregistrer"
@@ -3639,6 +3659,7 @@ void DadaWord::add_annexe(){
     //Actualisation de la liste des annexes
     show_annexes();
     enregistrer->setEnabled(true);
+    enregistrerTout->setEnabled(true);
     find_onglet()->setWindowIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
 
     return;
@@ -3795,4 +3816,15 @@ void DadaWord::setSubScript(bool etat){
 
 void DadaWord::hide_menubar(){
     (menuBar()->isVisible()) ? menuBar()->hide() : menuBar()->show();
+}
+
+void DadaWord::enregistrer_tout(){
+    QList<QMdiSubWindow*> fenetres_ouvertes = zone_centrale->subWindowList();
+    for(int i = 0; i < fenetres_ouvertes.size(); i++){
+        QTextEdit *edit_temp = fenetres_ouvertes.at(i)->findChild<QTextEdit *>();
+        if(edit_temp->document()->isModified()){
+            enregistrement(fenetres_ouvertes.at(i));
+        }
+    }
+    return;
 }
