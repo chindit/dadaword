@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /*
-  Développeur : David Lumaye (littletiger58@gmail.com)
+  Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
   Date : 15/08/12
   Merci de ne pas supprimer cette notice.
   Toutes les modifications apportées à ce document (disponible ici : http://qt-project.org/wiki/Spell-Checking-with-Hunspell )

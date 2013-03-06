@@ -1,5 +1,5 @@
 /*
-  Développeur : David Lumaye (littletiger58@gmail.com)
+  Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
   Date : 01/08/12
   Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
   Merci de ne pas supprimer cette notice.

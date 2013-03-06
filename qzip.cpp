@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 /*
-  Développeur : David Lumaye (littletiger58@gmail.com)
+  Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
   Date : 13/08/12
   Merci de ne pas supprimer cette notice.
   Toutes les modifications apportées à ce document
