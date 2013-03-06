@@ -589,6 +589,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         temp_document = edit_temp->document();
         temp_document->setModified(false);
         enregistrer->setEnabled(false);
+        fenetre_temp->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
         status_is_modified->setEnabled(false);
     }
     find_edit()->setFocus();
@@ -2003,6 +2004,7 @@ void DadaWord::indicateur_modifications(){
     //Gestion de l'icône d'enregistrement
     if(!enregistrer->isEnabled()){
         enregistrer->setEnabled(true);
+        find_onglet()->setWindowIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
         //status_is_modified->setText(tr("Document modifié"));
         status_is_modified->setEnabled(true);
     }
@@ -2117,6 +2119,7 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
     else{
         //On masque le bouton "Enregistrer"
         enregistrer->setEnabled(false);
+
     }
     return;
 }
@@ -3630,6 +3633,7 @@ void DadaWord::add_annexe(){
     //Actualisation de la liste des annexes
     show_annexes();
     enregistrer->setEnabled(true);
+    find_onglet()->setWindowIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
 
     return;
 }

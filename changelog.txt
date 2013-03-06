@@ -1,6 +1,7 @@
 DadaWord - Changelog
 
 Version 1.2.2 :
+- Ajout d'une icône pour indiquer l'état d'enregistrement des documents
 - Désactivation du menu «Format» en cas d'utilisation d'un fichier en mode texte.
 - Meilleure gestion des annexes
 - Déplacement de la barre de puces pour qu'elle gène moins
