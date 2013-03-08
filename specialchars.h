@@ -11,7 +11,7 @@ class specialChars : public QDialog
     Q_OBJECT
 public:
     explicit specialChars(QWidget *parent = 0);
-    void showWindow(QList<QChar> listRecent);
+    void ViewWindow(QList<QChar> listRecent);
     QString getChars();
     QList<QChar> getList();
     

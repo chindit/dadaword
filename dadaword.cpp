@@ -857,7 +857,7 @@ void DadaWord::export_odt(QString nom){
     }
     //Enregistrement ODT
     QFile fichier;
-    while (nom.isNull()){
+    while (nom.isNull() || nom.isEmpty()){
         nom = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), settings->getSettings(Enregistrement).toString(), tr("Documents textes (*.odt)"));
         if(nom.isNull()) {
             // Annulation de la sauvegarde par l'utilisateur
@@ -876,9 +876,8 @@ void DadaWord::export_odt(QString nom){
     }
     QTextDocumentWriter enregistrement_fichier(nom, "odf");
     //On exporte l'onglet actuel :
-    QTextEdit *current_text_edit = find_edit(); //On reçoit le QTextEdit grâce à la fonction "getEdit()"
-    QTextDocument *current_text_document = current_text_edit->document();
-    enregistrement_fichier.write(current_text_document);
+    QMessageBox::information(0, "nom", nom);
+    enregistrement_fichier.write(find_edit()->document());
     return;
 }
 
@@ -3783,7 +3782,7 @@ void DadaWord::insertSpecialChars(){
     QSettings options("DadaWord", "dadaword");
     QList<QVariant> preList = options.value("specialChars").toList();
     QList<QChar> listeChars; for(int i=0;i<preList.size();i++){listeChars.append(preList.at(i).toChar());} //QVariant to QChar
-    chars.showWindow(listeChars);
+    chars.ViewWindow(listeChars);
     QString caracteres = chars.getChars();
     listeChars = chars.getList();
     preList.clear();for(int i=0;i<listeChars.size();i++){preList.append(listeChars.at(i));} //QChar to QVariant

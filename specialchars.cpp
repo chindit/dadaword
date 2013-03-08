@@ -5,7 +5,7 @@ specialChars::specialChars(QWidget *parent) :
 {
 }
 
-void specialChars::showWindow(QList<QChar> listRecent){
+void specialChars::ViewWindow(QList<QChar> listRecent){
     setWindowTitle(tr("Insérer un caractère spécial"));
     setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
     setMinimumWidth(475);

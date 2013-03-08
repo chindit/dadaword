@@ -11,50 +11,48 @@ ReplaceManager::ReplaceManager(QWidget *parent) :
 }*/
 
 void ReplaceManager::showWindow(){
-    if(!this->windowTitle().isEmpty()){
-        QMessageBox::information(this, "o", "oui");
+
+    //On vérifie si la fenêtre est déjà initialisée
+    if(!this->windowTitle().isEmpty() || !this->windowTitle().isNull()){
+        show();
+        return;
+    }
+
+    //setWindowModality(Qt::ApplicationModal);
+    setWindowTitle(tr("Autocorrection"));
+    setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+
+    QLabel *title, *key, *value;
+    title = new QLabel(tr("<h1>Options d'autocorrection</h1>"));
+    key = new QLabel(tr("Remplacer :"));
+    value = new QLabel(tr("Par :"));
+
+    layout = new QGridLayout(this);
+    layout->addWidget(title, 0, 0, 1, 2, Qt::AlignHCenter);
+    layout->addWidget(key, 1, 0);
+    layout->addWidget(value, 1, 1);
+    QStringList replacementKeys = manSettings->getSettings(Cles).toStringList();
+    QStringList replacementValues = manSettings->getSettings(Valeurs).toStringList();
+    if(replacementKeys.size() != replacementValues.size()){
+        ErrorManager erreurs;
+        erreurs.Erreur_msg(tr("Impossible de charger les clés de remplacement, fichier corrompu."), QMessageBox::Warning);
+        return;
     }
     else{
-        QMessageBox::information(this, "n", "non");
-    }
-
-    if(this->windowTitle().isEmpty()){
-        setWindowModality(Qt::ApplicationModal);
-        setWindowTitle(tr("Autocorrection"));
-        setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
-
-        QLabel *title, *key, *value;
-        title = new QLabel(tr("<h1>Options d'autocorrection</h1>"));
-        key = new QLabel(tr("Remplacer :"));
-        value = new QLabel(tr("Par :"));
-
-        layout = new QGridLayout(this);
-        layout->addWidget(title, 0, 0, 1, 2, Qt::AlignHCenter);
-        layout->addWidget(key, 1, 0);
-        layout->addWidget(value, 1, 1);
-        QStringList replacementKeys = manSettings->getSettings(Cles).toStringList();
-        QStringList replacementValues = manSettings->getSettings(Valeurs).toStringList();
-        if(replacementKeys.size() != replacementValues.size()){
-            ErrorManager erreurs;
-            erreurs.Erreur_msg(tr("Impossible de charger les clés de remplacement, fichier corrompu."), QMessageBox::Warning);
-            return;
+        for(int i=0; i<replacementKeys.size(); i++){
+            QLineEdit *leKey = new QLineEdit(replacementKeys.at(i));
+            QLineEdit *leValue = new QLineEdit(replacementValues.at(i));
+            lineKeys.append(leKey);
+            lineValues.append(leValue);
+            layout->addWidget(lineKeys.at(i), i+2, 0);
+            layout->addWidget(lineValues.at(i), i+2, 1);
         }
-        else{
-            for(int i=0; i<replacementKeys.size(); i++){
-                QLineEdit *leKey = new QLineEdit(replacementKeys.at(i));
-                QLineEdit *leValue = new QLineEdit(replacementValues.at(i));
-                lineKeys.append(leKey);
-                lineValues.append(leValue);
-                layout->addWidget(lineKeys.at(i), i+2, 0);
-                layout->addWidget(lineValues.at(i), i+2, 1);
-            }
-            addLineButton = new QPushButton(QIcon::fromTheme("edit-add", QIcon(":/programme/images/ajouter.png")), tr("Ajouter une clé"));
-            saveAllButton = new QPushButton(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")), tr("Fermer"));
-            layout->addWidget(addLineButton, replacementKeys.size()+3, 0);
-            layout->addWidget(saveAllButton, replacementValues.size()+3, 1);
-            connect(addLineButton, SIGNAL(clicked()), this, SLOT(addLine()));
-            connect(saveAllButton, SIGNAL(clicked()), this, SLOT(saveKeys()));
-        }
+        addLineButton = new QPushButton(QIcon::fromTheme("edit-add", QIcon(":/programme/images/ajouter.png")), tr("Ajouter une clé"));
+        saveAllButton = new QPushButton(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")), tr("Fermer"));
+        layout->addWidget(addLineButton, replacementKeys.size()+3, 0);
+        layout->addWidget(saveAllButton, replacementValues.size()+3, 1);
+        connect(addLineButton, SIGNAL(clicked()), this, SLOT(addLine()));
+        connect(saveAllButton, SIGNAL(clicked()), this, SLOT(saveKeys()));
     }
 
     exec();
