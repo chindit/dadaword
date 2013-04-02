@@ -8,7 +8,7 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
 
-#define VERSION "1.2.2"
+#define VERSION "1.2.3"
 
 //Nombre de lignes à laisser dans le fichier de debug lors du délestage
 #define ITEMS_LOG 10

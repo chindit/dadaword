@@ -128,11 +128,6 @@ DadaWord::~DadaWord()
 
 //Ancien constucteur : génère l'interface utilisateur : À n'appeller que dans le main();
 void DadaWord::cree_iu(){
-    //UTF-8
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-
     //Préparation des variables globales
     //modification = false;
     titre_doc = new QString;
@@ -227,7 +222,7 @@ void DadaWord::cree_iu(){
 //A propos du programme
 void DadaWord::affiche_about(){
 
-    QString string_about = ("<h2>A propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString::fromAscii(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58.aro-base.gmail.com'>littletiger58.aro-base.gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/gpl-3.0.fr.html'>GPL 3</a>");
+    QString string_about = ("<h2>A propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58.aro-base.gmail.com'>littletiger58.aro-base.gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/gpl-3.0.fr.html'>GPL 3</a>");
     QMessageBox::about(this, tr("À propos de DadaWord"), string_about);
     return;
 }

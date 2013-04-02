@@ -1,5 +1,8 @@
 DadaWord - Changelog
 
+Version 1.2.3 :
+- Mise à jour pour Qt5
+
 Version 1.2.2 :
 - Ajout d'une fonction permettant d'enregistrer tous les document ouverts.
 - Ajout d'une icône pour indiquer l'état d'enregistrement des documents

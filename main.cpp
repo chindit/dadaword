@@ -1,11 +1,11 @@
 /*
   Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
-  Date : 01/08/12
+  Date : 02/04/13
   Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
   Merci de ne pas supprimer cette notice.
   */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QLocale>
 #include <QObject>
 #include <QTranslator>
@@ -21,11 +21,6 @@ int main(int argc, char *argv[])
     QSplashScreen screen(QPixmap(":/images/chargement.png"));
     screen.show();
     app.processEvents();
-
-    //UTF-8 natif
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
     //Traduction des boutons
     QString locale = QLocale::system().name().section('_', 0, 0);
