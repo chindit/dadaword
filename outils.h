@@ -11,7 +11,6 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QtConcurrent/QtConcurrentMap>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QFontComboBox>

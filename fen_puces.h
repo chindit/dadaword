@@ -12,6 +12,7 @@
 #include <QRadioButton>
 #include <QGroupBox>
 #include <QVBoxLayout>
+#include <QString>
 #include <QTextListFormat>
 #include "errorManager.h"
 

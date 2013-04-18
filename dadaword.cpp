@@ -1627,8 +1627,8 @@ void DadaWord::create_menus(){
     //Création de la barre de menu "Aide"
     QMenu *menu_aide = menuBar()->addMenu(tr("Aide"));
     //Menu "Aide"
-    QAction *aide_a_propos = menu_aide->addAction(tr("A propos de Dadaword"));
-    aide_a_propos->setToolTip(tr("A propos de Dadaword"));
+    QAction *aide_a_propos = menu_aide->addAction(tr("À propos de Dadaword"));
+    aide_a_propos->setToolTip(tr("À propos de Dadaword"));
     //Image
     aide_a_propos->setIcon(QIcon::fromTheme("about", QIcon(":/menus/images/about.gif")));
     aide_a_propos->setStatusTip(tr("À propos du créateur de ce génial programme"));
