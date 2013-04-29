@@ -21,21 +21,6 @@ DadaWord::DadaWord(QWidget *parent)
     outils = new Outils;
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
 
-    //Initialisation du thème
-    QStringList locateThemes;
-    locateThemes << QDir::homePath()+"/.dadaword/icons" << QIcon::themeSearchPaths();
-    QIcon::setThemeSearchPaths(locateThemes);
-    QIcon::setThemeName(settings->getSettings(Theme).toString());
-
-    dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
-    if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
-        dictPath = "/usr/share/hunspell/fr_BE";
-    }
-    //Vérification des liens symboliques
-    QFileInfo testDico(dictPath);
-    if(testDico.isSymLink())
-        dictPath = testDico.symLinkTarget();
-
     //On regarde si le dossier de config existe
     QString dossier = QDir::homePath()+"/.dadaword";
     QDir dir_dossier(dossier);
@@ -58,6 +43,21 @@ DadaWord::DadaWord(QWidget *parent)
             }
         }
     }
+
+    //Initialisation du thème
+    QStringList locateThemes;
+    locateThemes << QDir::homePath()+"/.dadaword/icons" << QIcon::themeSearchPaths();
+    QIcon::setThemeSearchPaths(locateThemes);
+    QIcon::setThemeName(settings->getSettings(Theme).toString());
+
+    dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
+    if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
+        dictPath = "/usr/share/hunspell/fr_BE";
+    }
+    //Vérification des liens symboliques
+    QFileInfo testDico(dictPath);
+    if(testDico.isSymLink())
+        dictPath = testDico.symLinkTarget();
 
     //Création de l'instance du correcteur
     QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";

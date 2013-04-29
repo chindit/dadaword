@@ -2,6 +2,7 @@ DadaWord - Changelog
 
 Version 1.2.3 :
 - Mise à jour pour Qt5
+- BUG : Récupération de documents après fermeture d'urgence inopérante
 
 Version 1.2.2 :
 - Ajout d'une fonction permettant d'enregistrer tous les document ouverts.

@@ -9,10 +9,14 @@ autoLoad::~autoLoad(){
 
 bool autoLoad::hasFilesNames(){
     QDir autosave = QDir::homePath()+"/.dadaword/autosave";
-    names = autosave.entryList(QDir::NoDotAndDotDot);
+    names = autosave.entryList();
 
-    if(!names.isEmpty()){;
-        showFiles();
+    if(!names.isEmpty()){
+        if(names.size() > 2){
+            names.removeAt(0);
+            names.removeAt(0);
+            showFiles();
+        }
     }
     return (names.isEmpty()) ? false : true;
 }
