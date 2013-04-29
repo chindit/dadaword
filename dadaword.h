@@ -149,6 +149,7 @@ private slots:
     void setSuperScript(bool etat);
     void setSubScript(bool etat);
     void hide_menubar();
+    void changeEncode(int encodage);
 
 private:
     void create_menus();

@@ -962,7 +962,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
 
     if(event->type() == QEvent::KeyPress){
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        if(keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return){
+        if(keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Backspace){
             QTextCursor curseur = find_edit()->textCursor();
             curseur.movePosition(QTextCursor::Left);
             curseur.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
@@ -1412,6 +1412,19 @@ void DadaWord::create_menus(){
 
     //Création de la barre de menu "Format"
     menu_format = menuBar()->addMenu(tr("Format"));
+    QMenu *format_encodage = menu_format->addMenu(tr("Encodage"));
+    QAction *encode_utf = format_encodage->addAction("UTF-8");
+    encode_utf->setCheckable(true);
+    QAction *encode_iso = format_encodage->addAction("ISO-8859-1");
+    encode_iso->setCheckable(true);
+    QSignalMapper *mapEncode[2];
+    mapEncode[0] = new QSignalMapper; mapEncode[1] = new QSignalMapper;
+    connect(encode_utf, SIGNAL(triggered()), mapEncode[0], SLOT(map()));
+    connect(encode_iso, SIGNAL(triggered()), mapEncode[1], SLOT(map()));
+    mapEncode[0]->setMapping(encode_utf, UTF8);
+    mapEncode[1]->setMapping(encode_iso, LATIN1);
+    connect(mapEncode[0], SIGNAL(mapped(int)), this, SLOT(changeEncode(int)));
+    connect(mapEncode[1], SIGNAL(mapped(int)), this, SLOT(changeEncode(int)));
 
 
     //Création de la barre de menu "Insertion"
@@ -1582,6 +1595,7 @@ void DadaWord::create_menus(){
     to_text = menu_outils->addAction(tr("Mode texte seul"));
     to_text->setIcon(QIcon::fromTheme("text-plain", QIcon(":/menus/images/text.png")));
     to_text->setStatusTip(tr("Afficher le fichier en mode texte"));
+    to_text->setShortcut(QKeySequence("Ctrl+U"));
     to_text->setCheckable(true);
     to_text->setChecked(false);
     connect(to_text, SIGNAL(triggered()), this, SLOT(to_plain_text()));
@@ -3819,6 +3833,18 @@ void DadaWord::enregistrer_tout(){
         if(edit_temp->document()->isModified()){
             enregistrement(fenetres_ouvertes.at(i));
         }
+    }
+    return;
+}
+
+//Fonction de changement d'encodage
+void DadaWord::changeEncode(int encodage){
+    if(encodage == LATIN1){    
+        QByteArray temp = find_edit()->toHtml().toLatin1();
+        QTextCodec *codec;
+        codec = QTextCodec::codecForLocale();
+        find_edit()->clear();
+        find_edit()->setHtml(codec->toUnicode(temp));
     }
     return;
 }

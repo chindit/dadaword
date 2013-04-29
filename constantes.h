@@ -41,6 +41,9 @@ enum { GAUCHE, DROITE };
 //Énumérations pour l'interligne
 enum { INT_AUTRE };
 
+//Énumérations pour l'encodage
+enum { UTF8, LATIN1 };
+
 //Énumération pour les settings
 enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents, DelTitre, RGras, RItalique, RSouligne };
 
