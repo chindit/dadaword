@@ -971,8 +971,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 if(!contenu_selection.isEmpty()){
                     QChar char_test = contenu_selection.at(0);
                     if(char_test == QChar(8233)){
-                        desincremente_puce();
-                        return true;
+                        return desincremente_puce();
                     }
                 }
             }//Fin CurrentList
@@ -1088,12 +1087,12 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
 }
 
 //Désincrémentation dans les listes à puces
-void DadaWord::desincremente_puce(){
+bool DadaWord::desincremente_puce(){
     QTextCursor curseur = find_edit()->textCursor();
     QTextListFormat liste_puce;
     if(curseur.currentList() == 0){
         //On est pas dans une liste, il y a eu un bug
-        return;
+        return false;
     }
     QTextList *liste_actuelle = curseur.currentList();
     liste_puce = liste_actuelle->format();
@@ -1138,8 +1137,9 @@ void DadaWord::desincremente_puce(){
     }
     else{
         curseur.endEditBlock();
+        return false;
     }
-    return;
+    return true;
 }
 
 //Incrémentation dans les listes à puces

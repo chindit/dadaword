@@ -93,7 +93,7 @@ private slots:
     void create_liste_puce(const int ordonne = 0);
     bool eventFilter(QObject *, QEvent *);
     void incremente_puce();
-    void desincremente_puce();
+    bool desincremente_puce();
     void ouvre_onglet(bool fichier = false, QString titre = "null");
     void indicateur_modifications();
     void changement_focus(QMdiSubWindow *fenetre_activee);
