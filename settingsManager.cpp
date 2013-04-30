@@ -66,9 +66,9 @@ void SettingsManager::loadSettings(){
     settings[ToolbarIcons] = options.value(names[ToolbarIcons], false);
     settings[FichiersRecents] = options.value(names[FichiersRecents]);
     settings[DelTitre] = options.value(names[DelTitre], true);
-    settings[RGras] = options.value(names[RGras]);
-    settings[RItalique] = options.value(names[RItalique]);
-    settings[RSouligne] = options.value(names[RSouligne]);
+    settings[RGras] = options.value(names[RGras], "Ctrl+B");
+    settings[RItalique] = options.value(names[RItalique], "Ctrl+I");
+    settings[RSouligne] = options.value(names[RSouligne], "Ctrl+U");
     return;
 }
 
