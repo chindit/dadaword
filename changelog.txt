@@ -5,6 +5,7 @@ Version 1.2.3 :
 - Ajout d'un système de téléchargement automatique des dictionnaires pour Windows
 - Ajout d'un lien de mise à jour pour Windows
 - BUG : Récupération de documents après fermeture d'urgence inopérante
+- BUG : non-reconnaissance de la taille lors de la lecture d'un ODT.
 
 Version 1.2.2 :
 - Ajout d'une fonction permettant d'enregistrer tous les document ouverts.

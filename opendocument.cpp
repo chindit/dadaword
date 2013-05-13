@@ -644,7 +644,7 @@ QTextCharFormat OpenDocument::cree_bloc_format(QString nom){
         }
         else{
             //On indique la taille par défaut sinon il y a des bugs
-            format.setFontPointSize(settings.getSettings(Taille).toInt());
+            //format.setFontPointSize(settings.getSettings(Taille).toInt());
         }
         //Gras
         if(styles.at(id_style).contains("font-weight")){
@@ -790,14 +790,21 @@ QTextImageFormat OpenDocument::cree_image_format(QString nom){
 
 //Fonction qui traite les <span> (styles internes aux paragraphes)
 bool OpenDocument::traite_span(QTextCharFormat format, QTextCursor &curseur, QDomElement e, bool puces, bool tableau){
-
+qreal taille;
+    SettingsManager settings;
     ErrorManager instance_erreur;
     QTextCharFormat format_span;
     if(e.tagName() == "text:span"){
+        taille = format.fontPointSize();
         QString nom_format = e.attribute("text:style-name");
         format_span = cree_bloc_format(nom_format);
+        taille = format_span.fontPointSize();
         //On merge le format
         format.merge(format_span);
+        taille = format.fontPointSize();
+        if(!format.hasProperty(QTextFormat::FontPointSize)){
+            format.setFontPointSize(settings.getSettings(Taille).toInt());
+        }
     }
     else{
         instance_erreur.Erreur_msg(tr("ODT : <span> invalide"), QMessageBox::Ignore);
