@@ -42,6 +42,8 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QWidgetAction>
+#include <iostream>
+#include <math.h>
 
 #include "autoload.h"
 #include "constantes.h"
@@ -150,6 +152,8 @@ private slots:
     void setSubScript(bool etat);
     void hide_menubar();
     void changeEncode(int encodage);
+    //Only for Windows
+    void has_maj();
 
 private:
     void create_menus();

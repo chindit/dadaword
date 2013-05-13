@@ -60,6 +60,7 @@
         <file>images/recents.png</file>
         <file>images/document-close.png</file>
         <file>images/document-save-all.png</file>
+        <file>images/update.png</file>
     </qresource>
     <qresource prefix="/programme">
         <file>images/edit.png</file>

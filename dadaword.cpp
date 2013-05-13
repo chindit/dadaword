@@ -22,8 +22,14 @@ DadaWord::DadaWord(QWidget *parent)
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
 
     //On regarde si le dossier de config existe
-    QString dossier = QDir::homePath()+"/.dadaword";
+    QString dossier = QDir::homePath();
+    #ifdef Q_OS_WIN
+        dossier += "/AppData/Local/DadaWord";
+    #else
+        dossier += "/.dadaword";
+    #endif
     QDir dir_dossier(dossier);
+
     if(!dir_dossier.exists()){
         if(!dir_dossier.mkdir(dossier)){
             erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Information);
@@ -35,25 +41,90 @@ DadaWord::DadaWord(QWidget *parent)
                 dico_perso.close();
             }
             else{
-                erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Critical);
+                erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Information);
             }
-            QDir dir_autosave(QDir::homePath()+"/.dadaword/autosave");
+            QDir dir_autosave(dossier+"/autosave");
             if(!dir_autosave.exists()){
-                dir_autosave.mkdir(QDir::homePath()+"/.dadaword/autosave");
+                dir_autosave.mkdir(dossier+"/autosave");
             }
         }
     }
 
     //Initialisation du thème
     QStringList locateThemes;
-    locateThemes << QDir::homePath()+"/.dadaword/icons" << QIcon::themeSearchPaths();
+    locateThemes << dossier+"/icons" << QIcon::themeSearchPaths();
     QIcon::setThemeSearchPaths(locateThemes);
     QIcon::setThemeName(settings->getSettings(Theme).toString());
 
-    dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
-    if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
+    #ifdef Q_OS_WIN
+        dictPath = dossier+"/hunspell/"+settings->getSettings(Dico).toString();
+        QFile test_dico(dictPath+".dic");
+        if(!test_dico.exists()){
+            //On téléchage les dicos
+            int qdown = QMessageBox::question(this, tr("Téléchargement des dictionnaires"), tr("Les dictionnaires pour la correction orthographique n'ont pas étés détectés.<br />Voulez-vous les télécharger?<br /><b>N.B.</b>L'absence des dictionnaires rendra la correction orthographique inopérante"), QMessageBox::Yes | QMessageBox::No);
+            if(qdown == QMessageBox::Yes){
+                QDir temp(dossier+"/hunspell/");
+                if(!temp.exists() && !temp.mkdir(dossier+"/hunspell/")){
+                    erreur->Erreur_msg(tr("Impossible de créer le dossier de dictionnaires"), QMessageBox::Warning);
+                }
+                else{
+                    QNetworkAccessManager nw_manager;
+                    QNetworkRequest request(QUrl("https://raw.github.com/chindit/dadaword/master/liste_dicos.txt"));
+                    QNetworkReply *reponse = nw_manager.get(request);
+                    QEventLoop eventLoop;
+                    QObject::connect(reponse, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+                    eventLoop.exec();
+                    QNetworkReply *reply_dico;
+                    QDialog *progression = new QDialog(this);
+                    progression->setWindowTitle(tr("Téléchargement des dictionnaires"));
+                    QLabel *titleProgress, *actDownDic;
+                    titleProgress = new QLabel(tr("Progression du téléchagrement des dictionnaires"));
+                    actDownDic = new QLabel;
+                    QProgressBar *progressDownDic = new QProgressBar;
+                    QVBoxLayout *layoutProgress = new QVBoxLayout(progression);
+                    layoutProgress->addWidget(titleProgress);
+                    layoutProgress->addWidget(progressDownDic);
+                    layoutProgress->addWidget(actDownDic);
+                    setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+                    int posDown = 1;
+                    float maxDico = reponse->readLine().trimmed().toFloat();
+                    progressDownDic->setRange(0, 100);
+                    progressDownDic->setValue(0);
+                    progression->show();
+                    while(!reponse->atEnd()){
+                        QString baseUrl = "https://raw.github.com/chindit/dadaword/master/dicos/";
+                        QString nom_dico = reponse->readLine();
+                        baseUrl = baseUrl.append(nom_dico.trimmed());
+                        QNetworkAccessManager get_file;
+                        QNetworkRequest get_dico(QUrl("https://raw.github.com/chindit/dadaword/master/dicos/"+nom_dico.trimmed()));
+                        reply_dico = get_file.get(get_dico);
+                        QEventLoop wait_dico;
+                        QObject::connect(reply_dico, SIGNAL(finished()), &wait_dico, SLOT(quit()));
+                        wait_dico.exec();
+                        QFile save_dico(dossier+"/hunspell/"+nom_dico.trimmed());
+                        if(!save_dico.open(QIODevice::WriteOnly)){
+                            QMessageBox::critical(0, "this", "Échec");
+                        }
+                        save_dico.write(reply_dico->readAll());
+                        save_dico.close();
+                        progressDownDic->setValue((posDown/maxDico)*100);
+                        posDown++;
+                        //Màj du nom
+                        actDownDic->setText(nom_dico.trimmed());
+                        progression->show();
+                    }
+                    progression->close();
+                    delete progression;
+                }
+            }
+        }
+    #else
+        dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
+    #endif
+    /*if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
         dictPath = "/usr/share/hunspell/fr_BE";
-    }
+    }*/
+
     //Vérification des liens symboliques
     QFileInfo testDico(dictPath);
     if(testDico.isSymLink())
@@ -62,7 +133,11 @@ DadaWord::DadaWord(QWidget *parent)
     //Création de l'instance du correcteur
     QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
     if(!QFile::exists(userDict)){
-        userDict = QDir::homePath() + "/.dadaword/perso.dic";
+        #ifdef Q_OS_WIN
+            userDict = dossier+"/hunspell/perso.dic";
+        #else
+            userDict = QDir::homePath() + "/.dadaword/perso.dic";
+        #endif
     }
     correcteur = new SpellChecker(dictPath, userDict);
     qsrand(QDateTime::currentDateTime().toTime_t());
@@ -1641,6 +1716,13 @@ void DadaWord::create_menus(){
     //Création de la barre de menu "Aide"
     QMenu *menu_aide = menuBar()->addMenu(tr("Aide"));
     //Menu "Aide"
+    #ifdef Q_OS_WIN
+    QAction *cherche_maj = menu_aide->addAction(tr("Rechercher une mise à jour"));
+    cherche_maj->setToolTip(tr("Recherche une mise à jour pour DadaWord"));
+    cherche_maj->setIcon(QIcon::fromTheme("update", QIcon(":/menus/images/update.png")));
+    cherche_maj->setStatusTip(tr("Recherche une mise à jour du programme sur GitHub"));
+    connect(cherche_maj, SIGNAL(triggered()), this, SLOT(has_maj()));
+    #endif
     QAction *aide_a_propos = menu_aide->addAction(tr("À propos de Dadaword"));
     aide_a_propos->setToolTip(tr("À propos de Dadaword"));
     //Image
@@ -3847,4 +3929,25 @@ void DadaWord::changeEncode(int encodage){
         find_edit()->setHtml(codec->toUnicode(temp));
     }
     return;
+}
+
+//ONLY FOR WINDOWS
+void DadaWord::has_maj(){
+    QNetworkAccessManager get_file;
+    QNetworkReply *reply_version;
+    QNetworkRequest get_version(QUrl("https://raw.github.com/chindit/dadaword/master/version.txt"));
+    reply_version = get_file.get(get_version);
+    QEventLoop wait_version;
+    QObject::connect(reply_version, SIGNAL(finished()), &wait_version, SLOT(quit()));
+    wait_version.exec();
+    QString version = reply_version->readLine().trimmed();
+    if(version == VERSION){
+        QMessageBox::information(this, tr("Pas de nouvelle version"), tr("Félicitations!  Vous avez la dernière version de DadaWord"));
+    }
+    else{
+        int reponse = QMessageBox::question(this, tr("Nouvelle version disponible"), tr("Une nouvelle version de DadaWord est disponible en téléchargement.\nVoulez-vous la télécharger?"), QMessageBox::Yes | QMessageBox::No);
+        if(reponse == QMessageBox::Yes){
+            QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, DadaWord ne sait pas encore télécharger de mise à jour, mais la fonctionnalité arrive bientôt ;-)"));
+        }
+    }
 }

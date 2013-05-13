@@ -2,6 +2,8 @@ DadaWord - Changelog
 
 Version 1.2.3 :
 - Mise à jour pour Qt5
+- Ajout d'un système de téléchargement automatique des dictionnaires pour Windows
+- Ajout d'un lien de mise à jour pour Windows
 - BUG : Récupération de documents après fermeture d'urgence inopérante
 
 Version 1.2.2 :
