@@ -1,3 +1,10 @@
+/*
+Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
+Date : 17/05/13
+Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
+Merci de ne pas supprimer cette notice.
+*/
+
 #include "autoload.h"
 
 autoLoad::autoLoad() :
