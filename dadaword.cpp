@@ -3283,6 +3283,7 @@ void DadaWord::orth_remplace(QString mot){
 void DadaWord::orth_remplace_all(QString remplace){
     int nb_remplacements = 0;
     QComboBox *select_words = new QComboBox;
+    select_words->addItem(tr("Sélectionnez un mot"));
     QDialog *mots = new QDialog;
     if(remplace.isEmpty()){
         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
@@ -3297,6 +3298,7 @@ void DadaWord::orth_remplace_all(QString remplace){
             QMessageBox::information(this, tr("Impossible de remplacer"), tr("Aucun choix de remplacement n'a pu être trouvé"));
             return;
         }
+
         QHBoxLayout *layout = new QHBoxLayout;
         layout->addWidget(select_words);
         QPushButton *ok = new QPushButton(tr("Valider"));
@@ -3307,6 +3309,15 @@ void DadaWord::orth_remplace_all(QString remplace){
         mots->exec();
         QCoreApplication::processEvents();
     }
+
+    //Si pas de choix, on annule
+    if(select_words->currentIndex() == 0){
+        if(settings->getSettings(Alertes).toInt() == HIGH){
+            QMessageBox::information(this, "Remplacement annulé", QString("Aucun mot n'a été sélectionné.\nLe remplacement a été annulé."));
+        }
+        return;
+    }
+
     // save the position of the current cursor
     QTextCursor oldCursor = find_edit()->textCursor();
 
@@ -3882,6 +3893,7 @@ void DadaWord::insertSpecialChars(){
     curseur.insertText(caracteres);
 }
 
+//Texte en exposant
 void DadaWord::setSuperScript(bool etat){
     QTextCharFormat format;
     if(find_edit()->textCursor().hasSelection())
@@ -3893,6 +3905,7 @@ void DadaWord::setSuperScript(bool etat){
     find_edit()->textCursor().mergeCharFormat(format);
 }
 
+//Texte en indice
 void DadaWord::setSubScript(bool etat){
     QTextCharFormat format;
     if(find_edit()->textCursor().hasSelection())

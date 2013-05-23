@@ -790,18 +790,15 @@ QTextImageFormat OpenDocument::cree_image_format(QString nom){
 
 //Fonction qui traite les <span> (styles internes aux paragraphes)
 bool OpenDocument::traite_span(QTextCharFormat format, QTextCursor &curseur, QDomElement e, bool puces, bool tableau){
-qreal taille;
+
     SettingsManager settings;
     ErrorManager instance_erreur;
     QTextCharFormat format_span;
     if(e.tagName() == "text:span"){
-        taille = format.fontPointSize();
         QString nom_format = e.attribute("text:style-name");
         format_span = cree_bloc_format(nom_format);
-        taille = format_span.fontPointSize();
         //On merge le format
         format.merge(format_span);
-        taille = format.fontPointSize();
         if(!format.hasProperty(QTextFormat::FontPointSize)){
             format.setFontPointSize(settings.getSettings(Taille).toInt());
         }
