@@ -48,7 +48,7 @@ bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
         for(int i=0; i<list.size(); i++){
             QString liste_temp = list.at(i);
             QString nom_fichier = liste_temp.split("/").last();
-            nom_fichier.prepend("images/");
+            //nom_fichier.prepend("images/");
             //On récupère l'extention
             QString extention = list.at(i).section('.', -1);
             QImageReader image(list.at(i), extention.toUpper().toStdString().c_str());
@@ -121,7 +121,7 @@ QStringList DDZ::ouvre(QString nom){
     //-----------------------------------------------------
     //Renommage des images contenues (selon l'OS)
     //-----------------------------------------------------
-    int nb_images = contenu.count("<img src=");
+    int nb_images = retour.at(0).count("<img src=");
 
     //Il y a des images, on rentre dans la boucle
     if(nb_images > 0){
@@ -145,7 +145,10 @@ QStringList DDZ::ouvre(QString nom){
         //On change le chemin des images
         for(int i=0; i<list.size(); i++){
             QString nom_image = list.at(i).split("/").last();
-            contenu.replace(list.at(i), QDir::tempPath()+"/"+nom_image);
+            QString temp = retour.at(0);
+            temp.replace(list.at(i), QDir::tempPath()+"/"+nom_image);
+            retour.removeFirst();
+            retour.prepend(temp);
         }
     }
 

@@ -9,6 +9,7 @@ Version 1.2.3 :
 - BUG : impossible d'annuler un remplacement orthographique
 - BUG : raccourci mode texte inopérant
 - BUG : impossible de repasser en mode HTML en document non-enregistré visionné en mode texte.
+- BUG : !sauvegarde des images incluses
 
 Version 1.2.2 :
 - Ajout d'une fonction permettant d'enregistrer tous les document ouverts.
