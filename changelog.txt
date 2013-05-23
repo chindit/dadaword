@@ -4,6 +4,7 @@ Version 1.2.3 :
 - Mise à jour pour Qt5
 - Ajout d'un système de téléchargement automatique des dictionnaires pour Windows
 - Ajout d'un lien de mise à jour pour Windows
+- Enregistrement de la langue du document dans les préférences
 - BUG : Récupération de documents après fermeture d'urgence inopérante
 - BUG : non-reconnaissance de la taille lors de la lecture d'un ODT.
 - BUG : impossible d'annuler un remplacement orthographique

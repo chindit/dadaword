@@ -12,7 +12,7 @@ class DDZ
 {
 public:
     explicit DDZ();
-    bool enregistre(QString fichier, QString contenu, QStringList annexes);
+    bool enregistre(QString fichier, QString contenu, QString langue, QStringList annexes);
     QStringList ouvre(QString nom);
 };
 

@@ -128,7 +128,7 @@ private slots:
     void orth_dico();
     void orth_remplace(QString mot);
     void orth_remplace_all(QString remplace = "");
-    void orth_langue();
+    void orth_langue(QString langue = "");
     void orth_stop();
     void orth_autocorrection(QString remplacement);
     void couper();

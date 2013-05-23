@@ -636,7 +636,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
                 i = 100000;
             }
         }
-        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, envoi_ddz)){
+        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, status_langue->text(), envoi_ddz)){
             erreur->Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
         add_ddz_annexe->setVisible(true);
@@ -783,7 +783,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
             return;
         }
         style = true; //Fichier de style
-        if(retour.size() > 1){
+        if(retour.size() > 2){
             annexes = true;
         }
         add_ddz_annexe->setVisible(true);
@@ -871,6 +871,12 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         //Gestion des fichiers de style
         find_edit()->setAcceptRichText(true);
         find_edit()->insertHtml(contenu);
+        //Actualisation du dictionnaire
+        QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
+        if(retour.at(1) != "default" && is_dico.exactMatch(retour.at(1))){
+            //Normalement on ne doit pas vérifier le dico, mais on n'est jamais trop prudent
+            orth_langue(retour.at(1));
+        }
         if(annexes){
             retour.removeAt(0);
             retour.prepend(titre);
@@ -3374,52 +3380,55 @@ void DadaWord::orth_remplace_all(QString remplace){
 }
 
 //Changement de la langue de vérification
-void DadaWord::orth_langue(){
-    QDialog *fen = new QDialog;
-    fen->setWindowTitle(tr("Langue du correcteur"));
-    fen->setWindowModality(Qt::ApplicationModal);
-    QLabel *titre, *actuelle, *choix;
-    QPushButton *valider = new QPushButton(tr("Valider"));
+void DadaWord::orth_langue(QString langue){
     QComboBox *liste = new QComboBox;
-    titre = new QLabel("<h1>Langue du correcteur<h1>");
-    QString nom_dico = dictPath.split("/").last();;
-    actuelle = new QLabel(tr("Dictionnaire actuel : ")+nom_dico);
-    choix = new QLabel(tr("Nouvelle langue"));
-    QDir dossier;
-    dossier.setPath("/usr/share/hunspell");
-    QStringList extentions;
-    extentions << "*.dic";
-    QStringList liste_dicos = dossier.entryList(extentions);
-    for(int i=0; i<liste_dicos.size(); i++){
-        QString temp = liste_dicos.at(i);
-        temp.resize((temp.size()-4));
-        liste->addItem(temp);
-        //On présélectionne la langue actuelle
-        if(temp == nom_dico){
-            liste->setCurrentIndex(i);
+    if(langue.isEmpty()){
+        QDialog *fen = new QDialog;
+        fen->setWindowTitle(tr("Langue du correcteur"));
+        fen->setWindowModality(Qt::ApplicationModal);
+        QLabel *titre, *actuelle, *choix;
+        QPushButton *valider = new QPushButton(tr("Valider"));
+        titre = new QLabel("<h1>Langue du correcteur<h1>");
+        QString nom_dico = dictPath.split("/").last();;
+        actuelle = new QLabel(tr("Dictionnaire actuel : ")+nom_dico);
+        choix = new QLabel(tr("Nouvelle langue"));
+        QDir dossier;
+        dossier.setPath("/usr/share/hunspell");
+        QStringList extentions;
+        extentions << "*.dic";
+        QStringList liste_dicos = dossier.entryList(extentions);
+        for(int i=0; i<liste_dicos.size(); i++){
+            QString temp = liste_dicos.at(i);
+            temp.resize((temp.size()-4));
+            liste->addItem(temp);
+            //On présélectionne la langue actuelle
+            if(temp == nom_dico){
+                liste->setCurrentIndex(i);
+            }
         }
+        valider->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
+        QGridLayout *layout = new QGridLayout;
+        layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
+        layout->addWidget(actuelle, 1, 0);
+        layout->addWidget(choix, 2, 0);
+        layout->addWidget(liste, 2, 1);
+        layout->addWidget(valider, 3, 0, 1, 2, Qt::AlignHCenter);
+        connect(valider, SIGNAL(clicked()), fen, SLOT(close()));
+        fen->setLayout(layout);
+        fen->exec();
+        QCoreApplication::processEvents();
     }
-    valider->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
-    layout->addWidget(actuelle, 1, 0);
-    layout->addWidget(choix, 2, 0);
-    layout->addWidget(liste, 2, 1);
-    layout->addWidget(valider, 3, 0, 1, 2, Qt::AlignHCenter);
-    connect(valider, SIGNAL(clicked()), fen, SLOT(close()));
-    fen->setLayout(layout);
-    fen->exec();
-    QCoreApplication::processEvents();
 
+    QString nouvelleLangue = (langue.isEmpty()) ? liste->currentText() : langue;
     //On met à jour le dico
-    if(!dictPath.contains(liste->currentText())){
-        dictPath = "/usr/share/hunspell/"+liste->currentText()+".dic";
+    if(!dictPath.contains(nouvelleLangue)){
+        dictPath = "/usr/share/hunspell/"+nouvelleLangue+".dic";
         //Vérification des liens symboliques
         QFileInfo testDico(dictPath);
         if(testDico.isSymLink())
             dictPath = testDico.symLinkTarget();
         //Et le bouton
-        status_langue->setText(liste->currentText());
+        status_langue->setText(nouvelleLangue);
         //On re-déclare le correcteur
         delete correcteur;
         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";

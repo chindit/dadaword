@@ -4,7 +4,7 @@ DDZ::DDZ()
 {
 }
 
-bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
+bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringList annexes){
     //Paramètres de fonction
     ErrorManager instance_erreur;
 
@@ -12,7 +12,10 @@ bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
 
     //Création d'un XML global pour les préférences
     QDomDocument preferences;
-
+    QDomElement xmlLangue = preferences.createElement("langue");
+    QDomText xmlLangueTexte = preferences.createTextNode(langue);
+    xmlLangue.appendChild(xmlLangueTexte);
+    preferences.appendChild(xmlLangue);
 
     //On remplit le fichier avec le contenu
     QString nom_fichier = fichier.split("/").last();
@@ -171,6 +174,16 @@ QStringList DDZ::ouvre(QString nom){
     }
 
     QDomElement racine = config.documentElement();
+    //Lecture de la langue
+    QString langue = racine.childNodes().at(0).nodeValue();
+    QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
+    if(is_dico.exactMatch(langue)){
+        retour.append(langue);
+    }
+    else{
+        retour.append("default");
+    }
+
     QDomNodeList liste_annexes = racine.elementsByTagName("annexe");
     if(!liste_annexes.isEmpty()){
         for(int i=0; i<liste_annexes.count(); i++){
