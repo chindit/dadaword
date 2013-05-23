@@ -7,6 +7,8 @@ Version 1.2.3 :
 - BUG : Récupération de documents après fermeture d'urgence inopérante
 - BUG : non-reconnaissance de la taille lors de la lecture d'un ODT.
 - BUG : impossible d'annuler un remplacement orthographique
+- BUG : raccourci mode texte inopérant
+- BUG : impossible de repasser en mode HTML en document non-enregistré visionné en mode texte.
 
 Version 1.2.2 :
 - Ajout d'une fonction permettant d'enregistrer tous les document ouverts.

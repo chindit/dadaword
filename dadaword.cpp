@@ -1670,7 +1670,7 @@ void DadaWord::create_menus(){
     to_text = menu_outils->addAction(tr("Mode texte seul"));
     to_text->setIcon(QIcon::fromTheme("text-plain", QIcon(":/menus/images/text.png")));
     to_text->setStatusTip(tr("Afficher le fichier en mode texte"));
-    to_text->setShortcut(QKeySequence("Ctrl+U"));
+    to_text->setShortcut(QKeySequence("Ctrl+K"));
     to_text->setCheckable(true);
     to_text->setChecked(false);
     connect(to_text, SIGNAL(triggered()), this, SLOT(to_plain_text()));
@@ -2621,7 +2621,7 @@ void DadaWord::to_plain_text(){
     else if(to_text->isChecked() && !find_edit()->acceptRichText()){
         to_text->setChecked(false);
     }
-    else if(find_onglet()->accessibleName().contains(".ddw") || find_onglet()->accessibleName().contains(".ddz") || find_onglet()->accessibleName().contains(".htm") || find_onglet()->accessibleName().contains(".html") || find_onglet()->accessibleName().contains(".odt")){
+    else if(find_onglet()->accessibleName().contains(".ddw") || find_onglet()->accessibleName().contains(".ddz") || find_onglet()->accessibleName().contains(".htm") || find_onglet()->accessibleName().contains(".html") || find_onglet()->accessibleName().contains(".odt") || find_onglet()->accessibleDescription().isEmpty()){
         QString contenu = find_edit()->toPlainText();
         find_edit()->clear();
         //On réactive le RichText
