@@ -10,6 +10,9 @@ bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
 
     QZipWriter ddz_global(fichier, QIODevice::WriteOnly);
 
+    //Création d'un XML global pour les préférences
+    QDomDocument preferences;
+
 
     //On remplit le fichier avec le contenu
     QString nom_fichier = fichier.split("/").last();
@@ -57,22 +60,27 @@ bool DDZ::enregistre(QString fichier, QString contenu, QStringList annexes){
     }
 
     if(annexes.size() > 0){
-        QString liste_annexes;
+        QDomNode xmlAnnexe = preferences.createElement("annexes");
         for(int i=0; i<annexes.size(); i++){
             QFile fichier(annexes.at(i));
             fichier.open(QFile::ReadOnly);
             ddz_global.addFile(annexes.at(i).split("/").last(), fichier.readAll());
             fichier.close();
-            liste_annexes+=annexes.at(i).split("/").last()+",";
+            //Ajout des annexes au XML global
+            QDomElement thisAnnexe = preferences.createElement("annexe");
+            QDomText thisText = preferences.createTextNode(annexes.at(i).split("/").last());
+            thisAnnexe.appendChild(thisText);
+            xmlAnnexe.appendChild(thisAnnexe);
+            preferences.appendChild(xmlAnnexe);
         }
-        liste_annexes = liste_annexes.left(liste_annexes.size()-1);
-        //On ajoute un fichier descriptif
-
-
-        QByteArray array_annexes;
-        array_annexes.append(liste_annexes);
-        ddz_global.addFile("annexes.txt", array_annexes);
     }
+
+    //Enregistrement des préférences
+    QDomNode noeud = preferences.createProcessingInstruction("xml","version=\"1.0\"");
+    preferences.insertBefore(noeud, preferences.firstChild());
+    QByteArray array_prefs;
+    array_prefs.append(preferences.toString());
+    ddz_global.addFile("config.xml", array_prefs);
 
     //On ferme tout
     ddz_global.close();
@@ -105,10 +113,7 @@ QStringList DDZ::ouvre(QString nom){
     QFile file(nom_fichier);
     if(file.open(QFile::ReadOnly)){
         QTextStream in(&file);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            contenu = contenu + line + "\n";
-        }
+        contenu = in.readAll();
         file.close();
         retour.append(contenu);
     }
@@ -152,27 +157,24 @@ QStringList DDZ::ouvre(QString nom){
         }
     }
 
-    QFile index_annexes(QDir::tempPath()+"/annexes.txt");
-    if(index_annexes.exists()){
-        //Il y a des annexes
-        index_annexes.open(QFile::ReadOnly);
-        QString liste = index_annexes.readLine();
-        index_annexes.close();
-        QStringList liste_annexes = liste.split(",");
-        if(liste_annexes.size() > 0){
-            for(int i=0; i<liste_annexes.size(); i++){
-                QString temp = liste_annexes.at(i);
-                retour.append(temp.prepend(QDir::tempPath()+"/"));
-            }
-            //Une fois qu'on a lu le fichier, on le supprime
-            if(!index_annexes.remove()){
-                instance_erreur.Erreur_msg(QObject::tr("Impossible de supprimer le fichier d'annexes.  Il se peut que le système soit inopérant."), QMessageBox::Warning);
-            }
-            return retour;
-        }
-        else{
-            instance_erreur.Erreur_msg(QObject::tr("Erreur lors de la détection des annexes"), QMessageBox::Ignore);
-            return retour;
+    //Ouverture de la configuration
+    QFile fileConfig(QDir::tempPath()+"/config.xml");
+    QDomDocument config;
+    if(fileConfig.open(QFile::ReadOnly)){
+        config.setContent(&fileConfig);
+        fileConfig.close();
+    }
+    else{
+        instance_erreur.Erreur_msg(QObject::tr("DDZ : Erreur lors de la lecture du contenu du document."), QMessageBox::Ignore);
+        retour.append("NULL");
+        return retour;
+    }
+
+    QDomElement racine = config.documentElement();
+    QDomNodeList liste_annexes = racine.elementsByTagName("annexe");
+    if(!liste_annexes.isEmpty()){
+        for(int i=0; i<liste_annexes.count(); i++){
+            retour.append(QDir::tempPath()+"/"+liste_annexes.at(i).toElement().text());
         }
     }
 
