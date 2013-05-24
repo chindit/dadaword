@@ -2,6 +2,7 @@
 #define ORTHMANAGER_H
 
 #include <QDialog>
+#include <QModelIndexList>
 #include <QStandardItem>
 
 #include "dadaword.h"
@@ -24,6 +25,7 @@ private slots:
     void ignore();
     void addDico();
     void ignoreDef();
+    void remplacer();
 
 private:
     Ui::OrthManager *ui;

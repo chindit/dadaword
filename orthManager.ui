@@ -60,7 +60,7 @@ l'autocorrection</string>
     <string>Remplacer tout</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="bouton_remplacer">
    <property name="geometry">
     <rect>
      <x>480</x>

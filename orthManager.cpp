@@ -22,6 +22,7 @@ OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent),
     connect(ui->bouton_ajout_dico, SIGNAL(clicked()), this, SLOT(addDico()));
     connect(ui->bouton_ignore_def, SIGNAL(clicked()), this, SLOT(ignoreDef()));
     //Goupe 2 : boutons du bas
+    connect(ui->bouton_remplacer, SIGNAL(clicked()), this, SLOT(remplacer()));
 
     checkWord();
 }
@@ -141,5 +142,27 @@ void OrthManager::addDico(){
 //Ignore définitivement un mot pour ce document
 void OrthManager::ignoreDef(){
     QMessageBox::information(this, "Fonctionnalité non-implémentée", "Malheureusement, cette fonctionnalité n'est pas implémentée pour le moment, mais nous y travaillons.");
+    return;
+}
+
+//Remplace un mot
+void OrthManager::remplacer(){
+    QTextCursor temp;
+    QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
+    if(selected.count() > 0){
+        QString mot  = selected.at(0).data().toString();
+        temp = pos_orth;
+        QString word = temp.selectedText();
+        while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
+            int cursorPos = temp.position();
+            temp.setPosition(temp.anchor() + 1, QTextCursor::MoveAnchor);
+            temp.setPosition(cursorPos, QTextCursor::KeepAnchor);
+            word = temp.selectedText();
+        }
+        temp.removeSelectedText();
+        temp.insertText(mot);
+        temp.movePosition(QTextCursor::NextWord);
+        checkWord();
+    }
     return;
 }
