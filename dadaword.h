@@ -53,6 +53,7 @@
 #include "highlighterhtml.h"
 #include "outils.h"
 #include "opendocument.h"
+#include "orthManager.h"
 #include "replaceManager.h"
 #include "settingsManager.h"
 #include "specialchars.h"

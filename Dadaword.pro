@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     errorManager.cpp \
     autoload.cpp \
     specialchars.cpp \
-    replaceManager.cpp
+    replaceManager.cpp \
+    orthManager.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -45,7 +46,8 @@ HEADERS  += dadaword.h \
     errorManager.h \
     autoload.h \
     specialchars.h \
-    replaceManager.h
+    replaceManager.h \
+    orthManager.h
 
 RESOURCES += \
     images.qrc
@@ -62,3 +64,6 @@ TRANSLATIONS = dadaword_es.ts
 #CODECFORTR = UTF-8
 
 INCLUDEPATH += /usr/include/qt5
+
+FORMS += \
+    orthManager.ui

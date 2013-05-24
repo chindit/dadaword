@@ -3116,7 +3116,7 @@ void DadaWord::verif_orthographe(){
         return;
     }
 
-    QTextCharFormat highlightFormat;
+    /*QTextCharFormat highlightFormat;
     highlightFormat.setBackground(QBrush(QColor("#ff6060")));
     highlightFormat.setForeground(QBrush(QColor("#000000")));
 
@@ -3223,7 +3223,9 @@ void DadaWord::verif_orthographe(){
 
         //On efface pos_orth
         pos_orth.movePosition(QTextCursor::Start);
-    }
+    }*/
+    OrthManager test;
+    test.exec();
 
     return;
 }
