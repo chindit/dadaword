@@ -3224,7 +3224,7 @@ void DadaWord::verif_orthographe(){
         //On efface pos_orth
         pos_orth.movePosition(QTextCursor::Start);
     }*/
-    OrthManager test;
+    OrthManager test(this, find_edit());
     test.exec();
 
     return;

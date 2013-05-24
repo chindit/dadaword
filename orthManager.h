@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "dadaword.h"
+
 namespace Ui {
 class OrthManager;
 }
@@ -12,7 +14,7 @@ class OrthManager : public QDialog
     Q_OBJECT
     
 public:
-    explicit OrthManager(QWidget *parent = 0);
+    explicit OrthManager(QWidget *parent, QTextEdit *contenu);
     ~OrthManager();
     
 private:

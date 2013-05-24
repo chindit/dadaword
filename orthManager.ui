@@ -145,7 +145,7 @@ orthographiques</string>
     </rect>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
+  <widget class="QTextEdit" name="contenu_texte">
    <property name="geometry">
     <rect>
      <x>10</x>
