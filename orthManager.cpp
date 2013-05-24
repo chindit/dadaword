@@ -23,6 +23,7 @@ OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent),
     connect(ui->bouton_ignore_def, SIGNAL(clicked()), this, SLOT(ignoreDef()));
     //Goupe 2 : boutons du bas
     connect(ui->bouton_remplacer, SIGNAL(clicked()), this, SLOT(remplacer()));
+    connect(ui->bouton_remplacer_tout, SIGNAL(clicked()), this, SLOT(remplacerTout()));
 
     checkWord();
 }
@@ -164,5 +165,63 @@ void OrthManager::remplacer(){
         temp.movePosition(QTextCursor::NextWord);
         checkWord();
     }
+    return;
+}
+
+//Remplace toutes les occurences d'un mot
+void OrthManager::remplacerTout(QString remplace){
+    int nb_remplacements = 0;
+    QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
+    if(selected.count() == 0){
+        return;
+    }
+    // save the position of the current cursor
+    QTextCursor oldCursor = ui->contenu_texte->textCursor();
+
+    // create a new cursor to walk through the text
+    QTextCursor cursor(ui->contenu_texte->document());
+
+    //Parcours de tout le document
+    while(!cursor.atEnd()) {
+        QCoreApplication::processEvents();
+        cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+        QString Sword = cursor.selectedText();
+
+        //Nettoyage des éléments qui précèdent
+        while(!Sword.isEmpty() && !Sword.at(0).isLetter() && cursor.anchor() < cursor.position()) {
+            int cursorPos = cursor.position();
+            cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);
+            cursor.setPosition(cursorPos, QTextCursor::KeepAnchor);
+            Sword = cursor.selectedText();
+        }
+
+        //Nettoyage des éléments qui suivent
+        while(!Sword.isEmpty() && !Sword.at(Sword.size()-1).isLetter()){
+            Sword = Sword.remove(Sword.size()-1, Sword.size());
+        }
+
+        //Remplacement du mot
+        if(Sword == word){
+            cursor.removeSelectedText();
+            if(remplace.isEmpty()){
+                cursor.insertText(selected.at(0).data().toString());
+            }
+            else{
+                cursor.insertText(remplace);
+            }
+            nb_remplacements++; //On incrémente le nombre de remplacements
+        }
+
+        //On met à jour le curseur
+        cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+    }
+
+    //On remet en place le vieux curseur
+    ui->contenu_texte->setTextCursor(oldCursor);
+
+    //On affiche le nombre de remplacements
+    //if(settings->getSettings(Alertes).toInt() == HIGH){
+        QMessageBox::information(this, "Remplacement terminé", QString("Le mot «%1» a été remplacé %2 fois").arg(word).arg(nb_remplacements));
+    //}
     return;
 }

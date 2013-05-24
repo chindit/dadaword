@@ -26,6 +26,7 @@ private slots:
     void addDico();
     void ignoreDef();
     void remplacer();
+    void remplacerTout(QString remplace = "");
 
 private:
     Ui::OrthManager *ui;

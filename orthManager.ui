@@ -47,7 +47,7 @@
 l'autocorrection</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="bouton_remplacer_tout">
    <property name="geometry">
     <rect>
      <x>480</x>
