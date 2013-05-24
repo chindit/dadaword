@@ -21,11 +21,15 @@ public:
     
 private slots:
     void checkWord();
+    void ignore();
+    void addDico();
 
 private:
     Ui::OrthManager *ui;
     SpellChecker* correcteur;
     QTextCursor pos_orth;
+    QStringList list_skip;
+    QString word;
 };
 
 #endif // ORTHMANAGER_H

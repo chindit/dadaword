@@ -184,7 +184,7 @@ orthographiques</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_9">
+  <widget class="QPushButton" name="bouton_ajout_dico">
    <property name="geometry">
     <rect>
      <x>480</x>

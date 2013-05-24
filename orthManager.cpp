@@ -1,46 +1,28 @@
 #include "orthManager.h"
 #include "ui_orthManager.h"
 
-OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) :
-    QDialog(parent),
-    ui(new Ui::OrthManager)
-{
+OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent), ui(new Ui::OrthManager){
     ui->setupUi(this);
     ui->contenu_texte->setCursor(contenu->cursor());
     ui->contenu_texte->setDocument(contenu->document());
 
     QString userDict = QDir::homePath() + "/.dadaword/perso.dic";
     QString dictPath = "/usr/share/hunspell/fr_BE";
-//Vérification des liens symboliques
-QFileInfo testDico(dictPath);
-if(testDico.isSymLink())
-    dictPath = testDico.symLinkTarget();
+    //Vérification des liens symboliques
+    QFileInfo testDico(dictPath);
+    if(testDico.isSymLink())
+        dictPath = testDico.symLinkTarget();
 
-correcteur = new SpellChecker(dictPath, userDict);
-    // create a new cursor to walk through the text
-    QTextCursor cursor(ui->contenu_texte->document());
+    correcteur = new SpellChecker(dictPath, userDict);
+
     connect(ui->bouton_ignore, SIGNAL(clicked()), this, SLOT(checkWord()));
+    connect(ui->bouton_ignore_tout, SIGNAL(clicked()), this, SLOT(ignore()));
+    connect(ui->bouton_ajout_dico, SIGNAL(clicked()), this, SLOT(addDico()));
 
     checkWord();
-        //Masquage de la barre d'outils
-        //barre_orthographe->hide();
-
-        //Et on efface le surlignage
-        //QTextCharFormat highlightFormat;
-        //highlightFormat.setBackground(QBrush(QColor("#ffffff")));
-        //QTextEdit::ExtraSelection ess;
-        //QList<QTextEdit::ExtraSelection> essList;
-        //essList << ess;
-        //ui->contenu_texte->setExtraSelections(essList);
-        //QCoreApplication::processEvents();
-        //ess.format = highlightFormat;
-
-        //On efface pos_orth
-        //pos_orth.movePosition(QTextCursor::Start);
 }
 
-OrthManager::~OrthManager()
-{
+OrthManager::~OrthManager(){
     delete ui;
 }
 
@@ -59,14 +41,13 @@ void OrthManager::checkWord(){
     highlightFormat.setBackground(QBrush(QColor("#ff6060")));
     highlightFormat.setForeground(QBrush(QColor("#000000")));
 
-QStringList list_skip;
     //Booléen d'erreur qui stope la boucle
     bool erreur = false;
 
     while(!cursor.atEnd() && !erreur) {
         QCoreApplication::processEvents();
         cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-        QString word = cursor.selectedText();
+        word = cursor.selectedText();
 
         // Workaround for better recognition of words
         // punctuation etc. does not belong to words
@@ -139,5 +120,22 @@ QStringList list_skip;
     if(!erreur){//Si "erreur" est faux, c'est qu'on a atteint la fin du document
         //if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Terminé"), tr("La vérification orthographique est terminée."));
+            this->close();
         }
+}
+
+//Ignore un mot
+void OrthManager::ignore(){
+    list_skip.append(word);
+    checkWord();
+    return;
+}
+
+//Ajoute un mot au dictionnaire
+void OrthManager::addDico(){
+    if(!word.isEmpty() && !word.isNull()){
+        correcteur->addToUserWordlist(word);
+        checkWord();
+    }
+    return;
 }
