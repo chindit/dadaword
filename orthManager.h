@@ -23,6 +23,7 @@ private slots:
     void checkWord();
     void ignore();
     void addDico();
+    void ignoreDef();
 
 private:
     Ui::OrthManager *ui;

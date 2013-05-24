@@ -15,9 +15,13 @@ OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent),
 
     correcteur = new SpellChecker(dictPath, userDict);
 
+    //Connexion des boutons aux slots
+    //Groupe 1 : boutons du haut
     connect(ui->bouton_ignore, SIGNAL(clicked()), this, SLOT(checkWord()));
     connect(ui->bouton_ignore_tout, SIGNAL(clicked()), this, SLOT(ignore()));
     connect(ui->bouton_ajout_dico, SIGNAL(clicked()), this, SLOT(addDico()));
+    connect(ui->bouton_ignore_def, SIGNAL(clicked()), this, SLOT(ignoreDef()));
+    //Goupe 2 : boutons du bas
 
     checkWord();
 }
@@ -70,12 +74,6 @@ void OrthManager::checkWord(){
 
             QTextCursor tmpCursor(cursor);
             tmpCursor.setPosition(cursor.anchor());
-
-            //On met à jour le mot dans la toolbar
-            //orth_mot->setText("<b>"+word+"</b>");
-            //orth_mot->setAlignment(Qt::AlignHCenter);
-            //On nettoye la QComboBox
-            //orth_suggest->clear();
 
             // highlight the unknown word
             es.cursor = cursor;
@@ -137,5 +135,11 @@ void OrthManager::addDico(){
         correcteur->addToUserWordlist(word);
         checkWord();
     }
+    return;
+}
+
+//Ignore définitivement un mot pour ce document
+void OrthManager::ignoreDef(){
+    QMessageBox::information(this, "Fonctionnalité non-implémentée", "Malheureusement, cette fonctionnalité n'est pas implémentée pour le moment, mais nous y travaillons.");
     return;
 }

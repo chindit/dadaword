@@ -86,7 +86,7 @@ l'autocorrection</string>
     <string>Ignorer</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_6">
+  <widget class="QPushButton" name="bouton_ignore_def">
    <property name="geometry">
     <rect>
      <x>480</x>
