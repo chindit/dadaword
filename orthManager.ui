@@ -20,7 +20,7 @@
   <property name="locale">
    <locale language="French" country="Belgium"/>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="bouton_ignore_tout">
    <property name="geometry">
     <rect>
      <x>480</x>
@@ -73,7 +73,7 @@ l'autocorrection</string>
     <string>Remplacer</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_5">
+  <widget class="QPushButton" name="bouton_ignore">
    <property name="geometry">
     <rect>
      <x>480</x>
@@ -133,16 +133,6 @@ orthographiques</string>
    <property name="icon">
     <iconset resource="images.qrc">
      <normaloff>:/menus/images/outils.png</normaloff>:/menus/images/outils.png</iconset>
-   </property>
-  </widget>
-  <widget class="QListView" name="listView">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>240</y>
-     <width>461</width>
-     <height>151</height>
-    </rect>
    </property>
   </widget>
   <widget class="QTextEdit" name="contenu_texte">
@@ -206,6 +196,16 @@ orthographiques</string>
    <property name="text">
     <string>Ajouter au
 dictionnaire</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="liste_corrections">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>240</y>
+     <width>461</width>
+     <height>151</height>
+    </rect>
    </property>
   </widget>
  </widget>

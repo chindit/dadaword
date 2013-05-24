@@ -2,8 +2,10 @@
 #define ORTHMANAGER_H
 
 #include <QDialog>
+#include <QStandardItem>
 
 #include "dadaword.h"
+#include "spellchecker.h"
 
 namespace Ui {
 class OrthManager;
@@ -17,8 +19,13 @@ public:
     explicit OrthManager(QWidget *parent, QTextEdit *contenu);
     ~OrthManager();
     
+private slots:
+    void checkWord();
+
 private:
     Ui::OrthManager *ui;
+    SpellChecker* correcteur;
+    QTextCursor pos_orth;
 };
 
 #endif // ORTHMANAGER_H
