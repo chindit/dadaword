@@ -126,7 +126,6 @@ private slots:
     void change_style(int style);
     void verif_orthographe();
     //void orth_ignore();
-    void orth_dico();
     //void orth_remplace(QString mot);
     //void orth_remplace_all(QString remplace = "");
     void orth_langue(QString langue = "");
@@ -208,13 +207,9 @@ private:
     QPushButton *status_surecriture;
     QPushButton *status_langue;
     QAction *colore_html;
-    //Orthographe
-    QToolBar *barre_orthographe;
-    QComboBox *orth_suggest;
-    QLabel *orth_mot;
+
     QTextCursor pos_orth;
-    QTextCursor pos_orth_menu;
-    QString orth_erreur;
+
     QString dictPath;
     QStringList list_skip;
     QList<QTextEdit::ExtraSelection> liste_erreurs;

@@ -209,6 +209,10 @@ void OrthManager::remplacerTout(){
     // create a new cursor to walk through the text
     QTextCursor cursor(ui->contenu_texte->document());
 
+    if(cursor.atEnd()){
+        cursor.movePosition(QTextCursor::Start);
+    }
+
     //Parcours de tout le document
     while(!cursor.atEnd()) {
         QCoreApplication::processEvents();

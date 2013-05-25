@@ -202,7 +202,6 @@ DadaWord::~DadaWord()
     delete full_screen;
     delete barre_recherche;
     delete affichage_recherche;
-    delete barre_orthographe;
     delete add_ddz_annexe;
     delete fichier_fermer;
     delete menu_format;
@@ -1990,44 +1989,6 @@ void DadaWord::create_menus(){
     mappeur_toolbar7->setMapping(recherche_apres, GAUCHE);
     connect(mappeur_toolbar7, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
 
-    //Création de la barre d'orthographe
-    barre_orthographe = new QToolBar;
-    barre_orthographe->setWindowTitle(tr("Orthographe"));
-    addToolBar(Qt::LeftToolBarArea, barre_orthographe);
-    orth_suggest = new QComboBox;
-    orth_mot = new QLabel("N/A");
-    QPushButton *add_dico, *remplace_tout, *ignore, *ignore_tout, *suivant, *fin_orth;
-    add_dico = new QPushButton(tr("Ajouter au dictionnaire"));
-    add_dico->setIcon(QIcon::fromTheme("book", QIcon(":/menus/images/add_dico.png")));
-    remplace_tout = new QPushButton(tr("Remplacer tout"));
-    ignore = new QPushButton(tr("Ignorer"));
-    //ignore->setIcon(QIcon::fromTheme("go-next", QIcon(":/menus/images/apres.png")));
-    ignore_tout = new QPushButton(tr("Ignorer tout"));
-    //ignore_tout->setIcon(QIcon::fromTheme(":/menus/images/ignorer.png"));
-    suivant = new QPushButton(tr("Correction suivante"));
-    suivant->setIcon(QIcon::fromTheme("go-next", QIcon(":/menus/images/suivant2.png")));
-    fin_orth = new QPushButton(tr("Annuler"));
-    fin_orth->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
-    //Ajout à la barre
-    barre_orthographe->addWidget(orth_mot);
-    barre_orthographe->addWidget(orth_suggest);
-    barre_orthographe->addWidget(add_dico);
-    barre_orthographe->addWidget(remplace_tout);
-    barre_orthographe->addWidget(ignore);
-    barre_orthographe->addWidget(ignore_tout);
-    barre_orthographe->addWidget(suivant);
-    barre_orthographe->addWidget(fin_orth);
-    //Connexions
-    //connect(orth_suggest, SIGNAL(activated(QString)), this, SLOT(orth_remplace(QString)));
-    connect(add_dico, SIGNAL(clicked()), this, SLOT(orth_dico()));
-    //connect(remplace_tout, SIGNAL(clicked()), this, SLOT(orth_remplace_all()));
-    connect(ignore, SIGNAL(clicked()), this, SLOT(verif_orthographe())); //On ne fait que passer au mot suivant…
-    //connect(ignore_tout, SIGNAL(clicked()), this, SLOT(orth_ignore()));
-    connect(suivant, SIGNAL(clicked()), this, SLOT(verif_orthographe()));
-    //connect(fin_orth, SIGNAL(clicked()), this, SLOT(orth_stop()));
-    //On cache la barre par défaut
-    barre_orthographe->hide();
-
     //Barre d'édition
     barre_edition = new QToolBar;
     barre_edition->setWindowTitle(tr("Édition"));
@@ -3130,26 +3091,6 @@ void DadaWord::verif_orthographe(){
     return;
 }
 
-//Orthographe : ajouter au dictionnaire
-void DadaWord::orth_dico(){
-    //----------------------------
-    //TO DELETE
-    //----------------------------
-    if(!orth_erreur.isEmpty() && !orth_erreur.isNull()){
-        QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-        if(!QFile::exists(userDict)){
-            userDict = QDir::homePath() + "/.dadaword/perso.dic";
-        }
-        correcteur->addToUserWordlist(orth_erreur);
-        pos_orth.movePosition(QTextCursor::NextWord);
-        if(!pos_orth.isNull() && !pos_orth.atStart()){ //Si on ne vient pas du menu contextuel, on continue
-            verif_orthographe();
-        }
-
-        return;
-    }
-}
-
 //Changement de la langue de vérification
 void DadaWord::orth_langue(QString langue){
     QComboBox *liste = new QComboBox;
@@ -3366,15 +3307,18 @@ void DadaWord::recharge_styles(){
 
 //Remplace toutes les occurences d'un mot
 void DadaWord::remplace_all(){
+    //----------------------------
+    //TO DELETE
+    //----------------------------
     //On met à jour les paramètres
-    orth_erreur = champ_recherche2->text();
+    /*orth_erreur = champ_recherche2->text();
 
     //On appelle la fonction
     //orth_remplace_all(le_remplace->text());
 
     //On ferme la fenêtre
     dialog_recherche->close();
-    delete dialog_recherche;
+    delete dialog_recherche;*/
 }
 
 //Appelle la fonction de recherche
