@@ -1,17 +1,99 @@
 #include "orthManager.h"
 #include "ui_orthManager.h"
 
-OrthManager::OrthManager(QWidget *parent) : QDialog(parent), ui(new Ui::OrthManager){
-    QString userDict = QDir::homePath() + "/.dadaword/perso.dic";
-    QString dictPath = "/usr/share/hunspell/fr_BE";
+OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent), ui(new Ui::OrthManager){
+    QString dictPath;
+    dicoActuel = dictionnaire;
+
+    QString repertoire = QDir::homePath();
+    #ifdef Q_OS_WIN
+        repertoire += "/AppData/Local/DadaWord";
+    #else
+        repertoire += "/.dadaword";
+    #endif
+    #ifdef Q_OS_WIN
+        dictPath = repertoire+"/hunspell/"+dictionnaire;
+        QFile test_dico(dictPath+".dic");
+        if(!test_dico.exists()){
+            //On téléchage les dicos
+            int qdown = QMessageBox::question(this, tr("Téléchargement des dictionnaires"), tr("Les dictionnaires pour la correction orthographique n'ont pas étés détectés.<br />Voulez-vous les télécharger?<br /><b>N.B.</b>L'absence des dictionnaires rendra la correction orthographique inopérante"), QMessageBox::Yes | QMessageBox::No);
+            if(qdown == QMessageBox::Yes){
+                QDir temp(repertoire+"/hunspell/");
+                if(!temp.exists() && !temp.mkdir(repertoire+"/hunspell/")){
+                    erreur->Erreur_msg(tr("Impossible de créer le repertoire de dictionnaires"), QMessageBox::Warning);
+                }
+                else{
+                    QNetworkAccessManager nw_manager;
+                    QNetworkRequest request(QUrl("https://raw.github.com/chindit/dadaword/master/liste_dicos.txt"));
+                    QNetworkReply *reponse = nw_manager.get(request);
+                    QEventLoop eventLoop;
+                    QObject::connect(reponse, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+                    eventLoop.exec();
+                    QNetworkReply *reply_dico;
+                    QDialog *progression = new QDialog(this);
+                    progression->setWindowTitle(tr("Téléchargement des dictionnaires"));
+                    QLabel *titleProgress, *actDownDic;
+                    titleProgress = new QLabel(tr("Progression du téléchagrement des dictionnaires"));
+                    actDownDic = new QLabel;
+                    QProgressBar *progressDownDic = new QProgressBar;
+                    QVBoxLayout *layoutProgress = new QVBoxLayout(progression);
+                    layoutProgress->addWidget(titleProgress);
+                    layoutProgress->addWidget(progressDownDic);
+                    layoutProgress->addWidget(actDownDic);
+                    setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+                    int posDown = 1;
+                    float maxDico = reponse->readLine().trimmed().toFloat();
+                    progressDownDic->setRange(0, 100);
+                    progressDownDic->setValue(0);
+                    progression->show();
+                    while(!reponse->atEnd()){
+                        QString baseUrl = "https://raw.github.com/chindit/dadaword/master/dicos/";
+                        QString nom_dico = reponse->readLine();
+                        baseUrl = baseUrl.append(nom_dico.trimmed());
+                        QNetworkAccessManager get_file;
+                        QNetworkRequest get_dico(QUrl("https://raw.github.com/chindit/dadaword/master/dicos/"+nom_dico.trimmed()));
+                        reply_dico = get_file.get(get_dico);
+                        QEventLoop wait_dico;
+                        QObject::connect(reply_dico, SIGNAL(finished()), &wait_dico, SLOT(quit()));
+                        wait_dico.exec();
+                        QFile save_dico(repertoire+"/hunspell/"+nom_dico.trimmed());
+                        if(!save_dico.open(QIODevice::WriteOnly)){
+                            QMessageBox::critical(0, "this", "Échec");
+                        }
+                        save_dico.write(reply_dico->readAll());
+                        save_dico.close();
+                        progressDownDic->setValue((posDown/maxDico)*100);
+                        posDown++;
+                        //Màj du nom
+                        actDownDic->setText(nom_dico.trimmed());
+                        progression->show();
+                    }
+                    progression->close();
+                    delete progression;
+                }
+            }
+        }
+    #else
+        dictPath = "/usr/share/hunspell/"+dictionnaire;
+    #endif
+
     //Vérification des liens symboliques
     QFileInfo testDico(dictPath);
     if(testDico.isSymLink())
         dictPath = testDico.symLinkTarget();
 
-    //----------------------
-    //DÉPLACER DANS LE CONSTRUCTEUR
-    //----------------------
+    //Création de l'instance du correcteur
+    //------------------------
+    //CHANGER POUR WINDOWS
+    //------------------------
+    QString userDict= repertoire + "/.config/libreoffice/4/user/wordbook/standard.dic";
+    if(!QFile::exists(userDict)){
+        #ifdef Q_OS_WIN
+            userDict = repertoire+"/hunspell/perso.dic";
+        #else
+            userDict = QDir::homePath() + "/.dadaword/perso.dic";
+        #endif
+    }
     correcteur = new SpellChecker(dictPath, userDict);
 }
 
@@ -313,4 +395,77 @@ void OrthManager::autocorrection(QString remplacement){
         return;
     }
     return;
+}
+
+//Change le dictionnaire actif
+void OrthManager::setDico(QString langue){
+    QDir dossier;
+#ifdef Q_OS_WIN
+    dossier.setPath(repertoire + "/AppData/Local/DadaWord/hunspell/");
+#else
+    dossier.setPath("/usr/share/hunspell");
+#endif
+
+    QComboBox *liste = new QComboBox;
+    if(langue.isEmpty()){
+        QDialog *fen = new QDialog;
+        fen->setWindowTitle(tr("Langue du correcteur"));
+        fen->setWindowModality(Qt::ApplicationModal);
+        QLabel *titre, *actuelle, *choix;
+        QPushButton *valider = new QPushButton(tr("Valider"));
+        titre = new QLabel("<h1>Langue du correcteur<h1>");
+        QString nom_dico = this->getDico();
+        actuelle = new QLabel(tr("Dictionnaire actuel : ")+nom_dico);
+        choix = new QLabel(tr("Nouvelle langue"));
+
+        QStringList extentions;
+        extentions << "*.dic";
+        QStringList liste_dicos = dossier.entryList(extentions);
+        for(int i=0; i<liste_dicos.size(); i++){
+            QString temp = liste_dicos.at(i);
+            temp.resize((temp.size()-4));
+            liste->addItem(temp);
+            //On présélectionne la langue actuelle
+            if(temp == nom_dico){
+                liste->setCurrentIndex(i);
+            }
+        }
+        valider->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
+        QGridLayout *layout = new QGridLayout;
+        layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
+        layout->addWidget(actuelle, 1, 0);
+        layout->addWidget(choix, 2, 0);
+        layout->addWidget(liste, 2, 1);
+        layout->addWidget(valider, 3, 0, 1, 2, Qt::AlignHCenter);
+        connect(valider, SIGNAL(clicked()), fen, SLOT(close()));
+        fen->setLayout(layout);
+        fen->exec();
+        QCoreApplication::processEvents();
+    }
+
+    QString nouvelleLangue = (langue.isEmpty()) ? liste->currentText() : langue;
+    //On met à jour le dico
+    if(dicoActuel != nouvelleLangue){
+        dicoActuel = dossier.path()+"/"+nouvelleLangue+".dic";
+        //Vérification des liens symboliques
+        QFileInfo testDico(dicoActuel);
+        if(testDico.isSymLink())
+            dicoActuel = testDico.symLinkTarget();
+
+        //On re-déclare le correcteur
+        delete correcteur;
+        //-------------------------
+        //À ADAPTER POUR WINDOWS
+        //-------------------------
+        QString userDict= QDir::homePath() + "/.config/libreoffice/4/user/wordbook/standard.dic";
+        if(!QFile::exists(userDict)){
+            userDict = QDir::homePath() + "/.dadaword/perso.dic";
+        }
+        correcteur = new SpellChecker(dicoActuel, userDict);
+    }
+    return;
+}
+
+QString OrthManager::getDico(){
+    return dicoActuel;
 }

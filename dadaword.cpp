@@ -23,7 +23,7 @@ DadaWord::DadaWord(QWidget *parent)
     outils = new Outils;
     //kkvgb = new Ui::OrthManager(this);
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
-    orthographe = new OrthManager();
+
     //On regarde si le dossier de config existe
     QString dossier = QDir::homePath();
     #ifdef Q_OS_WIN
@@ -59,94 +59,8 @@ DadaWord::DadaWord(QWidget *parent)
     QIcon::setThemeSearchPaths(locateThemes);
     QIcon::setThemeName(settings->getSettings(Theme).toString());
 
-    #ifdef Q_OS_WIN
-        dictPath = dossier+"/hunspell/"+settings->getSettings(Dico).toString();
-        QFile test_dico(dictPath+".dic");
-        if(!test_dico.exists()){
-            //On téléchage les dicos
-            int qdown = QMessageBox::question(this, tr("Téléchargement des dictionnaires"), tr("Les dictionnaires pour la correction orthographique n'ont pas étés détectés.<br />Voulez-vous les télécharger?<br /><b>N.B.</b>L'absence des dictionnaires rendra la correction orthographique inopérante"), QMessageBox::Yes | QMessageBox::No);
-            if(qdown == QMessageBox::Yes){
-                QDir temp(dossier+"/hunspell/");
-                if(!temp.exists() && !temp.mkdir(dossier+"/hunspell/")){
-                    erreur->Erreur_msg(tr("Impossible de créer le dossier de dictionnaires"), QMessageBox::Warning);
-                }
-                else{
-                    QNetworkAccessManager nw_manager;
-                    QNetworkRequest request(QUrl("https://raw.github.com/chindit/dadaword/master/liste_dicos.txt"));
-                    QNetworkReply *reponse = nw_manager.get(request);
-                    QEventLoop eventLoop;
-                    QObject::connect(reponse, SIGNAL(finished()), &eventLoop, SLOT(quit()));
-                    eventLoop.exec();
-                    QNetworkReply *reply_dico;
-                    QDialog *progression = new QDialog(this);
-                    progression->setWindowTitle(tr("Téléchargement des dictionnaires"));
-                    QLabel *titleProgress, *actDownDic;
-                    titleProgress = new QLabel(tr("Progression du téléchagrement des dictionnaires"));
-                    actDownDic = new QLabel;
-                    QProgressBar *progressDownDic = new QProgressBar;
-                    QVBoxLayout *layoutProgress = new QVBoxLayout(progression);
-                    layoutProgress->addWidget(titleProgress);
-                    layoutProgress->addWidget(progressDownDic);
-                    layoutProgress->addWidget(actDownDic);
-                    setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
-                    int posDown = 1;
-                    float maxDico = reponse->readLine().trimmed().toFloat();
-                    progressDownDic->setRange(0, 100);
-                    progressDownDic->setValue(0);
-                    progression->show();
-                    while(!reponse->atEnd()){
-                        QString baseUrl = "https://raw.github.com/chindit/dadaword/master/dicos/";
-                        QString nom_dico = reponse->readLine();
-                        baseUrl = baseUrl.append(nom_dico.trimmed());
-                        QNetworkAccessManager get_file;
-                        QNetworkRequest get_dico(QUrl("https://raw.github.com/chindit/dadaword/master/dicos/"+nom_dico.trimmed()));
-                        reply_dico = get_file.get(get_dico);
-                        QEventLoop wait_dico;
-                        QObject::connect(reply_dico, SIGNAL(finished()), &wait_dico, SLOT(quit()));
-                        wait_dico.exec();
-                        QFile save_dico(dossier+"/hunspell/"+nom_dico.trimmed());
-                        if(!save_dico.open(QIODevice::WriteOnly)){
-                            QMessageBox::critical(0, "this", "Échec");
-                        }
-                        save_dico.write(reply_dico->readAll());
-                        save_dico.close();
-                        progressDownDic->setValue((posDown/maxDico)*100);
-                        posDown++;
-                        //Màj du nom
-                        actDownDic->setText(nom_dico.trimmed());
-                        progression->show();
-                    }
-                    progression->close();
-                    delete progression;
-                }
-            }
-        }
-    #else
-        dictPath = "/usr/share/hunspell/"+settings->getSettings(Dico).toString();
-    #endif
-    /*if(dictPath == "/usr/share/hunspell/"){//Si la config n'existe pas (jamais visité la config), on la met par défaut
-        dictPath = "/usr/share/hunspell/fr_BE";
-    }*/
-
-    //Vérification des liens symboliques
-    QFileInfo testDico(dictPath);
-    if(testDico.isSymLink())
-        dictPath = testDico.symLinkTarget();
-
-    //Création de l'instance du correcteur
-    QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-    if(!QFile::exists(userDict)){
-        #ifdef Q_OS_WIN
-            userDict = dossier+"/hunspell/perso.dic";
-        #else
-            userDict = QDir::homePath() + "/.dadaword/perso.dic";
-        #endif
-    }
-    //----------------------
-    //TO DELETE
-    //----------------------
-    correcteur = new SpellChecker(dictPath, userDict);
-
+    //Initialisation du correcteur
+    orthographe = new OrthManager(settings->getSettings(Dico).toString(), this);
 
     qsrand(QDateTime::currentDateTime().toTime_t());
     //On crée le timer pour enregistrer automatiquement le fichier
@@ -221,11 +135,11 @@ void DadaWord::cree_iu(){
     //Initialisation des boutons
     //Langue du document en cours
     status_langue = new QPushButton(statusBar());
-    QString nom_dico = dictPath.split("/").last();
+    QString nom_dico = orthographe->getDico();
     status_langue->setText(nom_dico);
     status_langue->setToolTip(tr("Langue pour le document actuel"));
     status_langue->setFlat(true);
-    connect(status_langue, SIGNAL(clicked()), this, SLOT(orth_langue()));
+    connect(status_langue, SIGNAL(clicked()), orthographe, SLOT(setDico()));
     statusBar()->addPermanentWidget(status_langue);
 
     //Surécriture
@@ -882,7 +796,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
         if(retour.at(1) != "default" && is_dico.exactMatch(retour.at(1))){
             //Normalement on ne doit pas vérifier le dico, mais on n'est jamais trop prudent
-            orth_langue(retour.at(1));
+            orthographe->setDico(retour.at(1));
         }
         if(annexes){
             retour.removeAt(0);
@@ -1151,7 +1065,10 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                             if(word == word.toUpper()){ //On ignore les majuscules
                                 return false;
                             }
-                            if(!list_skip.contains(word) && !correcteur->spell(word)){
+                            //----------------------------
+                            //TO FIX!!!!!
+                            //----------------------------
+                            /*if(!list_skip.contains(word) && !correcteur->spell(word)){
                                 // highlight the unknown word
                                 QTextCharFormat marquage_erreurs;
                                 QColor couleur(Qt::red);
@@ -1164,7 +1081,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 es.format = marquage_erreurs;
                                 liste_erreurs << es;
                                 find_edit()->setExtraSelections(liste_erreurs);
-                            } //IF : s'il y a une faute
+                            } //IF : s'il y a une faute*/
                         }//IF : s'il y a sélection et qu'elle est valide
                     }//IF : si on est dans la correction
                 }//IF : s'il y a un mot précédent
@@ -1677,7 +1594,7 @@ void DadaWord::create_menus(){
     QAction *change_langue = menu_outils->addAction(tr("Langue du correcteur"));
     change_langue->setStatusTip(tr("Change la langue du correcteur orthographique"));
     change_langue->setIcon(QIcon::fromTheme("preferences-desktop-locale", QIcon(":/menus/images/langue.png")));
-    connect(change_langue, SIGNAL(triggered()), this, SLOT(orth_langue()));
+    connect(change_langue, SIGNAL(triggered()), orthographe, SLOT(setDico()));
 
     //Mode texte
     to_text = menu_outils->addAction(tr("Mode texte seul"));
@@ -3092,8 +3009,8 @@ void DadaWord::verif_orthographe(){
 }
 
 //Changement de la langue de vérification
-void DadaWord::orth_langue(QString langue){
-    QComboBox *liste = new QComboBox;
+//void DadaWord::orth_langue(QString langue){
+    /*QComboBox *liste = new QComboBox;
     if(langue.isEmpty()){
         QDialog *fen = new QDialog;
         fen->setWindowTitle(tr("Langue du correcteur"));
@@ -3149,8 +3066,8 @@ void DadaWord::orth_langue(QString langue){
         }
         correcteur = new SpellChecker(dictPath, userDict);
     }
-    return;
-}
+    return;*/
+//}
 
 //Autocorrection
 void DadaWord::orth_autocorrection(QString remplacement){

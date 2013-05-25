@@ -17,17 +17,19 @@ class OrthManager : public QDialog
     Q_OBJECT
     
 public:
-    explicit OrthManager(QWidget *parent = 0);
+    explicit OrthManager(QString dictionnaire, QWidget *parent = 0);
     ~OrthManager();
     void showWindow(QTextEdit *contenu);
     QStringList getListSkip();
     bool isCorrectWord(QString word);
     QStringList getSuggestList(QString word);
     void setTextCursor(QTextCursor cursor);
+    QString getDico();
 
 public slots:
     void autocorrection(QString remplacement = "");
     void remplacer(QString nmot = "");
+    void setDico(QString langue = "");
     
 private slots:
     void checkWord();
@@ -42,6 +44,10 @@ private:
     QTextCursor pos_orth;
     QStringList list_skip;
     QString word;
+    QString dicoActuel;
+
+signals:
+//Créer un signal pour le changement de langue (pour la mise à jour du bouton)
 };
 
 #endif // ORTHMANAGER_H

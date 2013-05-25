@@ -125,11 +125,7 @@ private slots:
     void statistiques();
     void change_style(int style);
     void verif_orthographe();
-    //void orth_ignore();
-    //void orth_remplace(QString mot);
-    //void orth_remplace_all(QString remplace = "");
-    void orth_langue(QString langue = "");
-    //void orth_stop();
+    //void orth_langue(QString langue = "");
     void orth_autocorrection(QString remplacement);
     void couper();
     void copier();
@@ -164,7 +160,7 @@ private:
     Outils *outils;
     SettingsManager *settings;
     ErrorManager *erreur;
-    SpellChecker *correcteur;
+    //SpellChecker *correcteur;
     QMdiArea *zone_centrale;
     QAction *enregistrer;
     QAction *enregistrerTout;
@@ -210,8 +206,8 @@ private:
 
     QTextCursor pos_orth;
 
-    QString dictPath;
-    QStringList list_skip;
+    //QString dictPath;
+    //QStringList list_skip;
     QList<QTextEdit::ExtraSelection> liste_erreurs;
     HighlighterHtml *instance;
     QTextCursor pos_recherche;
