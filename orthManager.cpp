@@ -1,11 +1,7 @@
 #include "orthManager.h"
 #include "ui_orthManager.h"
 
-OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent), ui(new Ui::OrthManager){
-    ui->setupUi(this);
-    ui->contenu_texte->setCursor(contenu->cursor());
-    ui->contenu_texte->setDocument(contenu->document());
-
+OrthManager::OrthManager(QWidget *parent) : QDialog(parent), ui(new Ui::OrthManager){
     QString userDict = QDir::homePath() + "/.dadaword/perso.dic";
     QString dictPath = "/usr/share/hunspell/fr_BE";
     //Vérification des liens symboliques
@@ -13,7 +9,20 @@ OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent),
     if(testDico.isSymLink())
         dictPath = testDico.symLinkTarget();
 
+    //----------------------
+    //DÉPLACER DANS LE CONSTRUCTEUR
+    //----------------------
     correcteur = new SpellChecker(dictPath, userDict);
+}
+
+OrthManager::~OrthManager(){
+    delete ui;
+}
+
+void OrthManager::showWindow(QTextEdit *contenu){
+    ui->setupUi(this);
+    ui->contenu_texte->setCursor(contenu->cursor());
+    ui->contenu_texte->setDocument(contenu->document());
 
     //Connexion des boutons aux slots
     //Groupe 1 : boutons du haut
@@ -26,10 +35,7 @@ OrthManager::OrthManager(QWidget *parent, QTextEdit *contenu) : QDialog(parent),
     connect(ui->bouton_remplacer_tout, SIGNAL(clicked()), this, SLOT(remplacerTout()));
 
     checkWord();
-}
-
-OrthManager::~OrthManager(){
-    delete ui;
+    return;
 }
 
 void OrthManager::checkWord(){
@@ -118,24 +124,34 @@ void OrthManager::checkWord(){
     ui->contenu_texte->ensureCursorVisible();
 
     if(!erreur){//Si "erreur" est faux, c'est qu'on a atteint la fin du document
-        //if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Terminé"), tr("La vérification orthographique est terminée."));
+            this->hide();
             this->close();
         }
 }
 
 //Ignore un mot
-void OrthManager::ignore(){
-    list_skip.append(word);
-    checkWord();
+void OrthManager::ignore(QString mot){
+    if(!mot.isEmpty()){
+        list_skip.append(mot);
+    }
+    else{
+        list_skip.append(word);
+        checkWord();
+    }
     return;
 }
 
 //Ajoute un mot au dictionnaire
-void OrthManager::addDico(){
-    if(!word.isEmpty() && !word.isNull()){
-        correcteur->addToUserWordlist(word);
-        checkWord();
+void OrthManager::addDico(QString mot){
+    if(!mot.isEmpty()){
+        correcteur->addToUserWordlist(mot);
+    }
+    else{
+        if(!word.isEmpty() && !word.isNull()){
+            correcteur->addToUserWordlist(word);
+            checkWord();
+        }
     }
     return;
 }
@@ -147,11 +163,20 @@ void OrthManager::ignoreDef(){
 }
 
 //Remplace un mot
-void OrthManager::remplacer(){
+void OrthManager::remplacer(QString nmot){
     QTextCursor temp;
-    QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
-    if(selected.count() > 0){
-        QString mot  = selected.at(0).data().toString();
+    QString mot;
+    QModelIndexList selected;
+    if(!nmot.isEmpty()){
+        mot = nmot;
+    }
+    else{
+        selected = ui->liste_corrections->selectionModel()->selectedIndexes();
+    }
+    if(selected.count() > 0 || !mot.isEmpty()){
+        if(mot.isEmpty()){
+            mot  = selected.at(0).data().toString();
+        }
         temp = pos_orth;
         QString word = temp.selectedText();
         while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
@@ -163,13 +188,15 @@ void OrthManager::remplacer(){
         temp.removeSelectedText();
         temp.insertText(mot);
         temp.movePosition(QTextCursor::NextWord);
-        checkWord();
+        if(nmot.isEmpty()){
+            checkWord();
+        }
     }
     return;
 }
 
 //Remplace toutes les occurences d'un mot
-void OrthManager::remplacerTout(QString remplace){
+void OrthManager::remplacerTout(){
     int nb_remplacements = 0;
     QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
     if(selected.count() == 0){
@@ -203,12 +230,7 @@ void OrthManager::remplacerTout(QString remplace){
         //Remplacement du mot
         if(Sword == word){
             cursor.removeSelectedText();
-            if(remplace.isEmpty()){
-                cursor.insertText(selected.at(0).data().toString());
-            }
-            else{
-                cursor.insertText(remplace);
-            }
+            cursor.insertText(selected.at(0).data().toString());
             nb_remplacements++; //On incrémente le nombre de remplacements
         }
 
@@ -220,8 +242,58 @@ void OrthManager::remplacerTout(QString remplace){
     ui->contenu_texte->setTextCursor(oldCursor);
 
     //On affiche le nombre de remplacements
-    //if(settings->getSettings(Alertes).toInt() == HIGH){
-        QMessageBox::information(this, "Remplacement terminé", QString("Le mot «%1» a été remplacé %2 fois").arg(word).arg(nb_remplacements));
-    //}
+    QMessageBox::information(this, "Remplacement terminé", QString("Le mot «%1» a été remplacé %2 fois").arg(word).arg(nb_remplacements));
+    return;
+}
+
+//Retourne la liste des mots à ignorer
+QStringList OrthManager::getListSkip(){
+    return list_skip;
+}
+
+//Vérifie si le mot envoyé est correctement orthographié
+bool OrthManager::isCorrectWord(QString word){
+    return correcteur->spell(word);
+}
+
+QStringList OrthManager::getSuggestList(QString word){
+    QStringList suggestions;
+    if(!correcteur->spell(word)){
+        suggestions = correcteur->suggest(word);
+    }
+    return suggestions;
+}
+
+void OrthManager::setTextCursor(QTextCursor cursor){
+    pos_orth = cursor;
+}
+
+void OrthManager::autocorrection(QString remplacement, bool menu){
+    SettingsManager settings;
+    ErrorManager erreur;
+    QTextCursor cursor;
+    cursor = (menu) ? pos_orth : ui->contenu_texte->textCursor();
+    cursor.select(QTextCursor::WordUnderCursor);
+    QString mot  = cursor.selectedText();
+    if(!mot.isEmpty() && !remplacement.isEmpty()){
+        QStringList listeCles = settings.getSettings(Cles).toStringList();
+        QStringList listeValeurs = settings.getSettings(Valeurs).toStringList();
+        if(listeCles.size() != listeValeurs.size()){
+            erreur.Erreur_msg(tr("Paires de remplacements invalide, impossible d'ajouter l'autocorrection"), QMessageBox::Warning);
+            return;
+        }
+        if(listeCles.contains(mot, Qt::CaseInsensitive)){
+            erreur.Erreur_msg(tr("Un clé nommée %1 existe déja.  L'autocorrection ne sera donc pas mise en place").arg(mot), QMessageBox::Information);
+            return;
+        }
+        listeCles.append(mot);
+        listeValeurs.append(remplacement);
+        settings.setSettings(Cles, listeCles);
+        settings.setSettings(Valeurs, listeValeurs);
+    }
+    else{
+        erreur.Erreur_msg(tr("Le mot à remplacer est vide, l'autocorrection ne sera donc pas mise en place."), QMessageBox::Warning);
+        return;
+    }
     return;
 }

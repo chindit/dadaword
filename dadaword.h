@@ -125,12 +125,12 @@ private slots:
     void statistiques();
     void change_style(int style);
     void verif_orthographe();
-    void orth_ignore();
+    //void orth_ignore();
     void orth_dico();
-    void orth_remplace(QString mot);
-    void orth_remplace_all(QString remplace = "");
+    //void orth_remplace(QString mot);
+    //void orth_remplace_all(QString remplace = "");
     void orth_langue(QString langue = "");
-    void orth_stop();
+    //void orth_stop();
     void orth_autocorrection(QString remplacement);
     void couper();
     void copier();
@@ -227,6 +227,7 @@ private:
     QList< QStringList > liste_annexes;
     QToolBar *barre_edition;
     QAction *affichage_edition;
+    //OrthManager *kkvgb;
 
 };
 

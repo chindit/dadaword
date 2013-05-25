@@ -7,6 +7,8 @@
 
 #include "dadaword.h"
 
+OrthManager *orthographe;
+
 //Constructeur
 DadaWord::DadaWord(QWidget *parent)
     : QMainWindow(parent)
@@ -19,8 +21,9 @@ DadaWord::DadaWord(QWidget *parent)
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
     outils = new Outils;
+    //kkvgb = new Ui::OrthManager(this);
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
-
+    orthographe = new OrthManager();
     //On regarde si le dossier de config existe
     QString dossier = QDir::homePath();
     #ifdef Q_OS_WIN
@@ -139,7 +142,12 @@ DadaWord::DadaWord(QWidget *parent)
             userDict = QDir::homePath() + "/.dadaword/perso.dic";
         #endif
     }
+    //----------------------
+    //TO DELETE
+    //----------------------
     correcteur = new SpellChecker(dictPath, userDict);
+
+
     qsrand(QDateTime::currentDateTime().toTime_t());
     //On crée le timer pour enregistrer automatiquement le fichier
     QTimer *timer_enregistrement = new QTimer;
@@ -2010,13 +2018,13 @@ void DadaWord::create_menus(){
     barre_orthographe->addWidget(suivant);
     barre_orthographe->addWidget(fin_orth);
     //Connexions
-    connect(orth_suggest, SIGNAL(activated(QString)), this, SLOT(orth_remplace(QString)));
+    //connect(orth_suggest, SIGNAL(activated(QString)), this, SLOT(orth_remplace(QString)));
     connect(add_dico, SIGNAL(clicked()), this, SLOT(orth_dico()));
-    connect(remplace_tout, SIGNAL(clicked()), this, SLOT(orth_remplace_all()));
+    //connect(remplace_tout, SIGNAL(clicked()), this, SLOT(orth_remplace_all()));
     connect(ignore, SIGNAL(clicked()), this, SLOT(verif_orthographe())); //On ne fait que passer au mot suivant…
-    connect(ignore_tout, SIGNAL(clicked()), this, SLOT(orth_ignore()));
+    //connect(ignore_tout, SIGNAL(clicked()), this, SLOT(orth_ignore()));
     connect(suivant, SIGNAL(clicked()), this, SLOT(verif_orthographe()));
-    connect(fin_orth, SIGNAL(clicked()), this, SLOT(orth_stop()));
+    //connect(fin_orth, SIGNAL(clicked()), this, SLOT(orth_stop()));
     //On cache la barre par défaut
     barre_orthographe->hide();
 
@@ -3116,133 +3124,17 @@ void DadaWord::verif_orthographe(){
         return;
     }
 
-    /*QTextCharFormat highlightFormat;
-    highlightFormat.setBackground(QBrush(QColor("#ff6060")));
-    highlightFormat.setForeground(QBrush(QColor("#000000")));
+    orthographe->showWindow(find_edit());
+    orthographe->exec();
 
-    // create a new cursor to walk through the text
-    QTextCursor cursor(find_edit()->document());
-
-    //Sélection de texte (pour le surlignage)
-    QTextEdit::ExtraSelection es;
-
-    //On regarde si on est déjà en train de vérifier:
-    if(!pos_orth.isNull() && !pos_orth.atStart()){
-        pos_orth.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
-        cursor = pos_orth;
-    }
-
-
-    //Booléen d'erreur qui stope la boucle
-    bool erreur = false;
-
-    while(!cursor.atEnd() && !erreur) {
-        QCoreApplication::processEvents();
-        cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-        QString word = cursor.selectedText();
-
-        // Workaround for better recognition of words
-        // punctuation etc. does not belong to words
-        while(!word.isEmpty() && !word.at(0).isLetter() && cursor.anchor() < cursor.position()) {
-            int cursorPos = cursor.position();
-            cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);
-            cursor.setPosition(cursorPos, QTextCursor::KeepAnchor);
-            word = cursor.selectedText();
-        }
-
-        //Nettoyage des éléments qui suivent
-        while(!word.isEmpty() && !word.at(word.size()-1).isLetter()){
-            word = word.remove(word.size()-1, word.size());
-        }
-
-        //Il n'y a erreur QUE si le mot n'est pas vide, n'est pas présent dans le dictionnaire ET n'est pas ignoré
-        if(!word.isEmpty() && !correcteur->spell(word) && !list_skip.contains(word)){
-            //Affichage de la barre d'outils,
-            barre_orthographe->show();
-
-            QTextCursor tmpCursor(cursor);
-            tmpCursor.setPosition(cursor.anchor());
-
-            //On met à jour le mot dans la toolbar
-            orth_mot->setText("<b>"+word+"</b>");
-            orth_mot->setAlignment(Qt::AlignHCenter);
-            //On nettoye la QComboBox
-            orth_suggest->clear();
-
-            // highlight the unknown word
-            es.cursor = cursor;
-            es.format = highlightFormat;
-
-            QList<QTextEdit::ExtraSelection> esList;
-            esList << es;
-            find_edit()->setExtraSelections(esList);
-            QCoreApplication::processEvents();
-
-            //On met à jour la liste de suggestions
-            QStringList suggestions = correcteur->suggest(word);
-            orth_suggest->setEnabled(true);
-            for(int i=0; i<suggestions.size(); i++){
-                orth_suggest->addItem(suggestions.at(i));
-            }
-            if(suggestions.size() == 0){
-                //Vu qu'il n'y a rien, on l'indique
-                orth_suggest->addItem(tr("Aucune suggestion"));
-                orth_suggest->setEnabled(false);
-            }
-
-            //On coupe la boucle
-            erreur = true;
-            //Transfent de variable en cas de besoin pour le dico
-            orth_erreur = word;
-        }
-        //On met à jour le curseur
-        pos_orth = cursor;
-        cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
-    }
-    //Dans tous les cas, on laisse le curseur visible
-    find_edit()->setTextCursor(cursor);
-    find_edit()->ensureCursorVisible();
-
-    if(!erreur){//Si "erreur" est faux, c'est qu'on a atteint la fin du document
-        if(settings->getSettings(Alertes).toInt() == HIGH){
-            QMessageBox::information(this, tr("Terminé"), tr("La vérification orthographique est terminée."));
-        }
-
-        //Masquage de la barre d'outils
-        barre_orthographe->hide();
-
-        //Et on efface le surlignage
-        QTextCharFormat highlightFormat;
-        highlightFormat.setBackground(QBrush(QColor("#ffffff")));
-        QTextEdit::ExtraSelection ess;
-        QList<QTextEdit::ExtraSelection> essList;
-        essList << ess;
-        find_edit()->setExtraSelections(essList);
-        QCoreApplication::processEvents();
-        ess.format = highlightFormat;
-
-        //On efface pos_orth
-        pos_orth.movePosition(QTextCursor::Start);
-    }*/
-    OrthManager test(this, find_edit());
-    test.exec();
-
-    return;
-}
-
-//Orthographe : ignorer toutes les occurences du mot
-void DadaWord::orth_ignore(){
-    //On ajoute à la liste des mots à ignorer
-    list_skip.append(orth_erreur);
-    //Et on poursuit notre petit chemin
-    if(!pos_orth.isNull() && !pos_orth.atStart()){ //Si on ne vient pas du menu contextuel, on continue
-        verif_orthographe();
-    }
     return;
 }
 
 //Orthographe : ajouter au dictionnaire
 void DadaWord::orth_dico(){
+    //----------------------------
+    //TO DELETE
+    //----------------------------
     if(!orth_erreur.isEmpty() && !orth_erreur.isNull()){
         QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
         if(!QFile::exists(userDict)){
@@ -3256,129 +3148,6 @@ void DadaWord::orth_dico(){
 
         return;
     }
-}
-
-//Orthographe : remplacer
-void DadaWord::orth_remplace(QString mot){
-    QTextCursor temp;
-    bool clic = false;
-    if(pos_orth_menu.isNull() || !pos_orth_menu.hasSelection()){
-    temp = pos_orth;
-    }
-    else{
-        temp = pos_orth_menu;
-        pos_orth_menu.clearSelection();
-        clic = true;
-    }
-
-    QString word = temp.selectedText();
-    while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
-        int cursorPos = temp.position();
-        temp.setPosition(temp.anchor() + 1, QTextCursor::MoveAnchor);
-        temp.setPosition(cursorPos, QTextCursor::KeepAnchor);
-        word = temp.selectedText();
-    }
-    temp.removeSelectedText();
-    temp.insertText(mot);
-    temp.movePosition(QTextCursor::NextWord);
-    if(!clic){
-        verif_orthographe();
-    }
-    return;
-}
-
-//Orthographe : remplacer tout
-void DadaWord::orth_remplace_all(QString remplace){
-    int nb_remplacements = 0;
-    QComboBox *select_words = new QComboBox;
-    select_words->addItem(tr("Sélectionnez un mot"));
-    QDialog *mots = new QDialog;
-    if(remplace.isEmpty()){
-        QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-        if(!QFile::exists(userDict)){
-            userDict = QDir::homePath() + "/.dadaword/perso.dic";
-        }
-        QStringList suggestions = correcteur->suggest(orth_erreur);
-        for(int i=0; i<suggestions.size(); i++){
-            select_words->addItem(suggestions.at(i));
-        }
-        if(suggestions.size() == 0){
-            QMessageBox::information(this, tr("Impossible de remplacer"), tr("Aucun choix de remplacement n'a pu être trouvé"));
-            return;
-        }
-
-        QHBoxLayout *layout = new QHBoxLayout;
-        layout->addWidget(select_words);
-        QPushButton *ok = new QPushButton(tr("Valider"));
-        ok->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
-        connect(ok, SIGNAL(clicked()), mots, SLOT(close()));
-        layout->addWidget(ok, 0, Qt::AlignHCenter);
-        mots->setLayout(layout);
-        mots->exec();
-        QCoreApplication::processEvents();
-    }
-
-    //Si pas de choix, on annule
-    if(select_words->currentIndex() == 0){
-        if(settings->getSettings(Alertes).toInt() == HIGH){
-            QMessageBox::information(this, "Remplacement annulé", QString("Aucun mot n'a été sélectionné.\nLe remplacement a été annulé."));
-        }
-        return;
-    }
-
-    // save the position of the current cursor
-    QTextCursor oldCursor = find_edit()->textCursor();
-
-    // create a new cursor to walk through the text
-    QTextCursor cursor(find_edit()->document());
-
-    //Parcours de tout le document
-    while(!cursor.atEnd()) {
-        QCoreApplication::processEvents();
-        cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-        QString word = cursor.selectedText();
-
-        //Nettoyage des éléments qui précèdent
-        while(!word.isEmpty() && !word.at(0).isLetter() && cursor.anchor() < cursor.position()) {
-            int cursorPos = cursor.position();
-            cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);
-            cursor.setPosition(cursorPos, QTextCursor::KeepAnchor);
-            word = cursor.selectedText();
-        }
-
-        //Nettoyage des éléments qui suivent
-        while(!word.isEmpty() && !word.at(word.size()-1).isLetter()){
-            word = word.remove(word.size()-1, word.size());
-        }
-
-        //Remplacement du mot
-        if(word == orth_erreur){
-            cursor.removeSelectedText();
-            if(remplace.isEmpty()){
-                cursor.insertText(select_words->currentText());
-            }
-            else{
-                cursor.insertText(remplace);
-            }
-            nb_remplacements++; //On incrémente le nombre de remplacements
-        }
-
-        //On met à jour le curseur
-        cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
-    }
-
-    //On remet en place le vieux curseur
-    find_edit()->setTextCursor(oldCursor);
-
-    delete mots;
-
-    //On affiche le nombre de remplacements
-    if(settings->getSettings(Alertes).toInt() == HIGH){
-        QMessageBox::information(this, "Remplacement terminé", QString("Le mot «%1» a été remplacé %2 fois").arg(orth_erreur).arg(nb_remplacements));
-    }
-
-    //Return
-    return;
 }
 
 //Changement de la langue de vérification
@@ -3442,55 +3211,9 @@ void DadaWord::orth_langue(QString langue){
     return;
 }
 
-//Arrêt de la vérification orthographique
-void DadaWord::orth_stop(){
-    //On remet le curseur au début pour ne pas avoir de bug
-    pos_orth.movePosition(QTextCursor::Start);
-
-    //On masque la couleur résiduelle
-    //Et on efface le surlignage
-    QTextCharFormat highlightFormat;
-    highlightFormat.setBackground(QBrush(QColor("#ffffff")));
-    QTextEdit::ExtraSelection ess;
-    QList<QTextEdit::ExtraSelection> essList;
-    essList << ess;
-    find_edit()->setExtraSelections(essList);
-    QCoreApplication::processEvents();
-    ess.format = highlightFormat;
-
-    //Et on ferme la barre des tâches
-    barre_orthographe->hide();
-
-    //Et c'est tout!
-    return;
-}
-
 //Autocorrection
 void DadaWord::orth_autocorrection(QString remplacement){
-    QTextCursor cursor = find_edit()->textCursor();
-    cursor.select(QTextCursor::WordUnderCursor);
-    QString mot  = cursor.selectedText();
-    if(!mot.isEmpty() && !remplacement.isEmpty()){
-        QStringList listeCles = settings->getSettings(Cles).toStringList();
-        QStringList listeValeurs = settings->getSettings(Valeurs).toStringList();
-        if(listeCles.size() != listeValeurs.size()){
-            erreur->Erreur_msg(tr("Paires de remplacements invalide, impossible d'ajouter l'autocorrection"), QMessageBox::Warning);
-            return;
-        }
-        if(listeCles.contains(mot, Qt::CaseInsensitive)){
-            erreur->Erreur_msg(tr("Un clé nommée %1 existe déja.  L'autocorrection ne sera donc pas mise en place").arg(mot), QMessageBox::Information);
-            return;
-        }
-        listeCles.append(mot);
-        listeValeurs.append(remplacement);
-        settings->setSettings(Cles, listeCles);
-        settings->setSettings(Valeurs, listeValeurs);
-    }
-    else{
-        erreur->Erreur_msg(tr("Le mot à remplacer est vide, l'autocorrection ne sera donc pas mise en place."), QMessageBox::Warning);
-        return;
-    }
-    return;
+    orthographe->autocorrection(remplacement, true);
 }
 
 //Couper
@@ -3576,18 +3299,23 @@ void DadaWord::affiche_menu_perso(){
     QString mot  = cursor.selectedText();
 
     QStringList propositions;
-    if(!mot.isEmpty() && !list_skip.contains(mot) && !correcteur->spell(mot)){
-        propositions = correcteur->suggest(mot);
-        orth_erreur = mot;
-        //On parcourt la boucle
+    if(!mot.isEmpty() && !orthographe->getListSkip().contains(mot) && !orthographe->isCorrectWord(mot)){
+        propositions = orthographe->getSuggestList(mot);
         for(int i=0; i<propositions.size(); i++){
             menu_contextuel->addAction(propositions.at(i));
         }
         //S'il y a des propositions, on ajoute un séparateur
         menu_contextuel->addSeparator();
         //On ajoute "Ignorer" et "Ajouter au dictionnaire" au menu
-        menu_contextuel->addAction(tr("Ignorer tout"), this, SLOT(orth_ignore()));
-        menu_contextuel->addAction(tr("Ajouter au dictionnaire"), this, SLOT(orth_dico()));
+        QSignalMapper *orth1, *orth2;  orth1 = new QSignalMapper;  orth2 = new QSignalMapper;
+        QAction *mc_ignore = menu_contextuel->addAction(tr("Ignorer ce mot"));
+        QAction *mc_add = menu_contextuel->addAction(tr("Ajouter au dictionnaire"));
+        connect(mc_ignore, SIGNAL(triggered()), orth1, SLOT(map()));
+        orth1->setMapping(mc_ignore, mot);
+        connect(orth1, SIGNAL(mapped(QString)), orthographe, SLOT(ignore(QString)));
+        connect(mc_add, SIGNAL(triggered()), orth2, SLOT(map()));
+        orth2->setMapping(mc_add, mot);
+        connect(orth2, SIGNAL(mapped(QString)), orthographe, SLOT(addDico(QString)));
         QMenu *menu_contextuel_remplacement = menu_contextuel->addMenu(tr("Autocorrection"));
         if(propositions.size() > 0){
             for(int i=0; i<propositions.size(); i++){
@@ -3616,8 +3344,8 @@ void DadaWord::affiche_menu_perso(){
         if((propositions.contains(choix->text())) && !choix->isSeparator()){
             //On veut changer un mot
             //On transfère le QTextCursor
-            pos_orth_menu = cursor;
-            orth_remplace(choix->text());
+            orthographe->setTextCursor(cursor);
+            orthographe->remplacer(choix->text());
         }
     }
     delete menu_contextuel;
@@ -3641,7 +3369,7 @@ void DadaWord::remplace_all(){
     orth_erreur = champ_recherche2->text();
 
     //On appelle la fonction
-    orth_remplace_all(le_remplace->text());
+    //orth_remplace_all(le_remplace->text());
 
     //On ferme la fenêtre
     dialog_recherche->close();
