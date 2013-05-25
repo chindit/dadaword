@@ -24,8 +24,10 @@ public:
     bool isCorrectWord(QString word);
     QStringList getSuggestList(QString word);
     void setTextCursor(QTextCursor cursor);
+
+public slots:
+    void autocorrection(QString remplacement = "");
     void remplacer(QString nmot = "");
-    void autocorrection(QString remplacement, bool menu = false);
     
 private slots:
     void checkWord();

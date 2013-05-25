@@ -3213,7 +3213,8 @@ void DadaWord::orth_langue(QString langue){
 
 //Autocorrection
 void DadaWord::orth_autocorrection(QString remplacement){
-    orthographe->autocorrection(remplacement, true);
+    orthographe->setTextCursor(find_edit()->textCursor());
+    orthographe->autocorrection(remplacement);
 }
 
 //Couper

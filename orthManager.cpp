@@ -33,6 +33,7 @@ void OrthManager::showWindow(QTextEdit *contenu){
     //Goupe 2 : boutons du bas
     connect(ui->bouton_remplacer, SIGNAL(clicked()), this, SLOT(remplacer()));
     connect(ui->bouton_remplacer_tout, SIGNAL(clicked()), this, SLOT(remplacerTout()));
+    connect(ui->bouton_autocorrection, SIGNAL(clicked()), this, SLOT(autocorrection()));
 
     checkWord();
     return;
@@ -268,11 +269,20 @@ void OrthManager::setTextCursor(QTextCursor cursor){
     pos_orth = cursor;
 }
 
-void OrthManager::autocorrection(QString remplacement, bool menu){
+void OrthManager::autocorrection(QString remplacement){
     SettingsManager settings;
     ErrorManager erreur;
     QTextCursor cursor;
-    cursor = (menu) ? pos_orth : ui->contenu_texte->textCursor();
+    cursor = pos_orth;
+    bool make_remplace = false;
+    if(remplacement.isEmpty()){
+        QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
+        if(selected.count() == 0){
+            return;
+        }
+        remplacement = selected.at(0).data().toString();
+        make_remplace = true;
+    }
     cursor.select(QTextCursor::WordUnderCursor);
     QString mot  = cursor.selectedText();
     if(!mot.isEmpty() && !remplacement.isEmpty()){
@@ -290,6 +300,9 @@ void OrthManager::autocorrection(QString remplacement, bool menu){
         listeValeurs.append(remplacement);
         settings.setSettings(Cles, listeCles);
         settings.setSettings(Valeurs, listeValeurs);
+        if(make_remplace){
+            remplacer();
+        }
     }
     else{
         erreur.Erreur_msg(tr("Le mot à remplacer est vide, l'autocorrection ne sera donc pas mise en place."), QMessageBox::Warning);

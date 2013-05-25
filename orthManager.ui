@@ -33,7 +33,7 @@
     <string>Ignorer tout</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="bouton_autocorrection">
    <property name="geometry">
     <rect>
      <x>480</x>
@@ -100,7 +100,7 @@ l'autocorrection</string>
 définitivement</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_7">
+  <widget class="QPushButton" name="bouton_fermer">
    <property name="geometry">
     <rect>
      <x>480</x>
@@ -214,7 +214,7 @@ dictionnaire</string>
  </resources>
  <connections>
   <connection>
-   <sender>pushButton_7</sender>
+   <sender>bouton_fermer</sender>
    <signal>clicked()</signal>
    <receiver>OrthManager</receiver>
    <slot>close()</slot>
