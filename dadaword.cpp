@@ -1022,7 +1022,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
         if(keyEvent->key() == Qt::Key_Space){
             if(settings->getSettings(Orthographe).toBool() || settings->getSettings(Autocorrection).toBool()){
                 QTextCursor temp = find_edit()->textCursor();
-                temp.movePosition(QTextCursor::PreviousWord);
+                //temp.movePosition(QTextCursor::PreviousWord);
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
                     QString word = temp.selectedText();
@@ -1098,7 +1098,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 selection = extraSelections.at(i);
                 int debut = selection.cursor.anchor();
                 int fin = selection.cursor.position();
-                if(debut < positiion && positiion < fin){
+                if(debut <= positiion && positiion <= fin){
                     if(keyEvent->key() == Qt::Key_Space){
                         //Nouveau mot
                         extraSelections.removeAt(i);
