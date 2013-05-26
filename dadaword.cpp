@@ -1066,10 +1066,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                             if(word == word.toUpper()){ //On ignore les majuscules
                                 return false;
                             }
-                            //----------------------------
-                            //TO FIX!!!!!
-                            //----------------------------
-                            /*if(!list_skip.contains(word) && !correcteur->spell(word)){
+                            if(!orthographe->getListSkip().contains(word) && !orthographe->isCorrectWord(word)){
                                 // highlight the unknown word
                                 QTextCharFormat marquage_erreurs;
                                 QColor couleur(Qt::red);
@@ -1082,7 +1079,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 es.format = marquage_erreurs;
                                 liste_erreurs << es;
                                 find_edit()->setExtraSelections(liste_erreurs);
-                            } //IF : s'il y a une faute*/
+                            } //IF : s'il y a une faute
                         }//IF : s'il y a sélection et qu'elle est valide
                     }//IF : si on est dans la correction
                 }//IF : s'il y a un mot précédent
@@ -3009,67 +3006,6 @@ void DadaWord::verif_orthographe(){
     return;
 }
 
-//Changement de la langue de vérification
-//void DadaWord::orth_langue(QString langue){
-    /*QComboBox *liste = new QComboBox;
-    if(langue.isEmpty()){
-        QDialog *fen = new QDialog;
-        fen->setWindowTitle(tr("Langue du correcteur"));
-        fen->setWindowModality(Qt::ApplicationModal);
-        QLabel *titre, *actuelle, *choix;
-        QPushButton *valider = new QPushButton(tr("Valider"));
-        titre = new QLabel("<h1>Langue du correcteur<h1>");
-        QString nom_dico = dictPath.split("/").last();;
-        actuelle = new QLabel(tr("Dictionnaire actuel : ")+nom_dico);
-        choix = new QLabel(tr("Nouvelle langue"));
-        QDir dossier;
-        dossier.setPath("/usr/share/hunspell");
-        QStringList extentions;
-        extentions << "*.dic";
-        QStringList liste_dicos = dossier.entryList(extentions);
-        for(int i=0; i<liste_dicos.size(); i++){
-            QString temp = liste_dicos.at(i);
-            temp.resize((temp.size()-4));
-            liste->addItem(temp);
-            //On présélectionne la langue actuelle
-            if(temp == nom_dico){
-                liste->setCurrentIndex(i);
-            }
-        }
-        valider->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
-        QGridLayout *layout = new QGridLayout;
-        layout->addWidget(titre, 0, 0, 1, 2, Qt::AlignHCenter);
-        layout->addWidget(actuelle, 1, 0);
-        layout->addWidget(choix, 2, 0);
-        layout->addWidget(liste, 2, 1);
-        layout->addWidget(valider, 3, 0, 1, 2, Qt::AlignHCenter);
-        connect(valider, SIGNAL(clicked()), fen, SLOT(close()));
-        fen->setLayout(layout);
-        fen->exec();
-        QCoreApplication::processEvents();
-    }
-
-    QString nouvelleLangue = (langue.isEmpty()) ? liste->currentText() : langue;
-    //On met à jour le dico
-    if(!dictPath.contains(nouvelleLangue)){
-        dictPath = "/usr/share/hunspell/"+nouvelleLangue+".dic";
-        //Vérification des liens symboliques
-        QFileInfo testDico(dictPath);
-        if(testDico.isSymLink())
-            dictPath = testDico.symLinkTarget();
-        //Et le bouton
-        status_langue->setText(nouvelleLangue);
-        //On re-déclare le correcteur
-        delete correcteur;
-        QString userDict= QDir::homePath() + "/.config/libreoffice/3/user/wordbook/standard.dic";
-        if(!QFile::exists(userDict)){
-            userDict = QDir::homePath() + "/.dadaword/perso.dic";
-        }
-        correcteur = new SpellChecker(dictPath, userDict);
-    }
-    return;*/
-//}
-
 //Autocorrection
 void DadaWord::orth_autocorrection(QString remplacement){
     orthographe->setTextCursor(find_edit()->textCursor());
@@ -3221,22 +3157,6 @@ void DadaWord::recharge_styles(){
         nom_format->addItem(noms_styles.at(i));
     }
     return;
-}
-
-//Remplace toutes les occurences d'un mot
-void DadaWord::remplace_all(){
-    //----------------------------
-    //TO DELETE
-    //----------------------------
-    //On met à jour les paramètres
-    /*orth_erreur = champ_recherche2->text();
-
-    //On appelle la fonction
-    //orth_remplace_all(le_remplace->text());
-
-    //On ferme la fenêtre
-    dialog_recherche->close();
-    delete dialog_recherche;*/
 }
 
 //Appelle la fonction de recherche

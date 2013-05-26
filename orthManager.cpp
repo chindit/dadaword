@@ -111,6 +111,7 @@ void OrthManager::showWindow(QTextEdit *contenu){
     connect(ui->bouton_remplacer, SIGNAL(clicked()), this, SLOT(remplacer()));
     connect(ui->bouton_remplacer_tout, SIGNAL(clicked()), this, SLOT(remplacerTout()));
     connect(ui->bouton_autocorrection, SIGNAL(clicked()), this, SLOT(autocorrection()));
+    connect(ui->bouton_options, SIGNAL(clicked()), this, SLOT(options()));
 
     checkWord();
     return;
@@ -338,6 +339,7 @@ bool OrthManager::isCorrectWord(QString word){
     return correcteur->spell(word);
 }
 
+//Retourne la liste des suggestions pour le mot erroné
 QStringList OrthManager::getSuggestList(QString word){
     QStringList suggestions;
     if(!correcteur->spell(word)){
@@ -346,10 +348,12 @@ QStringList OrthManager::getSuggestList(QString word){
     return suggestions;
 }
 
+//Transfère le curseur d'une classe à l'autre
 void OrthManager::setTextCursor(QTextCursor cursor){
     pos_orth = cursor;
 }
 
+//Ajoute le mot à corriger à l'autocorrection
 void OrthManager::autocorrection(QString remplacement){
     SettingsManager settings;
     ErrorManager erreur;
@@ -476,3 +480,8 @@ QString OrthManager::setUserDict(){
     return userDict;
 }
 
+
+//Affiche les options orthographiques
+void OrthManager::options(){
+    QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, cette fonctionnalité n'est pas encore disponible, mais ce n'est qu'une question de temps ;-)"));
+}

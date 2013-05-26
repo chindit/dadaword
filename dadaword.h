@@ -125,7 +125,6 @@ private slots:
     void statistiques();
     void change_style(int style);
     void verif_orthographe();
-    //void orth_langue(QString langue = "");
     void orth_autocorrection(QString remplacement);
     void couper();
     void copier();
@@ -133,7 +132,6 @@ private slots:
     void mode_surecriture();
     void html_highlight();
     void affiche_menu_perso();
-    void remplace_all();
     void call_remplace();
     void curseur_change();
     void set_interligne(int interligne);

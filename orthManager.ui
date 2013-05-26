@@ -117,7 +117,7 @@ définitivement</string>
      <normaloff>:/menus/images/sortir.png</normaloff>:/menus/images/sortir.png</iconset>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_8">
+  <widget class="QPushButton" name="bouton_options">
    <property name="geometry">
     <rect>
      <x>10</x>

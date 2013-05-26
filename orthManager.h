@@ -37,6 +37,7 @@ private slots:
     void addDico(QString mot = "");
     void ignoreDef();
     void remplacerTout();
+    void options();
 
 private:
     QString setUserDict();
