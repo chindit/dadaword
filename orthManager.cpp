@@ -84,18 +84,7 @@ OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent
         dictPath = testDico.symLinkTarget();
 
     //Création de l'instance du correcteur
-    //------------------------
-    //CHANGER POUR WINDOWS
-    //------------------------
-    QString userDict= repertoire + "/.config/libreoffice/4/user/wordbook/standard.dic";
-    if(!QFile::exists(userDict)){
-        #ifdef Q_OS_WIN
-            userDict = repertoire+"/hunspell/perso.dic";
-        #else
-            userDict = QDir::homePath() + "/.dadaword/perso.dic";
-        #endif
-    }
-    correcteur = new SpellChecker(dictPath, userDict);
+    correcteur = new SpellChecker(dictPath, this->setUserDict());
 }
 
 OrthManager::~OrthManager(){
@@ -415,8 +404,7 @@ void OrthManager::setDico(QString langue){
         QLabel *titre, *actuelle, *choix;
         QPushButton *valider = new QPushButton(tr("Valider"));
         titre = new QLabel("<h1>Langue du correcteur<h1>");
-        QString nom_dico = this->getDico();
-        actuelle = new QLabel(tr("Dictionnaire actuel : ")+nom_dico);
+        actuelle = new QLabel(tr("Dictionnaire actuel : ")+this->getDico().split("/").last());
         choix = new QLabel(tr("Nouvelle langue"));
 
         QStringList extentions;
@@ -427,7 +415,7 @@ void OrthManager::setDico(QString langue){
             temp.resize((temp.size()-4));
             liste->addItem(temp);
             //On présélectionne la langue actuelle
-            if(temp == nom_dico){
+            if(temp == this->getDico().split("/").last()){
                 liste->setCurrentIndex(i);
             }
         }
@@ -455,18 +443,30 @@ void OrthManager::setDico(QString langue){
 
         //On re-déclare le correcteur
         delete correcteur;
-        //-------------------------
-        //À ADAPTER POUR WINDOWS
-        //-------------------------
-        QString userDict= QDir::homePath() + "/.config/libreoffice/4/user/wordbook/standard.dic";
-        if(!QFile::exists(userDict)){
-            userDict = QDir::homePath() + "/.dadaword/perso.dic";
-        }
-        correcteur = new SpellChecker(dicoActuel, userDict);
+
+        correcteur = new SpellChecker(dicoActuel, this->setUserDict());
     }
     return;
 }
 
+//Renvoie le dictionnaire actuellement utilisé (chemin absolu)
 QString OrthManager::getDico(){
     return dicoActuel;
 }
+
+//Établi le chemin vers le dictionnaire personnel selon l'OS
+QString OrthManager::setUserDict(){
+    QString userDict, fallbackDict;
+#ifdef Q_OS_WIN
+    userDict = QDir::homePath() + "/AppData/Roaming/LibreOffice/4/user/wordbook/standard.dic";
+    fallbackDict = QDir::homePath() + "/AppData/Local/DadaWord/standard.dic";
+#else
+    userDict = QDir::homePath() + "/.config/libreoffice/4/user/wordbook/standard.dic";
+    fallbackDict = QDir::homePath() + "/.dadaword/perso.dic";
+#endif
+    if(!QFile::exists(userDict)){
+        userDict = fallbackDict;
+    }
+    return userDict;
+}
+

@@ -39,6 +39,8 @@ private slots:
     void remplacerTout();
 
 private:
+    QString setUserDict();
+
     Ui::OrthManager *ui;
     SpellChecker* correcteur;
     QTextCursor pos_orth;
