@@ -12,6 +12,7 @@ OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent
         repertoire += "/.dadaword";
     #endif
     #ifdef Q_OS_WIN
+        ErrorManager erreur;
         dictPath = repertoire+"/hunspell/"+dictionnaire;
         QFile test_dico(dictPath+".dic");
         if(!test_dico.exists()){
@@ -20,7 +21,7 @@ OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent
             if(qdown == QMessageBox::Yes){
                 QDir temp(repertoire+"/hunspell/");
                 if(!temp.exists() && !temp.mkdir(repertoire+"/hunspell/")){
-                    erreur->Erreur_msg(tr("Impossible de créer le repertoire de dictionnaires"), QMessageBox::Warning);
+                    erreur.Erreur_msg(tr("Impossible de créer le repertoire de dictionnaires"), QMessageBox::Warning);
                 }
                 else{
                     QNetworkAccessManager nw_manager;
@@ -401,7 +402,7 @@ void OrthManager::autocorrection(QString remplacement){
 void OrthManager::setDico(QString langue){
     QDir dossier;
 #ifdef Q_OS_WIN
-    dossier.setPath(repertoire + "/AppData/Local/DadaWord/hunspell/");
+    dossier.setPath(QDir::homePath() + "/AppData/Local/DadaWord/hunspell/");
 #else
     dossier.setPath("/usr/share/hunspell");
 #endif

@@ -794,7 +794,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         find_edit()->insertHtml(contenu);
         //Actualisation du dictionnaire
         QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
-        if(retour.at(1) != "default" && is_dico.exactMatch(retour.at(1))){
+        if((nom_fichier.endsWith(".ddz", Qt::CaseInsensitive)) && retour.at(1) != "default" && is_dico.exactMatch(retour.at(1))){
             //Normalement on ne doit pas vérifier le dico, mais on n'est jamais trop prudent
             orthographe->setDico(retour.at(1));
         }
