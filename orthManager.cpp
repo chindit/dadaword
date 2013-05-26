@@ -96,6 +96,11 @@ void OrthManager::showWindow(QTextEdit *contenu){
     ui->contenu_texte->setCursor(contenu->cursor());
     ui->contenu_texte->setDocument(contenu->document());
 
+    //Bouton de langue
+    ui->bouton_langue->setFlat(true);
+    ui->bouton_langue->setText(this->getDico().split("/").last().split(".").first());
+    connect(ui->bouton_langue, SIGNAL(clicked()), this, SLOT(setDico()));
+
     //Connexion des boutons aux slots
     //Groupe 1 : boutons du haut
     connect(ui->bouton_ignore, SIGNAL(clicked()), this, SLOT(checkWord()));
