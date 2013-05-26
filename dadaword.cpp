@@ -140,6 +140,7 @@ void DadaWord::cree_iu(){
     status_langue->setToolTip(tr("Langue pour le document actuel"));
     status_langue->setFlat(true);
     connect(status_langue, SIGNAL(clicked()), orthographe, SLOT(setDico()));
+    connect(orthographe, SIGNAL(langueChangee()), this, SLOT(updateLangue()));
     statusBar()->addPermanentWidget(status_langue);
 
     //Surécriture
@@ -3564,4 +3565,9 @@ void DadaWord::has_maj(){
             QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, DadaWord ne sait pas encore télécharger de mise à jour, mais la fonctionnalité arrive bientôt ;-)"));
         }
     }
+}
+
+//Met à jour le bouton de langue
+void DadaWord::updateLangue(){
+    status_langue->setText(orthographe->getDico().split("/").last().split(".").first());
 }

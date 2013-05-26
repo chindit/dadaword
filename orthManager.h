@@ -49,7 +49,7 @@ private:
     QString dicoActuel;
 
 signals:
-//Créer un signal pour le changement de langue (pour la mise à jour du bouton)
+    void langueChangee();
 };
 
 #endif // ORTHMANAGER_H

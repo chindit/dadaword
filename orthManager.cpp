@@ -404,7 +404,7 @@ void OrthManager::setDico(QString langue){
         QLabel *titre, *actuelle, *choix;
         QPushButton *valider = new QPushButton(tr("Valider"));
         titre = new QLabel("<h1>Langue du correcteur<h1>");
-        actuelle = new QLabel(tr("Dictionnaire actuel : ")+this->getDico().split("/").last());
+        actuelle = new QLabel(tr("Dictionnaire actuel : ")+this->getDico().split("/").last().split(".").first());
         choix = new QLabel(tr("Nouvelle langue"));
 
         QStringList extentions;
@@ -415,7 +415,7 @@ void OrthManager::setDico(QString langue){
             temp.resize((temp.size()-4));
             liste->addItem(temp);
             //On présélectionne la langue actuelle
-            if(temp == this->getDico().split("/").last()){
+            if(temp == this->getDico().split("/").last().split(".").first()){
                 liste->setCurrentIndex(i);
             }
         }
@@ -445,6 +445,7 @@ void OrthManager::setDico(QString langue){
         delete correcteur;
 
         correcteur = new SpellChecker(dicoActuel, this->setUserDict());
+        emit langueChangee();
     }
     return;
 }

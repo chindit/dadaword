@@ -148,6 +148,7 @@ private slots:
     void setSubScript(bool etat);
     void hide_menubar();
     void changeEncode(int encodage);
+    void updateLangue();
     //Only for Windows
     void has_maj();
 
