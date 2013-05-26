@@ -109,6 +109,7 @@ void OrthManager::showWindow(QTextEdit *contenu){
     connect(ui->bouton_ignore_def, SIGNAL(clicked()), this, SLOT(ignoreDef()));
     //Goupe 2 : boutons du bas
     connect(ui->bouton_remplacer, SIGNAL(clicked()), this, SLOT(remplacer()));
+    connect(ui->liste_corrections, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(remplacer()));
     connect(ui->bouton_remplacer_tout, SIGNAL(clicked()), this, SLOT(remplacerTout()));
     connect(ui->bouton_autocorrection, SIGNAL(clicked()), this, SLOT(autocorrection()));
     connect(ui->bouton_options, SIGNAL(clicked()), this, SLOT(options()));
