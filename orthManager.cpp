@@ -117,6 +117,7 @@ void OrthManager::showWindow(QTextEdit *contenu){
     return;
 }
 
+//Vérifie l'orthographe
 void OrthManager::checkWord(){
     QTextCursor cursor(ui->contenu_texte->document());
 
@@ -484,4 +485,51 @@ QString OrthManager::setUserDict(){
 //Affiche les options orthographiques
 void OrthManager::options(){
     QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, cette fonctionnalité n'est pas encore disponible, mais ce n'est qu'une question de temps ;-)"));
+}
+
+//Souligne tous les mots mal orthographiés (lancement à l'initialisation)
+void OrthManager::checkAll(QTextEdit *contenu){
+    QTextCharFormat erreurs;
+    QColor couleur(Qt::red);
+    erreurs.setUnderlineColor(couleur);
+    erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+
+    QTextCursor cursor = contenu->textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    QList<QTextEdit::ExtraSelection> esList;
+
+    while(!cursor.atEnd()) {
+        cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+        word = cursor.selectedText();
+
+        // Workaround for better recognition of words
+        // punctuation etc. does not belong to words
+        while(!word.isEmpty() && !word.at(0).isLetter() && cursor.anchor() < cursor.position()) {
+            int cursorPos = cursor.position();
+            cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);
+            cursor.setPosition(cursorPos, QTextCursor::KeepAnchor);
+            word = cursor.selectedText();
+        }
+
+        //Nettoyage des éléments qui suivent
+        while(!word.isEmpty() && !word.at(word.size()-1).isLetter()){
+            word = word.remove(word.size()-1, word.size());
+        }
+
+        //Il n'y a erreur QUE si le mot n'est pas vide, n'est pas présent dans le dictionnaire ET n'est pas ignoré
+        if(!word.isEmpty() && !this->isCorrectWord(word) && !this->getListSkip().contains(word)){
+
+            QTextCursor tmpCursor(cursor);
+            tmpCursor.setPosition(cursor.anchor());
+
+            // highlight the unknown word
+            QTextEdit::ExtraSelection es;
+            es.cursor = cursor;
+            es.format = erreurs;
+            esList << es;
+        }
+        cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+    }
+    contenu->setExtraSelections(esList);
+    return;
 }

@@ -806,6 +806,10 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
             find_edit()->setFocus();
             show_annexes(); //Actualisation de la liste des annexes
         }
+        if(settings->getSettings(Orthographe).toBool()){
+            //On corrige tout le document
+            orthographe->checkAll(find_edit());
+        }
     }
     else if(texte){
         //Gestion des fichiers de texte
@@ -1022,7 +1026,6 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
         if(keyEvent->key() == Qt::Key_Space){
             if(settings->getSettings(Orthographe).toBool() || settings->getSettings(Autocorrection).toBool()){
                 QTextCursor temp = find_edit()->textCursor();
-                //temp.movePosition(QTextCursor::PreviousWord);
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
                     QString word = temp.selectedText();
