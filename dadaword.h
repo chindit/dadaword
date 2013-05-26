@@ -207,7 +207,7 @@ private:
 
     //QString dictPath;
     //QStringList list_skip;
-    QList<QTextEdit::ExtraSelection> liste_erreurs;
+    //QList<QTextEdit::ExtraSelection> liste_erreurs;
     HighlighterHtml *instance;
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;

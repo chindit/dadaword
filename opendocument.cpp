@@ -867,7 +867,6 @@ bool OpenDocument::traite_span(QTextCharFormat format, QTextCursor &curseur, QDo
                     QTextDocument *temp = new QTextDocument;
                     QTextCursor curseur2(temp);
                     curseur2.insertText(contenu.at(i), format);
-                    QString temp_string = nettoye_code(temp->toHtml());
                     case_tableau.append(nettoye_code(temp->toHtml()));
                 }
                 else{

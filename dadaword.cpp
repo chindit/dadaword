@@ -965,6 +965,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
 
     if(event->type() == QEvent::KeyPress){
         QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+
         if(keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Backspace){
             QTextCursor curseur = find_edit()->textCursor();
             curseur.movePosition(QTextCursor::Left);
@@ -1019,12 +1020,6 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             }
         }//Fin du "if" de "Escape"
         if(keyEvent->key() == Qt::Key_Space){
-            //Protection contre l'extra-selection
-            if(find_edit()->textCursor().charFormat().underlineStyle() == QTextCharFormat::WaveUnderline){
-                QTextCharFormat format = find_edit()->textCursor().charFormat();
-                format.setUnderlineStyle(QTextCharFormat::DashUnderline);
-                find_edit()->textCursor().setCharFormat(format);
-            }
             if(settings->getSettings(Orthographe).toBool() || settings->getSettings(Autocorrection).toBool()){
                 QTextCursor temp = find_edit()->textCursor();
                 temp.movePosition(QTextCursor::PreviousWord);
@@ -1066,6 +1061,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                             if(word == word.toUpper()){ //On ignore les majuscules
                                 return false;
                             }
+
                             if(!orthographe->getListSkip().contains(word) && !orthographe->isCorrectWord(word)){
                                 // highlight the unknown word
                                 QTextCharFormat marquage_erreurs;
@@ -1077,14 +1073,99 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 QTextEdit::ExtraSelection es;
                                 es.cursor = temp;
                                 es.format = marquage_erreurs;
-                                liste_erreurs << es;
-                                find_edit()->setExtraSelections(liste_erreurs);
+                                //liste_erreurs << es;
+                                QList<QTextEdit::ExtraSelection> extraSelections;
+                                extraSelections = find_edit()->extraSelections();
+                                extraSelections.append(es);
+                                find_edit()->setExtraSelections(extraSelections);
                             } //IF : s'il y a une faute
                         }//IF : s'il y a sélection et qu'elle est valide
                     }//IF : si on est dans la correction
                 }//IF : s'il y a un mot précédent
             }//IF : si la correction est activée
         }//IF : activation de la touche "Espace"
+    }//Fin du KeyPressed
+    if(event->type() == QEvent::KeyRelease){
+        //Quelle que soit la touche pressée, il faut tester si on se trouve dans une «extraselection» et la mettre à jour
+        if(settings->getSettings(Orthographe).toBool()){
+              //Protection contre l'extra-selection
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+            int positiion = find_edit()->textCursor().position();
+            QList<QTextEdit::ExtraSelection> extraSelections;
+            extraSelections = find_edit()->extraSelections();
+              for(int i = 0; i < extraSelections.count(); ++i) {
+                QTextEdit::ExtraSelection selection;
+                selection = extraSelections.at(i);
+                int debut = selection.cursor.anchor();
+                int fin = selection.cursor.position();
+                if(debut < positiion && positiion < fin){
+                    if(keyEvent->key() == Qt::Key_Space){
+                        //Nouveau mot
+                        extraSelections.removeAt(i);
+                        //MOT 2 (fin de la sélection)
+                        QTextCursor temp(selection.cursor);
+                         temp.movePosition(QTextCursor::PreviousWord);
+                         temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
+                         QString mot2 = temp.selectedText();
+                         if(!orthographe->isCorrectWord(mot2)){
+                             QTextCharFormat marquage_erreurs;
+                             QColor couleur(Qt::red);
+                             marquage_erreurs.setUnderlineColor(couleur);
+                             marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+
+                             //Sélection de texte (pour le surlignage)
+                             QTextEdit::ExtraSelection es;
+                             es.cursor = temp;
+                             es.format = marquage_erreurs;
+                             extraSelections.append(es);
+                         }
+                         //MOT 1 (début de la sélection)
+                         temp = selection.cursor;
+                         temp.movePosition(QTextCursor::PreviousWord);
+                         temp.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor, 1);
+                         QString mot1 = temp.selectedText().trimmed();
+                         if(!orthographe->isCorrectWord(mot1)){
+                             QTextCharFormat marquage_erreurs;
+                             QColor couleur(Qt::red);
+                             marquage_erreurs.setUnderlineColor(couleur);
+                             marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+
+                             //Sélection de texte (pour le surlignage)
+                             QTextEdit::ExtraSelection es;
+                             es.cursor = temp;
+                             es.format = marquage_erreurs;
+                             extraSelections.append(es);
+                         }
+                         //Actualisation des sélections
+                         find_edit()->setExtraSelections(extraSelections);
+
+                    }
+                    else{
+                        //On modifie un mot erronné
+                        //Nettoyage du mot
+                        QTextCursor temp = selection.cursor;
+                        QString word = temp.selectedText();
+                            while(!word.isEmpty() && !word.at(0).isLetter() && temp.anchor() < temp.position()) {
+                                int cursorPos = selection.cursor.position();
+                                temp.setPosition(temp.anchor() + 1, QTextCursor::MoveAnchor);
+                                temp.setPosition(cursorPos, QTextCursor::KeepAnchor);
+                                word = temp.selectedText();
+                            }
+                            if(orthographe->isCorrectWord(word)){
+                                //On supprime le soulignement du mot
+                                extraSelections.removeAt(i);
+                                find_edit()->setExtraSelections(extraSelections);
+                                QTextCharFormat marquage_erreurs;
+                                marquage_erreurs.setUnderlineStyle(QTextCharFormat::NoUnderline);
+                                //selection.cursor.setCharFormat(marquage_erreurs);
+                                //On quitte la boucle pour éviter des problèmes et parce que ça ne sert à rien de continuer.
+                                break;
+                            }
+
+                    }
+                }
+              }
+        }
     }
     return QWidget::eventFilter(obj, event);
 }
