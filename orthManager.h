@@ -20,7 +20,7 @@ public:
     explicit OrthManager(QString dictionnaire, QWidget *parent = 0);
     ~OrthManager();
     void showWindow(QTextEdit *contenu);
-    QStringList getListSkip();
+    QStringList getListSkip(bool definitive = false);
     bool isCorrectWord(QString word);
     QStringList getSuggestList(QString word);
     void setTextCursor(QTextCursor cursor);
@@ -47,6 +47,7 @@ private:
     SpellChecker* correcteur;
     QTextCursor pos_orth;
     QStringList list_skip;
+    QStringList list_skip_definitively;
     QString word;
     QString dicoActuel;
 

@@ -4,7 +4,7 @@ DDZ::DDZ()
 {
 }
 
-bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringList annexes){
+bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringList annexes, QStringList ignore){
     //Paramètres de fonction
     ErrorManager instance_erreur;
 
@@ -62,6 +62,7 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
         }
     }
 
+    //Traitement des annexes
     if(annexes.size() > 0){
         QDomNode xmlAnnexe = preferences.createElement("annexes");
         for(int i=0; i<annexes.size(); i++){
@@ -75,6 +76,18 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
             thisAnnexe.appendChild(thisText);
             xmlAnnexe.appendChild(thisAnnexe);
             preferences.appendChild(xmlAnnexe);
+        }
+    }
+
+    //Traitement des mots à ignorer définitivement (ajout dans le XML de config)
+    if(ignore.size() >= 1){
+        QDomNode xmlIgnore = preferences.createElement("orthographe");
+        for(int i=0; i<ignore.count(); i++){
+            QDomElement motIgnore = preferences.createElement("mot");
+            QDomText motTexte = preferences.createTextNode(ignore.at(i));
+            motIgnore.appendChild(motTexte);
+            xmlIgnore.appendChild(motIgnore);
+            preferences.appendChild(xmlIgnore);
         }
     }
 

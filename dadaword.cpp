@@ -558,7 +558,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
                 i = 100000;
             }
         }
-        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, status_langue->text(), envoi_ddz)){
+        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, status_langue->text(), envoi_ddz, orthographe->getListSkip(true))){
             erreur->Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
         add_ddz_annexe->setVisible(true);

@@ -157,7 +157,7 @@ void OrthManager::checkWord(){
         }
 
         //Il n'y a erreur QUE si le mot n'est pas vide, n'est pas présent dans le dictionnaire ET n'est pas ignoré
-        if(!word.isEmpty() && !correcteur->spell(word) && !list_skip.contains(word)){
+        if(!word.isEmpty() && !correcteur->spell(word) && !this->getListSkip().contains(word)){
             //Affichage de la barre d'outils,
             //barre_orthographe->show();
 
@@ -181,8 +181,9 @@ void OrthManager::checkWord(){
                 QStandardItem* item = new QStandardItem(suggestions.at(i));
                     liste->appendRow(item);
             }
-            if(suggestions.size() > 1)
+            if(suggestions.size() > 1){
                 ui->label_2->setText(tr("Suggestions :"));
+            }
             ui->liste_corrections->setModel(liste);
             if(suggestions.size() == 0){
                 //Vu qu'il n'y a rien, on l'indique
@@ -239,7 +240,8 @@ void OrthManager::addDico(QString mot){
 
 //Ignore définitivement un mot pour ce document
 void OrthManager::ignoreDef(){
-    QMessageBox::information(this, "Fonctionnalité non-implémentée", "Malheureusement, cette fonctionnalité n'est pas implémentée pour le moment, mais nous y travaillons.");
+    list_skip_definitively.append(word);
+    checkWord();
     return;
 }
 
@@ -332,8 +334,15 @@ void OrthManager::remplacerTout(){
 }
 
 //Retourne la liste des mots à ignorer
-QStringList OrthManager::getListSkip(){
-    return list_skip;
+QStringList OrthManager::getListSkip(bool definitive){
+    if(definitive)
+        return list_skip_definitively;
+    QStringList temp;
+    temp = list_skip;
+    for(int i=0; i<list_skip_definitively.count(); i++){
+        list_skip.append(list_skip_definitively.at(i));
+    }
+    return temp;
 }
 
 //Vérifie si le mot envoyé est correctement orthographié
