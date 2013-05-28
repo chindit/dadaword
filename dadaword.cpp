@@ -3555,13 +3555,15 @@ void DadaWord::changeEncode(int encodage){
 void DadaWord::has_maj(){
     QNetworkAccessManager get_file;
     QNetworkReply *reply_version;
-    QNetworkRequest get_version(QUrl("https://raw.github.com/chindit/dadaword/master/version.txt"));
+    QNetworkRequest get_version(QUrl("https://raw.github.com/chindit/dadaword/master/version.xml"));
     reply_version = get_file.get(get_version);
     QEventLoop wait_version;
     QObject::connect(reply_version, SIGNAL(finished()), &wait_version, SLOT(quit()));
     wait_version.exec();
-    QString version = reply_version->readLine().trimmed();
-    if(version == VERSION){
+    QString version = reply_version->readAll();
+    QDomDocument xmlVersion(version);
+    QString numVersion = xmlVersion.elementsByTagName("version").at(0).toElement().text();
+    if(numVersion == VERSION){
         QMessageBox::information(this, tr("Pas de nouvelle version"), tr("Félicitations!  Vous avez la dernière version de DadaWord"));
     }
     else{
