@@ -708,6 +708,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         if(retour.size() > 2){
             annexes = true;
         }
+        orthographe->setMotsIgnores(instance_ddz.getMotsIgnores());
         add_ddz_annexe->setVisible(true);
         rm_ddz_annexe->setVisible(true);
         ddz_annexes->setEnabled(true);

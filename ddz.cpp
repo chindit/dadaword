@@ -12,10 +12,11 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
 
     //Création d'un XML global pour les préférences
     QDomDocument preferences;
+    QDomElement xmlConfig = preferences.createElement("config");
     QDomElement xmlLangue = preferences.createElement("langue");
     QDomText xmlLangueTexte = preferences.createTextNode(langue);
     xmlLangue.appendChild(xmlLangueTexte);
-    preferences.appendChild(xmlLangue);
+    xmlConfig.appendChild(xmlLangue);
 
     //On remplit le fichier avec le contenu
     QString nom_fichier = fichier.split("/").last();
@@ -75,7 +76,7 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
             QDomText thisText = preferences.createTextNode(annexes.at(i).split("/").last());
             thisAnnexe.appendChild(thisText);
             xmlAnnexe.appendChild(thisAnnexe);
-            preferences.appendChild(xmlAnnexe);
+            xmlConfig.appendChild(xmlAnnexe);
         }
     }
 
@@ -87,11 +88,12 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
             QDomText motTexte = preferences.createTextNode(ignore.at(i));
             motIgnore.appendChild(motTexte);
             xmlIgnore.appendChild(motIgnore);
-            preferences.appendChild(xmlIgnore);
+            xmlConfig.appendChild(xmlIgnore);
         }
     }
 
     //Enregistrement des préférences
+    preferences.appendChild(xmlConfig);
     QDomNode noeud = preferences.createProcessingInstruction("xml","version=\"1.0\"");
     preferences.insertBefore(noeud, preferences.firstChild());
     QByteArray array_prefs;
@@ -175,16 +177,21 @@ QStringList DDZ::ouvre(QString nom){
 
     //Ouverture de la configuration
     QFile fileConfig(QDir::tempPath()+"/config.xml");
-    QDomDocument config;
-    if(fileConfig.open(QFile::ReadOnly)){
-        config.setContent(&fileConfig);
-        fileConfig.close();
-    }
-    else{
-        instance_erreur.Erreur_msg(QObject::tr("DDZ : Erreur lors de la lecture du contenu du document."), QMessageBox::Ignore);
-        retour.append("NULL");
-        return retour;
-    }
+QString *erreur = new QString;int *er1 =new int;int *er2 = new int;
+    QDomDocument config("Config");
+        if(!fileConfig.open(QIODevice::ReadOnly)){
+            instance_erreur.Erreur_msg(QObject::tr("DDZ : Erreur lors de l'ouverture du fichier de configuration"), QMessageBox::Ignore);
+            retour.append("NULL");
+            return retour;
+        }
+        QString contenuxml = fileConfig.readAll().simplified();
+        if (!config.setContent(contenuxml, true, erreur, er1, er2)){
+            instance_erreur.Erreur_msg(QObject::tr("DDZ : Impossible d'attribuer le fichier de configuration à la variable QDomDocument"), QMessageBox::Ignore);
+            retour.append("NULL");
+            return retour;
+        }
+    fileConfig.close();
+
 
     QDomElement racine = config.documentElement();
     //Lecture de la langue
@@ -204,5 +211,18 @@ QStringList DDZ::ouvre(QString nom){
         }
     }
 
+    //Mots ignorés
+    QDomNodeList liste_mots = racine.elementsByTagName("mot");
+    if(!liste_mots.isEmpty()){
+        for(int i=0; i<liste_mots.count(); i++){
+            motsIgnores.append(liste_mots.at(i).toElement().text());
+        }
+    }
+
     return retour;
+}
+
+//Renvoie la liste des mots à ignorer
+QStringList DDZ::getMotsIgnores(){
+    return motsIgnores;
 }

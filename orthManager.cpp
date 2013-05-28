@@ -543,3 +543,8 @@ void OrthManager::checkAll(QTextEdit *contenu){
     contenu->setExtraSelections(esList);
     return;
 }
+
+//Transfère les mots ignorés au correcteur
+void OrthManager::setMotsIgnores(QStringList liste){
+    list_skip_definitively = liste;
+}

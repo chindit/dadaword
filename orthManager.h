@@ -26,6 +26,7 @@ public:
     void setTextCursor(QTextCursor cursor);
     QString getDico();
     void checkAll(QTextEdit *contenu);
+    void setMotsIgnores(QStringList liste);
 
 public slots:
     void autocorrection(QString remplacement = "");
