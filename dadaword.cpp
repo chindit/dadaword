@@ -3569,6 +3569,20 @@ void DadaWord::has_maj(){
     else{
         int reponse = QMessageBox::question(this, tr("Nouvelle version disponible"), tr("Une nouvelle version de DadaWord est disponible en téléchargement.\nVoulez-vous la télécharger?"), QMessageBox::Yes | QMessageBox::No);
         if(reponse == QMessageBox::Yes){
+            get_version.setUrl(QUrl(xmlVersion.elementsByTagName("url").at(0).toElement().text()));
+            reply_version->close();
+            reply_version = get_file.get(get_version);
+            QEventLoop wait_version;
+            QObject::connect(reply_version, SIGNAL(finished()), &wait_version, SLOT(quit()));
+            wait_version.exec();
+            QFile saveVersion(QDir::tempPath()+"/dadaword_"+numVersion+".exe");
+            if(!saveVersion.open(QFile::WriteOnly)){
+                erreur->Erreur_msg(tr("Impossible d'enregistrer la nouvelle version de DadaWord."), QMessageBox::Critical);
+                return;
+            }
+            saveVersion.write(reply_version->readAll());
+            saveVersion.close();
+            ouvre_programme(saveVersion.fileName());
             QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, DadaWord ne sait pas encore télécharger de mise à jour, mais la fonctionnalité arrive bientôt ;-)"));
         }
     }
