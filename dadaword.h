@@ -49,7 +49,7 @@
 #include "constantes.h"
 #include "ddz.h"
 #include "errorManager.h"
-#include "fen_puces.h"
+#include "puces.h"
 #include "highlighterhtml.h"
 #include "outils.h"
 #include "opendocument.h"
@@ -205,9 +205,6 @@ private:
 
     QTextCursor pos_orth;
 
-    //QString dictPath;
-    //QStringList list_skip;
-    //QList<QTextEdit::ExtraSelection> liste_erreurs;
     HighlighterHtml *instance;
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;
@@ -217,7 +214,6 @@ private:
     QList< QStringList > liste_annexes;
     QToolBar *barre_edition;
     QAction *affichage_edition;
-    //OrthManager *kkvgb;
 
 };
 

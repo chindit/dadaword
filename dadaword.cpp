@@ -918,9 +918,13 @@ void DadaWord::create_liste_puce(const int ordonne){
     QTextList *liste_actuelle = curseur.currentList();
     if(liste_actuelle == 0){
         if(ordonne == 1){
-            fen_puces instance_puces;
+            Puces instance_puces;
+            instance_puces.exec();
+            if(instance_puces.isClosed()){
+                return; //Annulation de la liste
+            }
             //On récupère le choix dans un QSTring
-            QString choix = instance_puces.get_radio();
+            QString choix = instance_puces.getRadio();
             if(choix == "QTextListFormat::ListDecimal"){
                 liste_puce.setStyle(QTextListFormat::ListDecimal);
             }

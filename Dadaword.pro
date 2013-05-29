@@ -18,7 +18,6 @@ SOURCES += main.cpp\
         dadaword.cpp \
     outils.cpp \
     opendocument.cpp \
-    fen_puces.cpp \
     spellchecker.cpp \
     highlighterhtml.cpp \
     ddz.cpp \
@@ -29,13 +28,13 @@ SOURCES += main.cpp\
     autoload.cpp \
     specialchars.cpp \
     replaceManager.cpp \
-    orthManager.cpp
+    orthManager.cpp \
+    puces.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
     outils.h \
     opendocument.h \
-    fen_puces.h \
     spellchecker.h \
     highlighterhtml.h \
     ddz.h \
@@ -47,17 +46,23 @@ HEADERS  += dadaword.h \
     autoload.h \
     specialchars.h \
     replaceManager.h \
-    orthManager.h
+    orthManager.h \
+    puces.h
 
 RESOURCES += \
     images.qrc
 
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
-LIBS += /usr/lib/libhunspell.so
-
-#Zlib
-LIBS += /usr/lib/libz.so
+unix {
+    LIBS += /usr/lib/libhunspell.so
+    #Zlib
+    LIBS += /usr/lib/libz.so
+}
+win32 {
+    LIBS += C:\Users\Jean\Downloads\dadaword-master\libhunspell.dll
+    LIBS += C:\Users\Jean\Downloads\dadaword-master\zlib1.dll
+}
 
 #Traductions
 TRANSLATIONS = dadaword_es.ts
@@ -66,4 +71,5 @@ TRANSLATIONS = dadaword_es.ts
 INCLUDEPATH += /usr/include/qt5
 
 FORMS += \
-    orthManager.ui
+    orthManager.ui \
+    puces.ui
