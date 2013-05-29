@@ -3188,8 +3188,9 @@ void DadaWord::affiche_menu_perso(){
         //S'il y a des propositions, on ajoute un séparateur
         menu_contextuel->addSeparator();
         //On ajoute "Ignorer" et "Ajouter au dictionnaire" au menu
-        QSignalMapper *orth1, *orth2;  orth1 = new QSignalMapper;  orth2 = new QSignalMapper;
+        QSignalMapper *orth1, *orth2, *orth3;  orth1 = new QSignalMapper;  orth2 = new QSignalMapper; orth3 = new QSignalMapper;
         QAction *mc_ignore = menu_contextuel->addAction(tr("Ignorer ce mot"));
+        QAction *mc_ignore_def = menu_contextuel->addAction(tr("Ignorer définitivement"));
         QAction *mc_add = menu_contextuel->addAction(tr("Ajouter au dictionnaire"));
         connect(mc_ignore, SIGNAL(triggered()), orth1, SLOT(map()));
         orth1->setMapping(mc_ignore, mot);
@@ -3197,6 +3198,9 @@ void DadaWord::affiche_menu_perso(){
         connect(mc_add, SIGNAL(triggered()), orth2, SLOT(map()));
         orth2->setMapping(mc_add, mot);
         connect(orth2, SIGNAL(mapped(QString)), orthographe, SLOT(addDico(QString)));
+        connect(mc_ignore_def, SIGNAL(triggered()), orth3, SLOT(map()));
+        orth3->setMapping(mc_ignore_def, mot);
+        connect(orth3, SIGNAL(mapped(QString)), orthographe, SLOT(ignoreDef(QString)));
         QMenu *menu_contextuel_remplacement = menu_contextuel->addMenu(tr("Autocorrection"));
         if(propositions.size() > 0){
             for(int i=0; i<propositions.size(); i++){
