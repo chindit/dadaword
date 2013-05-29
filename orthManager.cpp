@@ -239,9 +239,14 @@ void OrthManager::addDico(QString mot){
 }
 
 //Ignore définitivement un mot pour ce document
-void OrthManager::ignoreDef(){
-    list_skip_definitively.append(word);
-    checkWord();
+void OrthManager::ignoreDef(QString mot){
+    if(mot.isEmpty()){
+        list_skip_definitively.append(word);
+        checkWord();
+    }
+    else{
+        list_skip_definitively.append(mot);
+    }
     return;
 }
 
@@ -340,7 +345,7 @@ QStringList OrthManager::getListSkip(bool definitive){
     QStringList temp;
     temp = list_skip;
     for(int i=0; i<list_skip_definitively.count(); i++){
-        list_skip.append(list_skip_definitively.at(i));
+        temp.append(list_skip_definitively.at(i));
     }
     return temp;
 }
@@ -527,7 +532,7 @@ void OrthManager::checkAll(QTextEdit *contenu){
         }
 
         //Il n'y a erreur QUE si le mot n'est pas vide, n'est pas présent dans le dictionnaire ET n'est pas ignoré
-        if(!word.isEmpty() && !this->isCorrectWord(word) && !this->getListSkip().contains(word)){
+        if(!word.isEmpty() && !this->isCorrectWord(word) && !this->getListSkip().contains(word, Qt::CaseInsensitive)){
 
             QTextCursor tmpCursor(cursor);
             tmpCursor.setPosition(cursor.anchor());

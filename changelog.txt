@@ -5,6 +5,7 @@ Version 1.2.4 :
 - Correction automatique du document lors du démarrage (si style)
 - Correction du mot précédent et non du mot antérieur au précédent
 - Ajout des mots ignorés définitivement pour un document
+- Ajout du lien pour ignorer définitivement dans le menu contextuel
 - BUG : non-annulation du soulignement orthographique en cas de correction manuelle
 
 Version 1.2.3 :
