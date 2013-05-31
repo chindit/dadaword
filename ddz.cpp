@@ -195,13 +195,16 @@ QString *erreur = new QString;int *er1 =new int;int *er2 = new int;
 
     QDomElement racine = config.documentElement();
     //Lecture de la langue
-    QString langue = racine.childNodes().at(0).nodeValue();
-    QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
-    if(is_dico.exactMatch(langue)){
-        retour.append(langue);
-    }
-    else{
-        retour.append("default");
+    QDomNodeList langue = racine.elementsByTagName("langue");
+    if(!langue.isEmpty()){
+        QString Slangue = langue.at(0).toElement().text();
+        QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
+        if(is_dico.exactMatch(Slangue)){
+            retour.append(Slangue);
+        }
+        else{
+            retour.append("default");
+        }
     }
 
     QDomNodeList liste_annexes = racine.elementsByTagName("annexe");

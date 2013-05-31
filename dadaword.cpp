@@ -593,7 +593,8 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         fenetre_temp->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
         status_is_modified->setEnabled(false);
     }
-    find_edit()->setFocus();
+    if(find_edit() != 0)
+        find_edit()->setFocus();
     if(!autosave){
         QFile fichier_autosave;
         if(nom_autosave.isEmpty()){
