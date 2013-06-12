@@ -414,12 +414,6 @@ void OrthManager::autocorrection(QString remplacement){
 
 //Change le dictionnaire actif
 void OrthManager::setDico(QString langue){
-    QDir dossier;
-#ifdef Q_OS_WIN
-    dossier.setPath(QDir::homePath() + "/AppData/Local/DadaWord/hunspell/");
-#else
-    dossier.setPath("/usr/share/hunspell");
-#endif
 
     QComboBox *liste = new QComboBox;
     if(langue.isEmpty()){
@@ -432,9 +426,7 @@ void OrthManager::setDico(QString langue){
         actuelle = new QLabel(tr("Dictionnaire actuel : ")+this->getDico().split("/").last().split(".").first());
         choix = new QLabel(tr("Nouvelle langue"));
 
-        QStringList extentions;
-        extentions << "*.dic";
-        QStringList liste_dicos = dossier.entryList(extentions);
+        QStringList liste_dicos = this->getDicos();
         for(int i=0; i<liste_dicos.size(); i++){
             QString temp = liste_dicos.at(i);
             temp.resize((temp.size()-4));
@@ -458,6 +450,7 @@ void OrthManager::setDico(QString langue){
     }
 
     QString nouvelleLangue = (langue.isEmpty()) ? liste->currentText() : langue;
+    QDir dossier;
     //On met à jour le dico
     if(dicoActuel != nouvelleLangue){
         dicoActuel = dossier.path()+"/"+nouvelleLangue+".dic";
@@ -552,4 +545,19 @@ void OrthManager::checkAll(QTextEdit *contenu){
 //Transfère les mots ignorés au correcteur
 void OrthManager::setMotsIgnores(QStringList liste){
     list_skip_definitively = liste;
+}
+
+//Retourne la liste de tous les dictionnaires disponibles
+QStringList OrthManager::getDicos(){
+    QDir dossier;
+#ifdef Q_OS_WIN
+    dossier.setPath(QDir::homePath() + "/AppData/Local/DadaWord/hunspell/");
+#else
+    dossier.setPath("/usr/share/hunspell");
+#endif
+    QStringList extentions;
+    extentions << "*.dic";
+    QStringList liste_dicos = dossier.entryList(extentions);
+
+    return liste_dicos;
 }

@@ -20,7 +20,7 @@ DadaWord::DadaWord(QWidget *parent)
     //Initialisation des dicos
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
-    outils = new Outils;
+    outils = new Outils();
     //kkvgb = new Ui::OrthManager(this);
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
 

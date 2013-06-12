@@ -46,12 +46,12 @@
 #include <math.h>
 
 #include "autoload.h"
+#include "outils.h"
 #include "constantes.h"
 #include "ddz.h"
 #include "errorManager.h"
 #include "puces.h"
 #include "highlighterhtml.h"
-#include "outils.h"
 #include "opendocument.h"
 #include "orthManager.h"
 #include "replaceManager.h"

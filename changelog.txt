@@ -1,22 +1,277 @@
 DadaWord - Changelog
 
 Version 1.2.4 :
-- Passage de la fenêtre de sélection de puces à l'UI.
-- Réécriture complète du correcteur orthographique
+- Passage de la fen�tre de s�lection de puces � l'UI.
+- R��criture compl�te du correcteur orthographique
+- Correction automatique du document lors du d�marrage (si style)
+- Correction du mot pr�c�dent et non du mot ant�rieur au pr�c�dent
+- Ajout des mots ignor�s d�finitivement pour un document
+- Ajout du lien pour ignorer d�finitivement dans le menu contextuel
+- BUG : non-annulation du soulignement orthographique en cas de correction manuelle
+- BUG : SIGSEGV en cas d'enregistrement lors de la fermeture de l'onglet
+- BUG : langue du document mal d�tect�e lors du chargement du DDZ.
+- BUG : options du dictionnaires supprim�es des pr�f�rences suite � la mise � jour de la correction orthographique.
+
+Version 1.2.3 :
+- Mise � jour pour Qt5
+- Ajout d'un syst�me de t�l�chargement automatique des dictionnaires pour Windows
+- Ajout d'un lien de mise � jour pour Windows
+- Enregistrement de la langue du document dans les pr�f�rences
+- BUG : R�cup�ration de documents apr�s fermeture d'urgence inop�rante
+- BUG : non-reconnaissance de la taille lors de la lecture d'un ODT.
+- BUG : impossible d'annuler un remplacement orthographique
+- BUG : raccourci mode texte inop�rant
+- BUG : impossible de repasser en mode HTML en document non-enregistr� visionn� en mode texte.
+- BUG : !sauvegarde des images incluses
+- BUG : perte des annexes lors du second enregistrement
+
+Version 1.2.2 :
+- Ajout d'une fonction permettant d'enregistrer tous les document ouverts.
+- Ajout d'une ic�ne pour indiquer l'�tat d'enregistrement des documents
+- D�sactivation du menu �Format� en cas d'utilisation d'un fichier en mode texte.
+- Meilleure gestion des annexes
+- D�placement de la barre de puces pour qu'elle g�ne moins
+- BUG : alerte inopin�e lors de l'enregistrement du style
+- Optimisations des settings
+- Recharge automatique des settings apr�s modification
+- Ajout d'une barre d'outils ��dition� comportant �Annuler� et �Refaire�
+- D�sactivation automatique des titres lors d'un retour � la ligne
+- EN COURS : Modification de raccourcis basiques
+- BUG : r�sultat de recherche non positionn� en �visible�
+- BUG : boutons de recherche invers�s
+- BUG : ic�nes de puces incorrectes lors de la d�sincr�mentation
+- BUG : auto-correction non fonctionnelle pour les caract�res non alphanum�riques
+- BUG : ouverture de la fen�tre de correction lors de l'ajout d'un mot au dictionnaire depuis le menu contextuel.
+- BUG : SIGSEGV si changement d'interligne lorsqu'aucun document n'est ouvert.
+- BUG : pas d'option d'enregistrement apr�s l'ajout d'annexes.
+- BUG : bouton �Fermer le document� actif m�me si aucun document n'est ouvert.
+- BUG : absence de nom pour les barres de menu
+- BUG  : non (d�s)activation du bouton d'enregistrement lors du changement d'onglet.
+
+Version 1.2.1 :
+- Ajout de la couleur vert clair dans le menu d�roulant de surlignage
+- Ajout d'un raccourci pour les puces
+- Gestion des fichiers r�cents par settingsManager
+- Impl�mentation de l'autocorrection
+- Pas de correction pour les mots en majuscules
+- Redimensionnement des images en mode WORD pour ne pas qu'elles d�passent
+- Annexes DDZ : affichage uniquement du nom de fichier
+- Ajout d'exposants et d'indices dans les styles
+- BUG : non-affichage des styles lors d'une premi�re utilisation
+- BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
+- BUG : impossible de d�faire un style si s�lection
+- BUG : doublons dans les fichiers r�cemment ouverts
+- BUG : impossible de change le style sans s�lection si l'on est pas � la fin du document
+- BUG : pr�sence de doublons dans les fichiers r�cents.
+- BUG : impossible d'ouvrir des fichiers de grosse taille (ralentissement excessif).
+- BUG : erreur de segmentation si le dictionnaire est un lien symbolique (tous les dictionnaires sont pleinement fonctionnels!)
+- BUG : adresse de dictionnaire personnel invalide dans certaines conditions
+- BUG : pas de correction automatique en cas d'autocorrection
+- BUG : activation de la touche lors de l'incr�mentation/d�sincr�metation des puces
+- BUG : Raccourci d'�Enregistrer sous� d�fectueux
+- BUG : fichiers r�cents dans le sens inverse
+- BUG : erreur en cas d'absence des fichiers r�cents
+- BUG : raccourci erron� pour le remplacement
+- BUG : possible fond de couleur pour le mode source
+- BUG : mauvais affichage des alertes d'annexes
+- BUG : impossible d'ajouter une annexe s'il n'en existe pas d�j� une
+- BUG : pas de marges lors de l'impression d'un fichier en style WORD
+
+
+Version 1.2.0 :
+- Externalisation des options dans une classe d�di�e pour r�duire les lectures disque
+- Ajout d'un menu d�roulant avec les couleurs les plus courantes dans le bouton de surlignage.
+- Enregistrement automatique dans le r�pertoire de configuration
+- R�cup�ration des documents perdus suite � un plantage.
+- Appel de la fonction d'ouverture d'onglet plut�t que de le cr�er manuellement dans le constructeur.
+- Ajout de l'insertion de caract�res sp�ciaux (13072 caract�res disponibles)
+- Ajout d'un syst�me de gestion des th�mes.
+- Ajout d'un syst�me de remplacement automatique (configuration dans "�dition/Autocorrection" et (d�s)activation dans les pr�f�rences)
+- D�sactivation de la demande de nom d'un nouvel onglet au profit de "Nouveau document" par d�faut.
+- Optimisation d'une ic�ne peu fr�quente
+- Masquage des actions pour lesquelles le th�me ne poss�de pas d'ic�nes (d�sactiv� par d�faut)
+- S�lection automatique du style actif
+- Cr�ation d'un menu �Format� regroupant les diff�rentes options de style
+- BUG : raccourci des alignements non fonctionnel
+- BUG : dictionnaire personnel mal plac� selon certaine configuration
+- BUG : param�tre non utilis� : QPoint.
+- BUG : suppression du fichier correct au lieu de la sauvegarde
+
+
+Version 1.1.3 :
+- Mise � jour des boutons selon la position du curseur
+- BUG : pertu du formatage lors du surlignage
+- BUG : background noir lors du chargement de certains DDZ
+- Ajout d'un syst�me d'annexe pour les fichiers DDZ (ajout/suppression/vue)
+- Ajout de l'intervalle de sauvegarde dans les options de configuration
+- BUG : curseur toujours visible, y compris pendent les corrections ou la recherche
+- BUG : SIGSEGV si clic sur un bouton de style alors que le document est ferm�
+- BUG : SIGSEGV si enter au d�but d'une liste � puces
+- BUG : Impossible de passer du mode texte seul au mode rich text en DDZ
+- R��criture de la fen�tre de configuration
+- Nouvelle configuration : emplacement par d�faut pour l'enregistrement de fichiers
+- Ajout : possibilit� de ne pas modifier la police et la taille d'�criture lors de l'application d'un style
+- BUG : changement de style dans le documents en mode texte
+- Modification du layout du panel de styles
+- Ajout d'une image de chargement
+- BUG : D�calage de la ligne suivante dans les puces
+- Ajout d'un style de puces diff�rent selon le niveau
+
+
+Version 1.1.2 :
+- BUG : mauvaise gestion des fichiers de style
+- BUG : non annulation de la cr�ation de tableau lors du clic sur "Annuler"
+- BUG : lien "Ignorer tout" du menu contextuel non-op�rant
+- Cr�ation d'un syst�me de gestion de styles personnalis�
+- BUG : non-prise en compte de l'ajout de l'extention ".ddz" en cas d'extention manquante
+- Ajout d'une fonction de remplacement
+- Simplification du calcul de nom de fichiers
+
+
+Version 1.1.1 :
+- BUG : le formatage sautait lors de la coloration de l'arri�re-plan d'une s�lection.
+- BUG : la liste d�roulante de style ne r�agissait pas lors de la s�lection de "Standard"
+- Ajout d'un timer pour enregistrer le fichier actif toutes les 5 minutes.
+- Correction orthographique en LIVE (activation / d�sactivation dans les options de configuration)
+- Bouton de s�lection de langue dans la barre des t�ches
+- Pr�s�lection automatique du dictionnaire choisi.
+- Ajout du bouton "Ins�rer un tableau" dans la barre d'outils
+- BUG : non affichage du menu de contexte pour les nouvelles fen�tres.
+- Ajout de la d�tection d'une autre instance de Dadaword
+- BUG : recherche inop�rante -> recherche dans le QTextDocument plut�t que dans le QTextEdit
+
+
+Version 1.1.0 :
+- Changement du format de travail de Dadaword : DDZ (format compress� type ODT)
+- R��criture de toute la fonction d'ouverture de fichiers.
+- Suppression de QuaZip et de Zlib au profit d'une micro-librairie interne (Zlib reste utilis�).
+- Utilisation du s�parateur de fichier propre � chaque OS pour �viter les bugs.
+
+
+Version 1.0.2 :
+- Ouverture de tous les types de fichiers textes existant
+- Coloration syntaxique �galement pour le XML
+- BUG : dictionnaire espagnol par d�faut pour "Ignorer" & "Ajouter mot"
+- BUG : fonction "Remplacer tout" dans la correction orthographique produisait une SIGSEGV.
+- Ajout de la r�cup�ration des arguments de la ligne de commande (ne r�cup�re qu'un nom de fichier � ouvrir)
+
+
+Version 1.0.1 :
+- Ajout de la coloration syntaxique HTML
+- Ajout des liens couper/copier/coller
+- Cr�ation du mode refrappe
+- Bouton dans la barre d'�tat permettant d'enregistrer le fichier
+
+
+Version 1.0.0 :
+- Listes hi�rarchis�es (lettres, nombres et chiffres romains)
+- Correcteur orthographique (Hunspell)
+- Support de diverses langues au niveau du correcteur
+- BUG : le log est maintenant plac� dans ~/.dadaword
+- Cr�ation automatique du dossier de conf s'il n'existe pas
+- BUG : correction du titre de la fen�tre de changement de langue
+- Suppression du sous-menu �Format� devenu inutile suite � l'ajout de la barre "Format"
+- Ajout d'un bouton "Annuler" dans la v�rification orthographique
+- Correction du bouton "Ignorer tout"
+- BUG : lors de la correction orthographique, non-s�lection de la ponctuation suivant le mot.
+- BUG : erreur lors de la correction de documents multiples : seul le premier document �tait pris en compte.
+- Ajout de l'option "Ouvrir fichier" � la barre d'outils "D�faut"
+
+
+Version 0.0.9 :
+- BUG : possibilit� de passer un document texte en "texte simple" si on vient de le cr�er
+- ODT : ouverture de tableaux
+- BUG : positionnement par d�faut dans le /home pour l'export en ODT
+- BUG : interdiction d'export en PDF sous une autre extension
+- BUG : bouton "recherhe" de la fen�tre de recherche ne fonctionnait pas
+- Ajout des statistiques
+
+
+Version 0.0.8-beta:
+- Gestion de l'affichage des barres d'outils par un sous-menu
+- Affichage du programme en mode Full Screen
+- Gestion des recherches au sein du document (QDialog et Toolbar)
+- Ajout du raccourci "Nouveau" dans la toolbar "D�faut"
+- Correction du style Word (suppression de l'instabilit�).
+- BUG : correction de l'erreur "QFont <= 0" au d�marrage
+- BUG : correction de "lecture seule" coch�e par d�faut
+- BUG : interdiction d'afficher un TXT en mode RichText
+- BUG : documents RichText qui pouvaient �tre pass�s 2x en mode PlainText
+- Ouverture de fichiers texte "simple" (mais pas d'enregistrement dans ce format)
+- Enregistrement des fichiers exotiques (texte simple)
+
+
+Version: 0.0.7-alpha
+- Raccourci pour applique le style par d�faut � la s�lection
+- Suppression de quelques fuites de m�moire
+- ODT : Support de la largeur et longueur d'image
+- ODT : Gestion compl�te des puces (y compris le style)
+- Ajout de la gestion du log en mode graphique
+
+
+Version: 0.0.6-alpha
+- EN CHANTIER : ouverture d'ODT
+- Affichage des fichiers en mode "Plain Text"
+
+
+Version: 0.0.5-alpha
+- BETA : mise en place d'un style Word uniquement sur demande de l'utilisateur
+- BUG : correction du renommage d'images selon un qrand()
+- Raccourcis clavier pour l'alignement de texte
+- BUG : correction de la non-fermeture d'onglet sous Windows
+- Mode "Lecture seule"
+- Support des fichiers .HTML & .HTM
+- Gestion de tableaux simples
+- Ajout de lignes/colonnes en fin de tableau
+- Suppression d'une ligne/colonne au choix
+- Am�lioration du mode lecture seule
+
+
+Version: 0.0.4-alpha
+- BUG : blocage de la fen�tre principale lorsque la fen�tre des pr�f�rences est ouverte
+- Ajout des fichiers r�cemment ouverts
+- BUG : affichage de l'alerte de config pour la verbosit� M�DIUM et HIGH
+- Insertion d'image sans la transformation en base64 sur la demande explicite de l'utilisateur
+- Fichier de log dans le r�pertoire du programme (� c�t� de l'ex�cutable)
+- BUG : non affichage d'un fichier r�cent si son nom n'a pas �t� trouv�.
+- BUG : inversion des fichiers r�cents pour que le dernier ouvert arrive au sommet
+
+
+Version: 0.0.3-alpha
+- Ajout de la gestion des .TXT
+- Fen�tre d'ouverture et d'enregistrement positionn�es par d�faut dans le "HOME" de l'utilisateur
+- Positionnement par d�faut � "Tous documents" lors de l'ouverture d'un fichier
+- BUG : correction du changement de taille et de police non d�sir� lors du surlignage d'une s�lection
+- Interdiction d'ouvrir des fichiers vides sauf autorisation explicite dans la config
+- BUG : plantage si l'on ouvrait un fichier lorsqu'aucun onglet n'existait
+- D�sactivation de l'incr�mentation des puces hors des listes � puces
+- Insertion d'image dans les documents DDW (Rich Text)
+- Ajout d'une alerte lors de l'ouverture de fichiers >2Mo
+- Ajout d'une alerte pour le chargement d'images >200Ko
+- Ajout de l'impression des fichiers
+- Ajout de l'export en PDF
+- Affichage de l'alerte des pr�f�rences uniquement si une option n�cessitant un red�marrage a �t� modifi�e
+- [BETA] Param�trage de la verbosit� du programme selon le r�glage de l'utilisateur (D�faut : "Toutes")
+- Ajout du d�placement des onglets (en mode onglets, of course)
+- Bouton "Fermer" sur les onglets
+- Ajout d'une barre des t�ches et de messages pour chaque �l�ment du menu (ou presque)
+DadaWord - Changelog
+
+Version 1.2.4 :
+- Passage de la fenêtre de sélection de puces �  l'UI.
+- Réécriture complÚte du correcteur orthographique
 - Correction automatique du document lors du démarrage (si style)
 - Correction du mot précédent et non du mot antérieur au précédent
 - Ajout des mots ignorés définitivement pour un document
 - Ajout du lien pour ignorer définitivement dans le menu contextuel
 - BUG : non-annulation du soulignement orthographique en cas de correction manuelle
-- BUG : SIGSEGV en cas d'enregistrement lors de la fermeture de l'onglet
-- BUG : langue du document mal détectée lors du chargement du DDZ.
 
 Version 1.2.3 :
-- Mise à jour pour Qt5
-- Ajout d'un système de téléchargement automatique des dictionnaires pour Windows
-- Ajout d'un lien de mise à jour pour Windows
+- Mise �  jour pour Qt5
+- Ajout d'un systÚme de téléchargement automatique des dictionnaires pour Windows
+- Ajout d'un lien de mise �  jour pour Windows
 - Enregistrement de la langue du document dans les préférences
-- BUG : Récupération de documents après fermeture d'urgence inopérante
+- BUG : Récupération de documents aprÚs fermeture d'urgence inopérante
 - BUG : non-reconnaissance de la taille lors de la lecture d'un ODT.
 - BUG : impossible d'annuler un remplacement orthographique
 - BUG : raccourci mode texte inopérant
@@ -26,23 +281,23 @@ Version 1.2.3 :
 
 Version 1.2.2 :
 - Ajout d'une fonction permettant d'enregistrer tous les document ouverts.
-- Ajout d'une icône pour indiquer l'état d'enregistrement des documents
+- Ajout d'une icÎne pour indiquer l'état d'enregistrement des documents
 - Désactivation du menu «Format» en cas d'utilisation d'un fichier en mode texte.
 - Meilleure gestion des annexes
-- Déplacement de la barre de puces pour qu'elle gène moins
+- Déplacement de la barre de puces pour qu'elle gÚne moins
 - BUG : alerte inopinée lors de l'enregistrement du style
 - Optimisations des settings
-- Recharge automatique des settings après modification
-- Ajout d'une barre d'outils «Édition» comportant «Annuler» et «Refaire»
-- Désactivation automatique des titres lors d'un retour à la ligne
+- Recharge automatique des settings aprÚs modification
+- Ajout d'une barre d'outils «�?dition» comportant «Annuler» et «Refaire»
+- Désactivation automatique des titres lors d'un retour �  la ligne
 - EN COURS : Modification de raccourcis basiques
 - BUG : résultat de recherche non positionné en «visible»
 - BUG : boutons de recherche inversés
-- BUG : icônes de puces incorrectes lors de la désincrémentation
-- BUG : auto-correction non fonctionnelle pour les caractères non alphanumériques
+- BUG : icÎnes de puces incorrectes lors de la désincrémentation
+- BUG : auto-correction non fonctionnelle pour les caractÚres non alphanumériques
 - BUG : ouverture de la fenêtre de correction lors de l'ajout d'un mot au dictionnaire depuis le menu contextuel.
 - BUG : SIGSEGV si changement d'interligne lorsqu'aucun document n'est ouvert.
-- BUG : pas d'option d'enregistrement après l'ajout d'annexes.
+- BUG : pas d'option d'enregistrement aprÚs l'ajout d'annexes.
 - BUG : bouton «Fermer le document» actif même si aucun document n'est ouvert.
 - BUG : absence de nom pour les barres de menu
 - BUG  : non (dés)activation du bouton d'enregistrement lors du changement d'onglet.
@@ -56,11 +311,11 @@ Version 1.2.1 :
 - Redimensionnement des images en mode WORD pour ne pas qu'elles dépassent
 - Annexes DDZ : affichage uniquement du nom de fichier
 - Ajout d'exposants et d'indices dans les styles
-- BUG : non-affichage des styles lors d'une première utilisation
+- BUG : non-affichage des styles lors d'une premiÚre utilisation
 - BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
 - BUG : impossible de défaire un style si sélection
 - BUG : doublons dans les fichiers récemment ouverts
-- BUG : impossible de change le style sans sélection si l'on est pas à la fin du document
+- BUG : impossible de change le style sans sélection si l'on est pas �  la fin du document
 - BUG : présence de doublons dans les fichiers récents.
 - BUG : impossible d'ouvrir des fichiers de grosse taille (ralentissement excessif).
 - BUG : erreur de segmentation si le dictionnaire est un lien symbolique (tous les dictionnaires sont pleinement fonctionnels!)
@@ -73,7 +328,7 @@ Version 1.2.1 :
 - BUG : raccourci erroné pour le remplacement
 - BUG : possible fond de couleur pour le mode source
 - BUG : mauvais affichage des alertes d'annexes
-- BUG : impossible d'ajouter une annexe s'il n'en existe pas déjà une
+- BUG : impossible d'ajouter une annexe s'il n'en existe pas déj�  une
 - BUG : pas de marges lors de l'impression d'un fichier en style WORD
 
 
@@ -81,31 +336,31 @@ Version 1.2.0 :
 - Externalisation des options dans une classe dédiée pour réduire les lectures disque
 - Ajout d'un menu déroulant avec les couleurs les plus courantes dans le bouton de surlignage.
 - Enregistrement automatique dans le répertoire de configuration
-- Récupération des documents perdus suite à un plantage.
-- Appel de la fonction d'ouverture d'onglet plutôt que de le créer manuellement dans le constructeur.
-- Ajout de l'insertion de caractères spéciaux (13072 caractères disponibles)
-- Ajout d'un système de gestion des thèmes.
-- Ajout d'un système de remplacement automatique (configuration dans "Édition/Autocorrection" et (dés)activation dans les préférences)
+- Récupération des documents perdus suite �  un plantage.
+- Appel de la fonction d'ouverture d'onglet plutÎt que de le créer manuellement dans le constructeur.
+- Ajout de l'insertion de caractÚres spéciaux (13072 caractÚres disponibles)
+- Ajout d'un systÚme de gestion des thÚmes.
+- Ajout d'un systÚme de remplacement automatique (configuration dans "�?dition/Autocorrection" et (dés)activation dans les préférences)
 - Désactivation de la demande de nom d'un nouvel onglet au profit de "Nouveau document" par défaut.
-- Optimisation d'une icône peu fréquente
-- Masquage des actions pour lesquelles le thème ne possède pas d'icônes (désactivé par défaut)
+- Optimisation d'une icÎne peu fréquente
+- Masquage des actions pour lesquelles le thÚme ne possÚde pas d'icÎnes (désactivé par défaut)
 - Sélection automatique du style actif
 - Création d'un menu «Format» regroupant les différentes options de style
 - BUG : raccourci des alignements non fonctionnel
 - BUG : dictionnaire personnel mal placé selon certaine configuration
-- BUG : paramètre non utilisé : QPoint.
+- BUG : paramÚtre non utilisé : QPoint.
 - BUG : suppression du fichier correct au lieu de la sauvegarde
 
 
 Version 1.1.3 :
-- Mise à jour des boutons selon la position du curseur
+- Mise �  jour des boutons selon la position du curseur
 - BUG : pertu du formatage lors du surlignage
 - BUG : background noir lors du chargement de certains DDZ
-- Ajout d'un système d'annexe pour les fichiers DDZ (ajout/suppression/vue)
+- Ajout d'un systÚme d'annexe pour les fichiers DDZ (ajout/suppression/vue)
 - Ajout de l'intervalle de sauvegarde dans les options de configuration
 - BUG : curseur toujours visible, y compris pendent les corrections ou la recherche
 - BUG : SIGSEGV si clic sur un bouton de style alors que le document est fermé
-- BUG : SIGSEGV si enter au début d'une liste à puces
+- BUG : SIGSEGV si enter au début d'une liste �  puces
 - BUG : Impossible de passer du mode texte seul au mode rich text en DDZ
 - Réécriture de la fenêtre de configuration
 - Nouvelle configuration : emplacement par défaut pour l'enregistrement de fichiers
@@ -121,14 +376,14 @@ Version 1.1.2 :
 - BUG : mauvaise gestion des fichiers de style
 - BUG : non annulation de la création de tableau lors du clic sur "Annuler"
 - BUG : lien "Ignorer tout" du menu contextuel non-opérant
-- Création d'un système de gestion de styles personnalisé
+- Création d'un systÚme de gestion de styles personnalisé
 - BUG : non-prise en compte de l'ajout de l'extention ".ddz" en cas d'extention manquante
 - Ajout d'une fonction de remplacement
 - Simplification du calcul de nom de fichiers
 
 
 Version 1.1.1 :
-- BUG : le formatage sautait lors de la coloration de l'arrière-plan d'une sélection.
+- BUG : le formatage sautait lors de la coloration de l'arriÚre-plan d'une sélection.
 - BUG : la liste déroulante de style ne réagissait pas lors de la sélection de "Standard"
 - Ajout d'un timer pour enregistrer le fichier actif toutes les 5 minutes.
 - Correction orthographique en LIVE (activation / désactivation dans les options de configuration)
@@ -137,14 +392,14 @@ Version 1.1.1 :
 - Ajout du bouton "Insérer un tableau" dans la barre d'outils
 - BUG : non affichage du menu de contexte pour les nouvelles fenêtres.
 - Ajout de la détection d'une autre instance de Dadaword
-- BUG : recherche inopérante -> recherche dans le QTextDocument plutôt que dans le QTextEdit
+- BUG : recherche inopérante -> recherche dans le QTextDocument plutÎt que dans le QTextEdit
 
 
 Version 1.1.0 :
 - Changement du format de travail de Dadaword : DDZ (format compressé type ODT)
 - Réécriture de toute la fonction d'ouverture de fichiers.
 - Suppression de QuaZip et de Zlib au profit d'une micro-librairie interne (Zlib reste utilisé).
-- Utilisation du séparateur de fichier propre à chaque OS pour éviter les bugs.
+- Utilisation du séparateur de fichier propre �  chaque OS pour éviter les bugs.
 
 
 Version 1.0.2 :
@@ -152,7 +407,7 @@ Version 1.0.2 :
 - Coloration syntaxique également pour le XML
 - BUG : dictionnaire espagnol par défaut pour "Ignorer" & "Ajouter mot"
 - BUG : fonction "Remplacer tout" dans la correction orthographique produisait une SIGSEGV.
-- Ajout de la récupération des arguments de la ligne de commande (ne récupère qu'un nom de fichier à ouvrir)
+- Ajout de la récupération des arguments de la ligne de commande (ne récupÚre qu'un nom de fichier �  ouvrir)
 
 
 Version 1.0.1 :
@@ -169,12 +424,12 @@ Version 1.0.0 :
 - BUG : le log est maintenant placé dans ~/.dadaword
 - Création automatique du dossier de conf s'il n'existe pas
 - BUG : correction du titre de la fenêtre de changement de langue
-- Suppression du sous-menu «Format» devenu inutile suite à l'ajout de la barre "Format"
+- Suppression du sous-menu «Format» devenu inutile suite �  l'ajout de la barre "Format"
 - Ajout d'un bouton "Annuler" dans la vérification orthographique
 - Correction du bouton "Ignorer tout"
 - BUG : lors de la correction orthographique, non-sélection de la ponctuation suivant le mot.
 - BUG : erreur lors de la correction de documents multiples : seul le premier document était pris en compte.
-- Ajout de l'option "Ouvrir fichier" à la barre d'outils "Défaut"
+- Ajout de l'option "Ouvrir fichier" �  la barre d'outils "Défaut"
 
 
 Version 0.0.9 :
@@ -201,10 +456,10 @@ Version 0.0.8-beta:
 
 
 Version: 0.0.7-alpha
-- Raccourci pour applique le style par défaut à la sélection
+- Raccourci pour applique le style par défaut �  la sélection
 - Suppression de quelques fuites de mémoire
 - ODT : Support de la largeur et longueur d'image
-- ODT : Gestion complète des puces (y compris le style)
+- ODT : Gestion complÚte des puces (y compris le style)
 - Ajout de la gestion du log en mode graphique
 
 
@@ -229,9 +484,9 @@ Version: 0.0.5-alpha
 Version: 0.0.4-alpha
 - BUG : blocage de la fenêtre principale lorsque la fenêtre des préférences est ouverte
 - Ajout des fichiers récemment ouverts
-- BUG : affichage de l'alerte de config pour la verbosité MÉDIUM et HIGH
+- BUG : affichage de l'alerte de config pour la verbosité M�?DIUM et HIGH
 - Insertion d'image sans la transformation en base64 sur la demande explicite de l'utilisateur
-- Fichier de log dans le répertoire du programme (à côté de l'exécutable)
+- Fichier de log dans le répertoire du programme (�  cÎté de l'exécutable)
 - BUG : non affichage d'un fichier récent si son nom n'a pas été trouvé.
 - BUG : inversion des fichiers récents pour que le dernier ouvert arrive au sommet
 
@@ -239,11 +494,11 @@ Version: 0.0.4-alpha
 Version: 0.0.3-alpha
 - Ajout de la gestion des .TXT
 - Fenêtre d'ouverture et d'enregistrement positionnées par défaut dans le "HOME" de l'utilisateur
-- Positionnement par défaut à "Tous documents" lors de l'ouverture d'un fichier
+- Positionnement par défaut �  "Tous documents" lors de l'ouverture d'un fichier
 - BUG : correction du changement de taille et de police non désiré lors du surlignage d'une sélection
 - Interdiction d'ouvrir des fichiers vides sauf autorisation explicite dans la config
 - BUG : plantage si l'on ouvrait un fichier lorsqu'aucun onglet n'existait
-- Désactivation de l'incrémentation des puces hors des listes à puces
+- Désactivation de l'incrémentation des puces hors des listes �  puces
 - Insertion d'image dans les documents DDW (Rich Text)
 - Ajout d'une alerte lors de l'ouverture de fichiers >2Mo
 - Ajout d'une alerte pour le chargement d'images >200Ko
@@ -254,257 +509,3 @@ Version: 0.0.3-alpha
 - Ajout du déplacement des onglets (en mode onglets, of course)
 - Bouton "Fermer" sur les onglets
 - Ajout d'une barre des tâches et de messages pour chaque élément du menu (ou presque)
-DadaWord - Changelog
-
-Version 1.2.4 :
-- Passage de la fenÃªtre de sÃ©lection de puces Ã  l'UI.
-- RÃ©Ã©criture complÃšte du correcteur orthographique
-- Correction automatique du document lors du dÃ©marrage (si style)
-- Correction du mot prÃ©cÃ©dent et non du mot antÃ©rieur au prÃ©cÃ©dent
-- Ajout des mots ignorÃ©s dÃ©finitivement pour un document
-- Ajout du lien pour ignorer dÃ©finitivement dans le menu contextuel
-- BUG : non-annulation du soulignement orthographique en cas de correction manuelle
-
-Version 1.2.3 :
-- Mise Ã  jour pour Qt5
-- Ajout d'un systÃšme de tÃ©lÃ©chargement automatique des dictionnaires pour Windows
-- Ajout d'un lien de mise Ã  jour pour Windows
-- Enregistrement de la langue du document dans les prÃ©fÃ©rences
-- BUG : RÃ©cupÃ©ration de documents aprÃšs fermeture d'urgence inopÃ©rante
-- BUG : non-reconnaissance de la taille lors de la lecture d'un ODT.
-- BUG : impossible d'annuler un remplacement orthographique
-- BUG : raccourci mode texte inopÃ©rant
-- BUG : impossible de repasser en mode HTML en document non-enregistrÃ© visionnÃ© en mode texte.
-- BUG : !sauvegarde des images incluses
-- BUG : perte des annexes lors du second enregistrement
-
-Version 1.2.2 :
-- Ajout d'une fonction permettant d'enregistrer tous les document ouverts.
-- Ajout d'une icÃŽne pour indiquer l'Ã©tat d'enregistrement des documents
-- DÃ©sactivation du menu Â«FormatÂ» en cas d'utilisation d'un fichier en mode texte.
-- Meilleure gestion des annexes
-- DÃ©placement de la barre de puces pour qu'elle gÃšne moins
-- BUG : alerte inopinÃ©e lors de l'enregistrement du style
-- Optimisations des settings
-- Recharge automatique des settings aprÃšs modification
-- Ajout d'une barre d'outils Â«ÃditionÂ» comportant Â«AnnulerÂ» et Â«RefaireÂ»
-- DÃ©sactivation automatique des titres lors d'un retour Ã  la ligne
-- EN COURS : Modification de raccourcis basiques
-- BUG : rÃ©sultat de recherche non positionnÃ© en Â«visibleÂ»
-- BUG : boutons de recherche inversÃ©s
-- BUG : icÃŽnes de puces incorrectes lors de la dÃ©sincrÃ©mentation
-- BUG : auto-correction non fonctionnelle pour les caractÃšres non alphanumÃ©riques
-- BUG : ouverture de la fenÃªtre de correction lors de l'ajout d'un mot au dictionnaire depuis le menu contextuel.
-- BUG : SIGSEGV si changement d'interligne lorsqu'aucun document n'est ouvert.
-- BUG : pas d'option d'enregistrement aprÃšs l'ajout d'annexes.
-- BUG : bouton Â«Fermer le documentÂ» actif mÃªme si aucun document n'est ouvert.
-- BUG : absence de nom pour les barres de menu
-- BUG  : non (dÃ©s)activation du bouton d'enregistrement lors du changement d'onglet.
-
-Version 1.2.1 :
-- Ajout de la couleur vert clair dans le menu dÃ©roulant de surlignage
-- Ajout d'un raccourci pour les puces
-- Gestion des fichiers rÃ©cents par settingsManager
-- ImplÃ©mentation de l'autocorrection
-- Pas de correction pour les mots en majuscules
-- Redimensionnement des images en mode WORD pour ne pas qu'elles dÃ©passent
-- Annexes DDZ : affichage uniquement du nom de fichier
-- Ajout d'exposants et d'indices dans les styles
-- BUG : non-affichage des styles lors d'une premiÃšre utilisation
-- BUG : non-cochage des cases de non-utilisation des couleurs dans les styles
-- BUG : impossible de dÃ©faire un style si sÃ©lection
-- BUG : doublons dans les fichiers rÃ©cemment ouverts
-- BUG : impossible de change le style sans sÃ©lection si l'on est pas Ã  la fin du document
-- BUG : prÃ©sence de doublons dans les fichiers rÃ©cents.
-- BUG : impossible d'ouvrir des fichiers de grosse taille (ralentissement excessif).
-- BUG : erreur de segmentation si le dictionnaire est un lien symbolique (tous les dictionnaires sont pleinement fonctionnels!)
-- BUG : adresse de dictionnaire personnel invalide dans certaines conditions
-- BUG : pas de correction automatique en cas d'autocorrection
-- BUG : activation de la touche lors de l'incrÃ©mentation/dÃ©sincrÃ©metation des puces
-- BUG : Raccourci d'Â«Enregistrer sousÂ» dÃ©fectueux
-- BUG : fichiers rÃ©cents dans le sens inverse
-- BUG : erreur en cas d'absence des fichiers rÃ©cents
-- BUG : raccourci erronÃ© pour le remplacement
-- BUG : possible fond de couleur pour le mode source
-- BUG : mauvais affichage des alertes d'annexes
-- BUG : impossible d'ajouter une annexe s'il n'en existe pas dÃ©jÃ  une
-- BUG : pas de marges lors de l'impression d'un fichier en style WORD
-
-
-Version 1.2.0 :
-- Externalisation des options dans une classe dÃ©diÃ©e pour rÃ©duire les lectures disque
-- Ajout d'un menu dÃ©roulant avec les couleurs les plus courantes dans le bouton de surlignage.
-- Enregistrement automatique dans le rÃ©pertoire de configuration
-- RÃ©cupÃ©ration des documents perdus suite Ã  un plantage.
-- Appel de la fonction d'ouverture d'onglet plutÃŽt que de le crÃ©er manuellement dans le constructeur.
-- Ajout de l'insertion de caractÃšres spÃ©ciaux (13072 caractÃšres disponibles)
-- Ajout d'un systÃšme de gestion des thÃšmes.
-- Ajout d'un systÃšme de remplacement automatique (configuration dans "Ãdition/Autocorrection" et (dÃ©s)activation dans les prÃ©fÃ©rences)
-- DÃ©sactivation de la demande de nom d'un nouvel onglet au profit de "Nouveau document" par dÃ©faut.
-- Optimisation d'une icÃŽne peu frÃ©quente
-- Masquage des actions pour lesquelles le thÃšme ne possÃšde pas d'icÃŽnes (dÃ©sactivÃ© par dÃ©faut)
-- SÃ©lection automatique du style actif
-- CrÃ©ation d'un menu Â«FormatÂ» regroupant les diffÃ©rentes options de style
-- BUG : raccourci des alignements non fonctionnel
-- BUG : dictionnaire personnel mal placÃ© selon certaine configuration
-- BUG : paramÃštre non utilisÃ© : QPoint.
-- BUG : suppression du fichier correct au lieu de la sauvegarde
-
-
-Version 1.1.3 :
-- Mise Ã  jour des boutons selon la position du curseur
-- BUG : pertu du formatage lors du surlignage
-- BUG : background noir lors du chargement de certains DDZ
-- Ajout d'un systÃšme d'annexe pour les fichiers DDZ (ajout/suppression/vue)
-- Ajout de l'intervalle de sauvegarde dans les options de configuration
-- BUG : curseur toujours visible, y compris pendent les corrections ou la recherche
-- BUG : SIGSEGV si clic sur un bouton de style alors que le document est fermÃ©
-- BUG : SIGSEGV si enter au dÃ©but d'une liste Ã  puces
-- BUG : Impossible de passer du mode texte seul au mode rich text en DDZ
-- RÃ©Ã©criture de la fenÃªtre de configuration
-- Nouvelle configuration : emplacement par dÃ©faut pour l'enregistrement de fichiers
-- Ajout : possibilitÃ© de ne pas modifier la police et la taille d'Ã©criture lors de l'application d'un style
-- BUG : changement de style dans le documents en mode texte
-- Modification du layout du panel de styles
-- Ajout d'une image de chargement
-- BUG : DÃ©calage de la ligne suivante dans les puces
-- Ajout d'un style de puces diffÃ©rent selon le niveau
-
-
-Version 1.1.2 :
-- BUG : mauvaise gestion des fichiers de style
-- BUG : non annulation de la crÃ©ation de tableau lors du clic sur "Annuler"
-- BUG : lien "Ignorer tout" du menu contextuel non-opÃ©rant
-- CrÃ©ation d'un systÃšme de gestion de styles personnalisÃ©
-- BUG : non-prise en compte de l'ajout de l'extention ".ddz" en cas d'extention manquante
-- Ajout d'une fonction de remplacement
-- Simplification du calcul de nom de fichiers
-
-
-Version 1.1.1 :
-- BUG : le formatage sautait lors de la coloration de l'arriÃšre-plan d'une sÃ©lection.
-- BUG : la liste dÃ©roulante de style ne rÃ©agissait pas lors de la sÃ©lection de "Standard"
-- Ajout d'un timer pour enregistrer le fichier actif toutes les 5 minutes.
-- Correction orthographique en LIVE (activation / dÃ©sactivation dans les options de configuration)
-- Bouton de sÃ©lection de langue dans la barre des tÃ¢ches
-- PrÃ©sÃ©lection automatique du dictionnaire choisi.
-- Ajout du bouton "InsÃ©rer un tableau" dans la barre d'outils
-- BUG : non affichage du menu de contexte pour les nouvelles fenÃªtres.
-- Ajout de la dÃ©tection d'une autre instance de Dadaword
-- BUG : recherche inopÃ©rante -> recherche dans le QTextDocument plutÃŽt que dans le QTextEdit
-
-
-Version 1.1.0 :
-- Changement du format de travail de Dadaword : DDZ (format compressÃ© type ODT)
-- RÃ©Ã©criture de toute la fonction d'ouverture de fichiers.
-- Suppression de QuaZip et de Zlib au profit d'une micro-librairie interne (Zlib reste utilisÃ©).
-- Utilisation du sÃ©parateur de fichier propre Ã  chaque OS pour Ã©viter les bugs.
-
-
-Version 1.0.2 :
-- Ouverture de tous les types de fichiers textes existant
-- Coloration syntaxique Ã©galement pour le XML
-- BUG : dictionnaire espagnol par dÃ©faut pour "Ignorer" & "Ajouter mot"
-- BUG : fonction "Remplacer tout" dans la correction orthographique produisait une SIGSEGV.
-- Ajout de la rÃ©cupÃ©ration des arguments de la ligne de commande (ne rÃ©cupÃšre qu'un nom de fichier Ã  ouvrir)
-
-
-Version 1.0.1 :
-- Ajout de la coloration syntaxique HTML
-- Ajout des liens couper/copier/coller
-- CrÃ©ation du mode refrappe
-- Bouton dans la barre d'Ã©tat permettant d'enregistrer le fichier
-
-
-Version 1.0.0 :
-- Listes hiÃ©rarchisÃ©es (lettres, nombres et chiffres romains)
-- Correcteur orthographique (Hunspell)
-- Support de diverses langues au niveau du correcteur
-- BUG : le log est maintenant placÃ© dans ~/.dadaword
-- CrÃ©ation automatique du dossier de conf s'il n'existe pas
-- BUG : correction du titre de la fenÃªtre de changement de langue
-- Suppression du sous-menu Â«FormatÂ» devenu inutile suite Ã  l'ajout de la barre "Format"
-- Ajout d'un bouton "Annuler" dans la vÃ©rification orthographique
-- Correction du bouton "Ignorer tout"
-- BUG : lors de la correction orthographique, non-sÃ©lection de la ponctuation suivant le mot.
-- BUG : erreur lors de la correction de documents multiples : seul le premier document Ã©tait pris en compte.
-- Ajout de l'option "Ouvrir fichier" Ã  la barre d'outils "DÃ©faut"
-
-
-Version 0.0.9 :
-- BUG : possibilitÃ© de passer un document texte en "texte simple" si on vient de le crÃ©er
-- ODT : ouverture de tableaux
-- BUG : positionnement par dÃ©faut dans le /home pour l'export en ODT
-- BUG : interdiction d'export en PDF sous une autre extension
-- BUG : bouton "recherhe" de la fenÃªtre de recherche ne fonctionnait pas
-- Ajout des statistiques
-
-
-Version 0.0.8-beta:
-- Gestion de l'affichage des barres d'outils par un sous-menu
-- Affichage du programme en mode Full Screen
-- Gestion des recherches au sein du document (QDialog et Toolbar)
-- Ajout du raccourci "Nouveau" dans la toolbar "DÃ©faut"
-- Correction du style Word (suppression de l'instabilitÃ©).
-- BUG : correction de l'erreur "QFont <= 0" au dÃ©marrage
-- BUG : correction de "lecture seule" cochÃ©e par dÃ©faut
-- BUG : interdiction d'afficher un TXT en mode RichText
-- BUG : documents RichText qui pouvaient Ãªtre passÃ©s 2x en mode PlainText
-- Ouverture de fichiers texte "simple" (mais pas d'enregistrement dans ce format)
-- Enregistrement des fichiers exotiques (texte simple)
-
-
-Version: 0.0.7-alpha
-- Raccourci pour applique le style par dÃ©faut Ã  la sÃ©lection
-- Suppression de quelques fuites de mÃ©moire
-- ODT : Support de la largeur et longueur d'image
-- ODT : Gestion complÃšte des puces (y compris le style)
-- Ajout de la gestion du log en mode graphique
-
-
-Version: 0.0.6-alpha
-- EN CHANTIER : ouverture d'ODT
-- Affichage des fichiers en mode "Plain Text"
-
-
-Version: 0.0.5-alpha
-- BETA : mise en place d'un style Word uniquement sur demande de l'utilisateur
-- BUG : correction du renommage d'images selon un qrand()
-- Raccourcis clavier pour l'alignement de texte
-- BUG : correction de la non-fermeture d'onglet sous Windows
-- Mode "Lecture seule"
-- Support des fichiers .HTML & .HTM
-- Gestion de tableaux simples
-- Ajout de lignes/colonnes en fin de tableau
-- Suppression d'une ligne/colonne au choix
-- AmÃ©lioration du mode lecture seule
-
-
-Version: 0.0.4-alpha
-- BUG : blocage de la fenÃªtre principale lorsque la fenÃªtre des prÃ©fÃ©rences est ouverte
-- Ajout des fichiers rÃ©cemment ouverts
-- BUG : affichage de l'alerte de config pour la verbositÃ© MÃDIUM et HIGH
-- Insertion d'image sans la transformation en base64 sur la demande explicite de l'utilisateur
-- Fichier de log dans le rÃ©pertoire du programme (Ã  cÃŽtÃ© de l'exÃ©cutable)
-- BUG : non affichage d'un fichier rÃ©cent si son nom n'a pas Ã©tÃ© trouvÃ©.
-- BUG : inversion des fichiers rÃ©cents pour que le dernier ouvert arrive au sommet
-
-
-Version: 0.0.3-alpha
-- Ajout de la gestion des .TXT
-- FenÃªtre d'ouverture et d'enregistrement positionnÃ©es par dÃ©faut dans le "HOME" de l'utilisateur
-- Positionnement par dÃ©faut Ã  "Tous documents" lors de l'ouverture d'un fichier
-- BUG : correction du changement de taille et de police non dÃ©sirÃ© lors du surlignage d'une sÃ©lection
-- Interdiction d'ouvrir des fichiers vides sauf autorisation explicite dans la config
-- BUG : plantage si l'on ouvrait un fichier lorsqu'aucun onglet n'existait
-- DÃ©sactivation de l'incrÃ©mentation des puces hors des listes Ã  puces
-- Insertion d'image dans les documents DDW (Rich Text)
-- Ajout d'une alerte lors de l'ouverture de fichiers >2Mo
-- Ajout d'une alerte pour le chargement d'images >200Ko
-- Ajout de l'impression des fichiers
-- Ajout de l'export en PDF
-- Affichage de l'alerte des prÃ©fÃ©rences uniquement si une option nÃ©cessitant un redÃ©marrage a Ã©tÃ© modifiÃ©e
-- [BETA] ParamÃ©trage de la verbositÃ© du programme selon le rÃ©glage de l'utilisateur (DÃ©faut : "Toutes")
-- Ajout du dÃ©placement des onglets (en mode onglets, of course)
-- Bouton "Fermer" sur les onglets
-- Ajout d'une barre des tÃ¢ches et de messages pour chaque Ã©lÃ©ment du menu (ou presque)

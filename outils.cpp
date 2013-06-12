@@ -7,6 +7,7 @@
 
 #include "constantes.h"
 #include "outils.h"
+#include "orthManager.h" //Include dans le CPP pour éviter des problèmes de non-connaissance de classe
 
 Outils::Outils(){
 }
@@ -107,11 +108,7 @@ void Outils::fenetre_config(){
     connect(changeSaving, SIGNAL(clicked()), this, SLOT(returnDir()));
 
     liste_dicos = new QComboBox;
-    QDir dossier;
-    dossier.setPath("/usr/share/hunspell");
-    QStringList extentions;
-    extentions << "*.dic";
-    QStringList dicos = dossier.entryList(extentions);
+    QStringList dicos = OrthManager::getDicos();
     //On récupère le dico actuel
     QString nom_dico = settings->getSettings(Dico).toString();
     for(int i=0; i<dicos.size(); i++){
@@ -126,6 +123,7 @@ void Outils::fenetre_config(){
 
     liste_themes = new QComboBox;
     QStringList themePath = QIcon::themeSearchPaths();
+    QDir dossier;
     for(int i=0; i<themePath.size(); i++){
         dossier.setPath(themePath.at(i));
         liste_themes->addItems(dossier.entryList(QDir::Dirs | QDir::NoDotAndDotDot));
