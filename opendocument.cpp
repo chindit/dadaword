@@ -274,7 +274,6 @@ void OpenDocument::read_body(QDomElement e){
                 curseur.insertBlock();
                 curseur.movePosition(QTextCursor::PreviousBlock);
                 curseur.insertHtml(contenu_puce);
-                std::cout << contenu_puce.toStdString() << std::endl;
                 contenu_puce = "";
             }
         }

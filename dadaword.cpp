@@ -633,11 +633,14 @@ void DadaWord::autoSave(){
 void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Variables globales
     QString nom_fichier;
-    QStringList retour;
+    QStringList retour, interdits;
     QString contenu;
     bool style = false;
     bool texte = false;
     bool annexes = false;
+
+    //Mise en place de la liste des extentions interdites (car non-ouvrables)
+    interdits << "pdf" << "exe" << "dll" << "so" << "docx" << "doc";
 
     //----------------------------------------------------------------
     //Récupération du nom du fichier et actions de pré-ouverture
@@ -675,6 +678,15 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
             if(settings->getSettings(Alertes).toInt() != LOW){
                 QMessageBox::information(this, tr("Fichier déjà ouvert"), tr("Le fichier que vous tentez d'ouvrir est déjà ouvert.\n Si ce n'est pas le cas, deux fichiers portent un nom identique. Veuillez les renommer."));
             }
+            return;
+        }
+    }
+
+    //On vérifie si l'extention est autorisée
+    QString extention = nom_fichier.section('.', -1);
+    if(interdits.contains(extention)){
+        if(settings->getSettings(Alertes).toInt() != LOW){
+            QMessageBox::warning(this, tr("Impossible d'ouvrir le fichier"), tr("Malheureusement, le format de fichier que vous tentez d'ouvrir n'est pas pris en charge par DadaWord :-("));
             return;
         }
     }
@@ -3537,6 +3549,7 @@ void DadaWord::hide_menubar(){
     (menuBar()->isVisible()) ? menuBar()->hide() : menuBar()->show();
 }
 
+//Enregistre tous les fichiers ouverts d'un coup (s'il est nécessaire de les enregistrer)
 void DadaWord::enregistrer_tout(){
     QList<QMdiSubWindow*> fenetres_ouvertes = zone_centrale->subWindowList();
     for(int i = 0; i < fenetres_ouvertes.size(); i++){
