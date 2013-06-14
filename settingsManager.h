@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QFont>
+#include <QMessageBox>
 #include <QObject>
 #include <QSettings>
 #include <QString>
@@ -22,6 +23,7 @@ signals:
     
 public slots:
     void loadSettings();
+    void resetSettings();
 
 private:
     QVariant *settings;

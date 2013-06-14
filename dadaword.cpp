@@ -21,7 +21,7 @@ DadaWord::DadaWord(QWidget *parent)
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
     outils = new Outils();
-    //kkvgb = new Ui::OrthManager(this);
+
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
 
     //On regarde si le dossier de config existe
@@ -1297,14 +1297,14 @@ void DadaWord::create_menus(){
 
     QAction *nouveau_document = menu_fichier->addAction(tr("Nouveau document"));
     nouveau_document->setIcon(QIcon::fromTheme("document-new", QIcon(":/menus/images/nouveau.png")));
-    nouveau_document->setShortcut(QKeySequence("Ctrl+N"));
-    nouveau_document->setStatusTip(tr("Ouvrir un nouveau document"));
+    nouveau_document->setShortcut(QKeySequence(settings->getSettings(RNouveau).toString()));
+    nouveau_document->setStatusTip(tr("Créer un nouveau document"));
     connect(nouveau_document, SIGNAL(triggered()), this, SLOT(ouvre_onglet()));
 
     QAction *menu_ouvrir_fichier = menu_fichier->addAction(tr("Ouvrir un fichier"));
     menu_ouvrir_fichier->setIcon(QIcon::fromTheme("document-open", QIcon(":/menus/images/fileopen.png")));
-    menu_ouvrir_fichier->setShortcut(QKeySequence("Ctrl+O"));
-    menu_ouvrir_fichier->setStatusTip(tr("Ouvrir un nouveau fichier"));
+    menu_ouvrir_fichier->setShortcut(QKeySequence(settings->getSettings(ROuvrir).toString()));
+    menu_ouvrir_fichier->setStatusTip(tr("Ouvrir un fichier existant"));
     connect(menu_ouvrir_fichier, SIGNAL(triggered()), this, SLOT(ouvrir_fichier()));
 
     QMenu *menu_recents = menu_fichier->addMenu(tr("Récemments ouverts"));menu_recents->setIcon(QIcon::fromTheme("document-open-recent", QIcon(":/menus/images/recents.png")));
@@ -1331,7 +1331,7 @@ void DadaWord::create_menus(){
 
     enregistrer = menu_fichier->addAction(tr("Enregistrer le fichier"));
     enregistrer->setIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
-    enregistrer->setShortcut(QKeySequence("Ctrl+S"));
+    enregistrer->setShortcut(QKeySequence(settings->getSettings(REnregistrer).toString()));
     enregistrer->setStatusTip(tr("Enregistrer le fichier courant"));
     connect(enregistrer, SIGNAL(triggered()), this, SLOT(enregistrement()));
     //Désactivation par défaut, on a rien modifié

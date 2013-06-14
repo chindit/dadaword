@@ -3,8 +3,8 @@
 SettingsManager::SettingsManager(QObject *parent) :
     QObject(parent)
 {
-    names = new QString[20];
-    settings = new QVariant[20];
+    names = new QString[23];
+    settings = new QVariant[23];
 
     names[Onglets] = "onglets";
     names[FichiersVides] = "fichiersVides";
@@ -26,6 +26,9 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[RGras] = "raccourci_gras";
     names[RItalique] = "raccourci_italique";
     names[RSouligne] = "raccourci_souligne";
+    names[RNouveau] = "raccourci_nouveau";
+    names[ROuvrir] = "raccourci_ouvrir";
+    names[REnregistrer] = "raccourci_enregistrer";
 
     loadSettings();
 
@@ -69,6 +72,21 @@ void SettingsManager::loadSettings(){
     settings[RGras] = options.value(names[RGras], "Ctrl+B");
     settings[RItalique] = options.value(names[RItalique], "Ctrl+I");
     settings[RSouligne] = options.value(names[RSouligne], "Ctrl+U");
+    settings[ROuvrir] = options.value(names[ROuvrir], "Ctrl+O");
+    settings[RNouveau] = options.value(names[RNouveau], "Ctrl+N");
+    settings[REnregistrer] = options.value(names[REnregistrer], "Ctrl+S");
+    return;
+}
+
+//Supprime toutes les préférences
+void SettingsManager::resetSettings(){
+    int resultat = QMessageBox::question(0, tr("Suppression des préférences"), tr("Attention : cette action supprimera <strong>toutes</strong> vos préférences.<br />Etes-vous sur de vouloir continuer?"), QMessageBox::Yes|QMessageBox::No);
+    if(resultat == QMessageBox::Yes){
+        QSettings options("DadaWord", "dadaword");
+        options.clear();
+        if(this->getSettings(Alertes).toInt() == HIGH)
+            QMessageBox::information(0, tr("Suppression effectuée"), tr("Vos préférences ont été supprimées avec succès.  La suppression sera pleinement effective après redémarrage de DadaWord"));
+    }
     return;
 }
 

@@ -8,6 +8,8 @@ Version 1.2.4 :
 - Ajout des mots ignorés définitivement pour un document
 - Ajout du lien pour ignorer définitivement dans le menu contextuel
 - Interdiction d'ouvrir certains types de fichiers non-ouvrables en mode texte
+- Ajout de la configuration des raccourcis pour l'ouverture, la création et l'enregistrement de documents.
+- Ajout de la possibilité de réinitialiser les préférences.
 - BUG : non-annulation du soulignement orthographique en cas de correction manuelle
 - BUG : SIGSEGV en cas d'enregistrement lors de la fermeture de l'onglet
 - BUG : langue du document mal détectée lors du chargement du DDZ.

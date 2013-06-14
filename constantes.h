@@ -20,9 +20,6 @@
 //Énumérations pour le changement de couleur
 enum { TEXTE, SURLIGNE, VERTC, VERTF, BLEU, ROUGE, JAUNE };
 
-//Énumérations des couleurs
-//enum {  };
-
 //Énumérations pour les alertes
 enum { LOW, MEDIUM, HIGH };
 
@@ -45,6 +42,6 @@ enum { INT_AUTRE };
 enum { UTF8, LATIN1 };
 
 //Énumération pour les settings
-enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents, DelTitre, RGras, RItalique, RSouligne };
+enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents, DelTitre, RGras, RItalique, RSouligne, RNouveau, ROuvrir, REnregistrer };
 
 #endif // CONSTANTES_H

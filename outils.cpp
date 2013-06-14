@@ -29,6 +29,8 @@ void Outils::fenetre_config(){
     settingsList->setMaximumWidth(100);
     QStackedWidget *settingsView = new QStackedWidget(configure_fen);
     QPushButton *fermer = new QPushButton;
+    QPushButton *button_reset = new QPushButton(tr("Réinitialiser"));
+    connect(button_reset, SIGNAL(clicked()), settings, SLOT(resetSettings()));
     fermer->setText(tr("Fermer la fenêtre"));
     fermer->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
     connect(fermer, SIGNAL(clicked()), configure_fen, SLOT(close()));
@@ -54,7 +56,7 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection, *label_icons, *label_titre;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection, *label_icons, *label_titre, *label_reset;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
@@ -69,6 +71,7 @@ void Outils::fenetre_config(){
     label_titre = new QLabel(tr("Désactiver les titres lors du retour à la ligne"));
     label_autocorrection = new QLabel(tr("Activer l'autocorrection"));
     label_icons = new QLabel(tr("Masquer les actions pour lesquelles le thème n'a pas d'icônes"));
+    label_reset = new QLabel(tr("Réinitialiser les préférences"));
     label_alertes->setToolTip(tr("Cette action va active/désactive les alertes du programme"));
     label_word->setToolTip(tr("Activer une mise en page type \"Word\""));
     label_dicos->setToolTip(tr("Change la langue du dictionnaire par défaut (modifiable pour le document courant via l'option du menu \"Outils\")"));
@@ -78,6 +81,7 @@ void Outils::fenetre_config(){
     label_autocorrection->setToolTip(tr("Active l'autocorrection pour les éléments listés dans le panel"));
     label_icons->setToolTip(tr("Ne masque que les icônes de la barre d'outils.  Les actions restent disponibles dans les menus"));
     label_titre->setToolTip(tr("Désactive automatiquement les styles de titre lors du retour à la ligne"));
+    label_reset->setToolTip(tr("Réinitialise toutes les préférences"));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
@@ -206,6 +210,8 @@ void Outils::fenetre_config(){
     layoutGeneral->addWidget(liste_themes, 5, 1);
     layoutGeneral->addWidget(label_icons, 6, 0);
     layoutGeneral->addWidget(checkbox_icons, 6, 1);
+    layoutGeneral->addWidget(label_reset, 7, 0);
+    layoutGeneral->addWidget(button_reset, 7, 1);
 
     //---------------------------------------------------
     //Raccourcis
@@ -213,17 +219,23 @@ void Outils::fenetre_config(){
     QWidget *fen_raccourcis = new QWidget(settingsView);
     settingsView->addWidget(fen_raccourcis);
     QGridLayout *layoutRaccourcis = new QGridLayout(fen_raccourcis);
-    QLabel *racc_titre, *racc_info, *racc_info_info, *racc_gras, *racc_italique, *racc_souligne;
+    QLabel *racc_titre, *racc_info, *racc_info_info, *racc_gras, *racc_italique, *racc_souligne, *racc_ouvrir, *racc_save, *racc_new;
     racc_titre = new QLabel(tr("<h3>Raccourcis de DadaWord</h3>"));
     racc_info = new QLabel(tr("Majuscule : <i>Shift</i>, Contrôle : <i>Ctrl</i>, Conjonction de touches : <i>+</i>"));
     racc_info_info = new QLabel(tr("Exemple : <i>Ctrl+Shift+F2"));
     racc_gras = new QLabel(tr("Gras"));
     racc_italique = new QLabel(tr("Italique"));
     racc_souligne = new QLabel(tr("Souligné"));
-    lr_gras = new QLineEdit;  lr_italique = new QLineEdit;  lr_souligne = new QLineEdit;
+    racc_ouvrir = new QLabel(tr("Ouvrir"));
+    racc_save = new QLabel(tr("Enregistrer"));
+    racc_new = new QLabel(tr("Nouveau"));
+    lr_gras = new QLineEdit;  lr_italique = new QLineEdit;  lr_souligne = new QLineEdit, lr_ouvrir = new QLineEdit, lr_save = new QLineEdit, lr_new = new QLineEdit;
     lr_gras->setText(settings->getSettings(RGras).toString());
     lr_italique->setText(settings->getSettings(RItalique).toString());
     lr_souligne->setText(settings->getSettings(RSouligne).toString());
+    lr_ouvrir->setText(settings->getSettings(ROuvrir).toString());
+    lr_save->setText(settings->getSettings(REnregistrer).toString());
+    lr_new->setText(settings->getSettings(RNouveau).toString());
     layoutRaccourcis->addWidget(racc_titre, 0, 0, 1, 4, Qt::AlignHCenter);
     layoutRaccourcis->addWidget(racc_info, 1, 0, 1, 4, Qt::AlignLeft);
     layoutRaccourcis->addWidget(racc_info_info, 2, 0, 1, 4, Qt::AlignLeft);
@@ -233,6 +245,12 @@ void Outils::fenetre_config(){
     layoutRaccourcis->addWidget(lr_italique, 3, 3);
     layoutRaccourcis->addWidget(racc_souligne, 4, 0);
     layoutRaccourcis->addWidget(lr_souligne, 4, 1);
+    layoutRaccourcis->addWidget(racc_ouvrir, 4, 2);
+    layoutRaccourcis->addWidget(lr_ouvrir, 4, 3);
+    layoutRaccourcis->addWidget(racc_save, 5, 0);
+    layoutRaccourcis->addWidget(lr_save, 5, 1);
+    layoutRaccourcis->addWidget(racc_new, 5, 2);
+    layoutRaccourcis->addWidget(lr_new, 5, 3);
 
 
     configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
@@ -270,6 +288,9 @@ void Outils::enregistre_config(){
     settings->setSettings(RGras, lr_gras->text());
     settings->setSettings(RItalique, lr_italique->text());
     settings->setSettings(RSouligne, lr_souligne->text());
+    settings->setSettings(RNouveau, lr_new->text());
+    settings->setSettings(ROuvrir, lr_ouvrir->text());
+    settings->setSettings(REnregistrer, lr_save->text());
 
     //On émet le signal
     emit settingsUpdated();
