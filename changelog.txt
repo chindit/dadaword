@@ -14,6 +14,7 @@ Version 1.2.4 :
 - BUG : SIGSEGV en cas d'enregistrement lors de la fermeture de l'onglet
 - BUG : langue du document mal détectée lors du chargement du DDZ.
 - BUG : options du dictionnaires supprimées des préférences suite à la mise à jour de la correction orthographique.
+- BUG : erreur lors de la lecture du numéro de version en cas de mise à jour manuelle (Windows)
 
 Version 1.2.3 :
 - Mise à jour pour Qt5

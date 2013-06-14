@@ -3583,8 +3583,11 @@ void DadaWord::has_maj(){
     QObject::connect(reply_version, SIGNAL(finished()), &wait_version, SLOT(quit()));
     wait_version.exec();
     QString version = reply_version->readAll();
-    QDomDocument xmlVersion(version);
-    QString numVersion = xmlVersion.elementsByTagName("version").at(0).toElement().text();
+    QDomDocument xmlVersion("Version");
+    xmlVersion.setContent(version);
+    QDomNodeList latestVersion = xmlVersion.elementsByTagName("version");
+    QString numVersion = latestVersion.at(0).toElement().text();
+
     if(numVersion == VERSION){
         QMessageBox::information(this, tr("Pas de nouvelle version"), tr("Félicitations!  Vous avez la dernière version de DadaWord"));
     }
@@ -3608,6 +3611,7 @@ void DadaWord::has_maj(){
             QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, DadaWord ne sait pas encore télécharger de mise à jour, mais la fonctionnalité arrive bientôt ;-)"));
         }
     }
+    return;
 }
 
 //Met à jour le bouton de langue
