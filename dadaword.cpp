@@ -3600,7 +3600,7 @@ void DadaWord::has_maj(){
             QEventLoop wait_version;
             QObject::connect(reply_version, SIGNAL(finished()), &wait_version, SLOT(quit()));
             wait_version.exec();
-            QFile saveVersion(QDir::tempPath()+"/dadaword_"+numVersion+".exe");
+            QFile saveVersion(QDir::tempPath()+"/"+xmlVersion.elementsByTagName("url").at(0).toElement().text());
             if(!saveVersion.open(QFile::WriteOnly)){
                 erreur->Erreur_msg(tr("Impossible d'enregistrer la nouvelle version de DadaWord."), QMessageBox::Critical);
                 return;
