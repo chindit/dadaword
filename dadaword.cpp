@@ -869,6 +869,10 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         find_onglet()->setMinimumSize(75, 75);
     }
 
+    //Désactivation des boutons d'enregistrement (pas de modifications vu que le fichier vient d'être ouvert
+    enregistrer->setEnabled(false);
+    find_onglet()->setWindowIcon(QIcon(":programme/images/dadaword.png"));
+
     //Activation du bouton de fermeture si désactivé
     if(!fichier_fermer->isEnabled()){
         fichier_fermer->setEnabled(true);
@@ -2075,6 +2079,7 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
         tf->setFrameFormat(tff);
 
         doc_principal_onglet->setModified(false);
+        zone_document_onglet->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
 
         //--------------------------------
         // Ajout d'une nouvelle page
@@ -2238,6 +2243,12 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
         }
         //Bouton d'enregistrement
         enregistrer->setEnabled(text_edit_temp->document()->isModified());
+        if(enregistrer->isEnabled()){
+            find_onglet()->setWindowIcon(QIcon(":/menus/images/filesave.png"));
+        }
+        else{
+            find_onglet()->setWindowIcon(QIcon(":/programme/images/dadaword.png"));
+        }
     }//Fin du "if" fenêtre valide
     else{
         //On masque le bouton "Enregistrer"
