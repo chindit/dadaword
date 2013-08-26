@@ -1,5 +1,8 @@
 DadaWord - Changelog
 
+Version 1.2.5 :
+- Possibilité d'ouvrir plusieurs fichiers simultanément.
+
 Version 1.2.4 :
 - Passage de la fenêtre de sélection de puces à l'UI.
 - Réécriture complète du correcteur orthographique

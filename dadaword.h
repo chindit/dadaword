@@ -149,6 +149,7 @@ private slots:
     void updateLangue();
     //Only for Windows
     void has_maj();
+    void test_odt(QString &nom);
 
 private:
     void create_menus();

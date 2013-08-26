@@ -10,9 +10,7 @@
 OrthManager *orthographe;
 
 //Constructeur
-DadaWord::DadaWord(QWidget *parent)
-    : QMainWindow(parent)
-{
+DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     //Constructeur vide pour permettre la création d'instances DadaWord
     //On initialise tout de même type_liste par sécurité
     type_liste = "";
@@ -73,8 +71,7 @@ DadaWord::DadaWord(QWidget *parent)
 }
 
 //Destructeur
-DadaWord::~DadaWord()
-{
+DadaWord::~DadaWord(){
     //On vérifie si le fichier n'est pas déjà ouvert
     QList<QMdiSubWindow *> liste_fichiers = zone_centrale->findChildren<QMdiSubWindow *>();
     QTextDocument *temp_document = new QTextDocument;
@@ -219,7 +216,7 @@ void DadaWord::cree_iu(){
 //A propos du programme
 void DadaWord::affiche_about(){
 
-    QString string_about = ("<h2>A propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58.aro-base.gmail.com'>littletiger58.aro-base.gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/gpl-3.0.fr.html'>GPL 3</a>");
+    QString string_about = ("<h2>À propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58.aro-base.gmail.com'>littletiger58.aro-base.gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/gpl-3.0.fr.html'>GPL 3</a>");
     QMessageBox::about(this, tr("À propos de DadaWord"), string_about);
     return;
 }
@@ -536,7 +533,8 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         }
         else if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
             //On exporte en ODT
-            export_odt();
+            //export_odt();
+            test_odt(nom_fichier);
             //On se casse parce qu'on a pas besoin d'écrire
             return;
         }
@@ -648,7 +646,20 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Récupération du nom de fichier
     QFile file(fichier);
     if(!file.exists()){
-        nom_fichier = QFileDialog::getOpenFileName(this, "Ouvrir un fichier", settings->getSettings(Enregistrement).toString(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+        QStringList noms_fichiers;
+        noms_fichiers = QFileDialog::getOpenFileNames(this, "Ouvrir un fichier", settings->getSettings(Enregistrement).toString(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+        if(noms_fichiers.size() == 1){
+            nom_fichier = noms_fichiers.first();
+        }
+        else if(noms_fichiers.size() == 0){
+            //On ne fait rien, ça passera dans l'alerte suivante
+        }
+        else{
+            for(int i=0; i<noms_fichiers.size(); i++){
+                this->ouvrir_fichier(noms_fichiers.at(i));
+            }
+            return;
+        }
         //On vérifie que l'utilisateur n'a pas fait "Cancel"
         if(nom_fichier.isNull() || nom_fichier.isEmpty()){
             erreur->Erreur_msg(tr("Impossible d'ouvrir le fichier, aucun nom n'a été donné"), QMessageBox::Ignore);
@@ -865,6 +876,13 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     return;
 }
 
+void DadaWord::test_odt(QString &nom){
+    QMessageBox::warning(this, "e", "OK");
+    QTextDocumentWriter enregistrement_fichier(nom, "odf");
+    enregistrement_fichier.write(find_edit()->document());
+    return;
+}
+
 //Export en ODT
 void DadaWord::export_odt(QString nom){
     //Si pas de document ouvert, on quitte
@@ -888,11 +906,14 @@ void DadaWord::export_odt(QString nom){
         }
         else{
             fichier.close();
+            fichier.remove();
         }
     }
     QTextDocumentWriter enregistrement_fichier(nom, "odf");
+    //QTextDocumentWriter enregistrement_fichier("/tmp/tagada_tsoin_tsoin.odt");
+    enregistrement_fichier.setFormat("odf");
     //On exporte l'onglet actuel :
-    QMessageBox::information(0, "nom", nom);
+    //QMessageBox::information(0, "nom", nom);
     enregistrement_fichier.write(find_edit()->document());
     return;
 }
