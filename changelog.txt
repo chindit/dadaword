@@ -2,6 +2,7 @@ DadaWord - Changelog
 
 Version 1.2.5 :
 - Possibilité d'ouvrir plusieurs fichiers simultanément.
+- Possibilité de fermer tous les fichiers ouverts.
 
 Version 1.2.4 :
 - Passage de la fenêtre de sélection de puces à l'UI.

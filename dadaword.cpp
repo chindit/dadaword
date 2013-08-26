@@ -115,6 +115,7 @@ DadaWord::~DadaWord(){
     delete affichage_recherche;
     delete add_ddz_annexe;
     delete fichier_fermer;
+    delete fichier_fermer_tout;
     delete menu_format;
 
 }
@@ -533,8 +534,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         }
         else if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
             //On exporte en ODT
-            //export_odt();
-            test_odt(nom_fichier);
+            export_odt();
             //On se casse parce qu'on a pas besoin d'écrire
             return;
         }
@@ -872,14 +872,8 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Activation du bouton de fermeture si désactivé
     if(!fichier_fermer->isEnabled()){
         fichier_fermer->setEnabled(true);
+        fichier_fermer_tout->setEnabled(true);
     }
-    return;
-}
-
-void DadaWord::test_odt(QString &nom){
-    QMessageBox::warning(this, "e", "OK");
-    QTextDocumentWriter enregistrement_fichier(nom, "odf");
-    enregistrement_fichier.write(find_edit()->document());
     return;
 }
 
@@ -1404,6 +1398,11 @@ void DadaWord::create_menus(){
     fichier_fermer->setIcon(QIcon::fromTheme(nomIcone, QIcon(":/menus/images/document-close.png")));
     fichier_fermer->setStatusTip(tr("Fermer l'onglet courant"));
     connect(fichier_fermer, SIGNAL(triggered()), this, SLOT(fermer_fichier()));
+
+    fichier_fermer_tout = menu_fichier->addAction(tr("Fermer tout"));
+    fichier_fermer_tout->setToolTip(tr("Ferme tous les documents ouverts"));
+    fichier_fermer_tout->setStatusTip(tr("Fermer tous les fichiers ouverts"));
+    connect(fichier_fermer_tout, SIGNAL(triggered()), this, SLOT(fermer_tout()));
 
     QAction *fichier_quitter = menu_fichier->addAction(tr("Quitter"));
     //Connexion slot
@@ -2113,6 +2112,7 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
     //Activation de l'onglet de fermetur
     if(!fichier_fermer->isEnabled()){
         fichier_fermer->setEnabled(true);
+        fichier_fermer_tout->setEnabled(true);
     }
     return;
 }
@@ -2269,6 +2269,17 @@ void DadaWord::fermer_fichier(){
     //Si plus d'onglets ouverts, on désactive le bouton
     if(zone_centrale->subWindowList().isEmpty()){
         fichier_fermer->setEnabled(false);
+        fichier_fermer_tout->setEnabled(false);
+    }
+    return;
+}
+
+//Ferme tous les fichiers ouverts
+void DadaWord::fermer_tout(){
+    int id = 0;
+    while(zone_centrale->subWindowList().count() > 0){
+        this->close_tab_button(id);
+        id++;
     }
     return;
 }
@@ -2476,6 +2487,10 @@ void DadaWord::add_image(){
 //Slot de fermeture d'onglet
 void DadaWord::close_tab_button(int index){
     QList<QMdiSubWindow *> liste = zone_centrale->findChildren<QMdiSubWindow *>();
+    if(liste.count() < index){
+        erreur->Erreur_msg("Tentative de fermeture d'un fichier inexistant", QMessageBox::Critical);
+        return;
+    }
     QTextEdit *text_edit_actif = liste.at(index)->findChild<QTextEdit *>();
     QTextDocument *document_actif = text_edit_actif->document();
     if(document_actif->isModified()){

@@ -101,6 +101,7 @@ private slots:
     void indicateur_modifications();
     void changement_focus(QMdiSubWindow *fenetre_activee);
     void fermer_fichier();
+    void fermer_tout();
     void change_couleur(const int &value);
     void make_undo();
     void make_redo();
@@ -149,7 +150,6 @@ private slots:
     void updateLangue();
     //Only for Windows
     void has_maj();
-    void test_odt(QString &nom);
 
 private:
     void create_menus();
@@ -174,6 +174,7 @@ private:
     QAction *italique;
     QAction *souligne;
     QAction *fichier_fermer;
+    QAction *fichier_fermer_tout;
     QColor *couleur_actuelle;
     QAction *edition_redo;
     QAction *edition_undo;
