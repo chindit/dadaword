@@ -42,6 +42,6 @@ enum { INT_AUTRE };
 enum { UTF8, LATIN1 };
 
 //Énumération pour les settings
-enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents, DelTitre, RGras, RItalique, RSouligne, RNouveau, ROuvrir, REnregistrer };
+enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents, DelTitre, UseDir, RGras, RItalique, RSouligne, RNouveau, ROuvrir, REnregistrer };
 
 #endif // CONSTANTES_H

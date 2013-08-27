@@ -3,6 +3,7 @@ DadaWord - Changelog
 Version 1.2.5 :
 - Possibilité d'ouvrir plusieurs fichiers simultanément.
 - Possibilité de fermer tous les fichiers ouverts.
+- Ouverture par défaut dans le dernier dossier utilisé pour ouvrir un fichier.
 - BUG : icône incorrecte lors de l'ouverture d'un fichier.
 
 Version 1.2.4 :

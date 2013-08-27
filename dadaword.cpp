@@ -14,6 +14,7 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     //Constructeur vide pour permettre la création d'instances DadaWord
     //On initialise tout de même type_liste par sécurité
     type_liste = "";
+    lastDir = "";
 
     //Initialisation des dicos
     settings = new SettingsManager;
@@ -647,7 +648,27 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     QFile file(fichier);
     if(!file.exists()){
         QStringList noms_fichiers;
-        noms_fichiers = QFileDialog::getOpenFileNames(this, "Ouvrir un fichier", settings->getSettings(Enregistrement).toString(), "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+        QString pathToOpen;
+        if(settings->getSettings(UseDir).toBool()){
+            if(!lastDir.isEmpty()){
+                pathToOpen = lastDir;
+            }
+            else{
+                pathToOpen = settings->getSettings(Enregistrement).toString();
+            }
+        }
+        else{
+            pathToOpen = settings->getSettings(Enregistrement).toString();
+        }
+        noms_fichiers = QFileDialog::getOpenFileNames(this, "Ouvrir un fichier", pathToOpen, "Tous documents (*.*);;Documents DadaWord (*.ddz);;Documents HTML (*.html *.htm);;Documents texte (*.txt);;Documents ODT (*.odt)");
+
+        //On actualise la valeur de "lastDir"
+        if(noms_fichiers.size() >= 1){
+            //Si 0 -> bug
+            QFileInfo chemin(noms_fichiers.at(0));
+            lastDir = chemin.dir().path();
+        }
+
         if(noms_fichiers.size() == 1){
             nom_fichier = noms_fichiers.first();
         }

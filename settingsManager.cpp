@@ -3,8 +3,8 @@
 SettingsManager::SettingsManager(QObject *parent) :
     QObject(parent)
 {
-    names = new QString[23];
-    settings = new QVariant[23];
+    names = new QString[24];
+    settings = new QVariant[24];
 
     names[Onglets] = "onglets";
     names[FichiersVides] = "fichiersVides";
@@ -23,6 +23,7 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[ToolbarIcons] = "showIconsToolbar";
     names[FichiersRecents] = "fichiersRecents";
     names[DelTitre] = "SupprimerTitre";
+    names[UseDir] = "UtiliserDernierDossier";
     names[RGras] = "raccourci_gras";
     names[RItalique] = "raccourci_italique";
     names[RSouligne] = "raccourci_souligne";
@@ -69,6 +70,7 @@ void SettingsManager::loadSettings(){
     settings[ToolbarIcons] = options.value(names[ToolbarIcons], false);
     settings[FichiersRecents] = options.value(names[FichiersRecents]);
     settings[DelTitre] = options.value(names[DelTitre], true);
+    settings[UseDir] = options.value(names[UseDir], true);
     settings[RGras] = options.value(names[RGras], "Ctrl+B");
     settings[RItalique] = options.value(names[RItalique], "Ctrl+I");
     settings[RSouligne] = options.value(names[RSouligne], "Ctrl+U");

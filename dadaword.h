@@ -206,7 +206,7 @@ private:
     QAction *colore_html;
 
     QTextCursor pos_orth;
-
+    QString lastDir;
     HighlighterHtml *instance;
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;

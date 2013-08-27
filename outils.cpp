@@ -56,7 +56,7 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_theme, *label_autocorrection, *label_icons, *label_titre, *label_reset;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_last_dir, *label_theme, *label_autocorrection, *label_icons, *label_titre, *label_reset;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
@@ -67,6 +67,7 @@ void Outils::fenetre_config(){
     label_dicos = new QLabel(tr("Langue du dictionnaire"));
     label_timer = new QLabel(tr("Sauvegarde automatique (en secondes)"));
     label_saving = new QLabel(tr("Répertoire d'enregistrement par défaut"));
+    label_last_dir = new QLabel(tr("Sélectionner par défaut le dernier répertoire utilisé"));
     label_theme = new QLabel(tr("Thème d'icônes"));
     label_titre = new QLabel(tr("Désactiver les titres lors du retour à la ligne"));
     label_autocorrection = new QLabel(tr("Activer l'autocorrection"));
@@ -82,6 +83,7 @@ void Outils::fenetre_config(){
     label_icons->setToolTip(tr("Ne masque que les icônes de la barre d'outils.  Les actions restent disponibles dans les menus"));
     label_titre->setToolTip(tr("Désactive automatiquement les styles de titre lors du retour à la ligne"));
     label_reset->setToolTip(tr("Réinitialise toutes les préférences"));
+    label_last_dir->setToolTip(tr("Cette option ouvre par défaut le dernier dossier utilisé lors de l'ouverture d'un fichier.  Le dossier n'est gardé en mémoire que durant la session courante, il revient donc au dossier par défaut à chaque redémarrage du programme."));
 
     checkbox_onglets = new QCheckBox;
     checkbox_fichiers_vides = new QCheckBox;
@@ -90,6 +92,7 @@ void Outils::fenetre_config(){
     checkbox_autocorrection = new QCheckBox;
     checkbox_icons = new QCheckBox;
     checkbox_titre = new QCheckBox;
+    checkbox_dir = new QCheckBox;
     //On y met la configuration déjà existante :
     checkbox_onglets->setChecked(settings->getSettings(Onglets).toBool());
     checkbox_fichiers_vides->setChecked(settings->getSettings(FichiersVides).toBool());
@@ -98,6 +101,7 @@ void Outils::fenetre_config(){
     checkbox_autocorrection->setChecked(settings->getSettings(Autocorrection).toBool());
     checkbox_icons->setChecked(settings->getSettings(ToolbarIcons).toBool());
     checkbox_titre->setChecked(settings->getSettings(DelTitre).toBool());
+    checkbox_dir->setChecked(settings->getSettings(UseDir).toBool());
 
     alertes = new QComboBox;
     alertes->addItem(tr("Aucunes"), LOW);
@@ -206,12 +210,14 @@ void Outils::fenetre_config(){
     layoutSaving->addWidget(saving_edit);
     layoutSaving->addWidget(changeSaving);
     layoutGeneral->addLayout(layoutSaving, 4, 1);
-    layoutGeneral->addWidget(label_theme, 5, 0);
-    layoutGeneral->addWidget(liste_themes, 5, 1);
-    layoutGeneral->addWidget(label_icons, 6, 0);
-    layoutGeneral->addWidget(checkbox_icons, 6, 1);
-    layoutGeneral->addWidget(label_reset, 7, 0);
-    layoutGeneral->addWidget(button_reset, 7, 1);
+    layoutGeneral->addWidget(label_last_dir, 5, 0);
+    layoutGeneral->addWidget(checkbox_dir, 5, 1);
+    layoutGeneral->addWidget(label_theme, 6, 0);
+    layoutGeneral->addWidget(liste_themes, 6, 1);
+    layoutGeneral->addWidget(label_icons, 7, 0);
+    layoutGeneral->addWidget(checkbox_icons, 7, 1);
+    layoutGeneral->addWidget(label_reset, 8, 0);
+    layoutGeneral->addWidget(button_reset, 8, 1);
 
     //---------------------------------------------------
     //Raccourcis
@@ -285,6 +291,7 @@ void Outils::enregistre_config(){
         settings->setSettings(Theme, liste_themes->currentText());
     settings->setSettings(ToolbarIcons, checkbox_icons->isChecked());
     settings->setSettings(DelTitre, checkbox_titre->isChecked());
+    settings->setSettings(UseDir, checkbox_dir->isChecked());
     settings->setSettings(RGras, lr_gras->text());
     settings->setSettings(RItalique, lr_italique->text());
     settings->setSettings(RSouligne, lr_souligne->text());
