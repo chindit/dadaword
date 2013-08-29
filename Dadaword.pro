@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     outils.cpp \
     opendocument.cpp \
     spellchecker.cpp \
-    highlighterhtml.cpp \
     ddz.cpp \
     qzip.cpp \  
     style.cpp \
@@ -29,14 +28,14 @@ SOURCES += main.cpp\
     specialchars.cpp \
     replaceManager.cpp \
     orthManager.cpp \
-    puces.cpp
+    puces.cpp \
+    highlighter.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
     outils.h \
     opendocument.h \
     spellchecker.h \
-    highlighterhtml.h \
     ddz.h \
     qzipreader.h \
     qzipwriter.h \  
@@ -47,7 +46,8 @@ HEADERS  += dadaword.h \
     specialchars.h \
     replaceManager.h \
     orthManager.h \
-    puces.h
+    puces.h \
+    highlighter.h
 
 RESOURCES += \
     images.qrc

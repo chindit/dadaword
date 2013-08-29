@@ -51,7 +51,7 @@
 #include "ddz.h"
 #include "errorManager.h"
 #include "puces.h"
-#include "highlighterhtml.h"
+#include "highlighter.h"
 #include "opendocument.h"
 #include "orthManager.h"
 #include "replaceManager.h"
@@ -207,7 +207,7 @@ private:
 
     QTextCursor pos_orth;
     QString lastDir;
-    HighlighterHtml *instance;
+    HtmlHighlighter *instance;
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;
     QAction *add_ddz_annexe;

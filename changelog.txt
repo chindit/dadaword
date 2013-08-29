@@ -4,6 +4,7 @@ Version 1.2.5 :
 - Possibilité d'ouvrir plusieurs fichiers simultanément.
 - Possibilité de fermer tous les fichiers ouverts.
 - Ouverture par défaut dans le dernier dossier utilisé pour ouvrir un fichier.
+- Amélioration de la coloration syntaxique des langages à balises
 - BUG : icône incorrecte lors de l'ouverture d'un fichier.
 
 Version 1.2.4 :

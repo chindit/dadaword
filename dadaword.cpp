@@ -2664,7 +2664,7 @@ void DadaWord::to_plain_text(){
         QString contenu = find_edit()->toHtml();
         find_edit()->clear();
         find_edit()->setPlainText(contenu);
-        instance = new HighlighterHtml(find_edit()->document());
+        instance = new HtmlHighlighter(find_edit()->document());
         //On refuse le RichText sous peine de bug lors du changement de focus
         find_edit()->setAcceptRichText(false);
         find_edit()->selectAll();
@@ -3239,7 +3239,7 @@ void DadaWord::html_highlight(){
     }
     //Si on est ici, c'est que l'utilisateur a cliqué sur le bouton, donc que c'est possible de colorer (sinon le bouton n'apparaîtrait pas)
     if(colore_html->isChecked()){
-        instance = new HighlighterHtml(find_edit()->document());
+        instance = new HtmlHighlighter(find_edit()->document());
     }
     else{
         find_edit()->setTextColor(Qt::black);
