@@ -65,11 +65,11 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
 
     qsrand(QDateTime::currentDateTime().toTime_t());
     //On crée le timer pour enregistrer automatiquement le fichier
-    QTimer *timer_enregistrement = new QTimer;
-    timer_enregistrement->setSingleShot(false); //Timer répétitif
-    timer_enregistrement->setInterval(settings->getSettings(Timer).toInt()*1000); //On sauvegarde toutes les 5 minutes
-    timer_enregistrement->start();
-    QObject::connect(timer_enregistrement, SIGNAL(timeout()), this, SLOT(autoSave()));
+    QTimer *timer_save = new QTimer;
+    timer_save->setSingleShot(false); //Timer répétitif
+    timer_save->setInterval(settings->getSettings(Timer).toInt()*1000); //On sauvegarde toutes les 5 minutes
+    timer_save->start();
+    QObject::connect(timer_save, SIGNAL(timeout()), this, SLOT(autoSave()));
 
 }
 
@@ -83,7 +83,7 @@ DadaWord::~DadaWord(){
         QTextEdit *edit_temp = temp_boucle->findChild<QTextEdit *>();
         temp_document = edit_temp->document();
         if(temp_document->isModified()){
-            alerte_enregistrement(temp_boucle);
+            saveAlert(temp_boucle);
         }
     }
 
@@ -104,8 +104,8 @@ DadaWord::~DadaWord(){
     delete couleur_actuelle;
     delete edition_redo;
     delete edition_undo;
-    delete incremente_puce_bouton;
-    delete desincremente_puce_bouton;
+    delete incrementList_bouton;
+    delete desincrementList_bouton;
     delete lecture_seule;
     delete to_text;
     delete barre_etat;
@@ -118,13 +118,13 @@ DadaWord::~DadaWord(){
     delete affichage_recherche;
     delete add_ddz_annexe;
     delete fichier_fermer;
-    delete fichier_fermer_tout;
+    delete fichier_closeAll;
     delete menu_format;
     delete listFiles;
 }
 
 //Ancien constucteur : génère l'interface utilisateur : À n'appeller que dans le main();
-void DadaWord::cree_iu(){
+void DadaWord::createUI(){
     //Préparation des variables globales
     //modification = false;
     titre_doc = new QString;
@@ -160,7 +160,7 @@ void DadaWord::cree_iu(){
     status_is_modified->setFlat(true);
     statusBar()->addPermanentWidget(status_is_modified);
     //On connecte le QLabel avec le slot d'enregistrement
-    connect(status_is_modified, SIGNAL(clicked()), this, SLOT(enregistrement()));
+    connect(status_is_modified, SIGNAL(clicked()), this, SLOT(save()));
 
     //Création des menus
     create_menus();
@@ -171,7 +171,7 @@ void DadaWord::cree_iu(){
     zone_centrale = new QMdiArea;
 
     //Ouverture d'un onglet
-    ouvre_onglet(true, tr("Nouveau document"));
+    openTab(true, tr("Nouveau document"));
 
     //Vue en onglets
     if(!settings->getSettings(Onglets).toBool()){
@@ -199,7 +199,7 @@ void DadaWord::cree_iu(){
     if(liste.count() > 1){
         QFile fichier(liste.at(1));
         if(fichier.exists()){
-            ouvrir_fichier(liste.at(1));
+            openFile(liste.at(1));
         }
     }
 #endif
@@ -211,14 +211,14 @@ void DadaWord::cree_iu(){
         QStringList fichiers = verif_fichiers->getFilesNames();
         if(!fichiers.isEmpty()){
             for(int i=0; i<fichiers.size(); i++){
-                ouvrir_fichier(fichiers.at(i), true);
+                openFile(fichiers.at(i), true);
             }//Fin "for"
         }//Fin "fichiers" -> Empty
     }//Fin "hasFilesNames"
 }//Fin "Create UI"
 
 //A propos du programme
-void DadaWord::affiche_about(){
+void DadaWord::showAbout(){
 
     QString string_about = ("<h2>À propos de DadaWord</h2><br><b>Dévoloppé par</b> : David Lumaye<br><b>Version</b> : ")+QString(VERSION)+tr("<br><b>Courriel</b>:<a href='mailto:littletiger58.aro-base.gmail.com'>littletiger58.aro-base.gmail.com</a><br><b>Distribué sous license</b> : <a href='http://www.gnu.org/licenses/gpl-3.0.fr.html'>GPL 3</a>");
     QMessageBox::about(this, tr("À propos de DadaWord"), string_about);
@@ -226,7 +226,7 @@ void DadaWord::affiche_about(){
 }
 
 //Changement de police
-void DadaWord::change_police(QFont nouvelle_police){
+void DadaWord::changeFont(QFont nouvelle_police){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -238,7 +238,7 @@ void DadaWord::change_police(QFont nouvelle_police){
     find_edit()->setCurrentFont(nouvelle_police);
     find_edit()->setFontPointSize(taille_police);
     if(police == QFont::Bold){
-        graisse_police(true);
+        fontWeight(true);
     }
     find_edit()->setFontItalic(police_italique);
     find_edit()->setFontUnderline(police_souligne);
@@ -247,26 +247,26 @@ void DadaWord::change_police(QFont nouvelle_police){
 }
 
 //Surcharge
-void DadaWord::change_police(QString police){
+void DadaWord::changeFont(QString police){
     QFont newFont(police);
-    change_police(newFont);
+    changeFont(newFont);
 }
 
 //Surcharge pour le menu
-void DadaWord::change_police(){
+void DadaWord::changeFont(){
     bool ok = true;
     QFont police = QFontDialog::getFont(&ok, this);
     if(!ok){
         return;
     }
     else{
-        change_police(police);
+        changeFont(police);
     }
     return;
 }
 
 //Mise en gras
-void DadaWord::graisse_police(bool etat){
+void DadaWord::fontWeight(bool etat){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -285,7 +285,7 @@ void DadaWord::graisse_police(bool etat){
 }
 
 //Mise en italique
-void DadaWord::italique_police(bool etat){
+void DadaWord::fontFamily(bool etat){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -299,7 +299,7 @@ void DadaWord::italique_police(bool etat){
 }
 
 //Soulignement
-void DadaWord::souligne_police(bool etat){
+void DadaWord::fontUndeline(bool etat){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -313,7 +313,7 @@ void DadaWord::souligne_police(bool etat){
 }
 
 //Modification de la taille
-void DadaWord::change_taille(int taille){
+void DadaWord::changeSize(int taille){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -324,20 +324,20 @@ void DadaWord::change_taille(int taille){
 }
 
 //Surcharge
-void DadaWord::change_taille(){
+void DadaWord::changeSize(){
     bool ok = true;
     int taille = QInputDialog::getInt(this, tr("Taille de la police"), tr("Taille de la police"), 12, 1, 72, 1, &ok);
     if(!ok){
         return;
     }
     else{
-        change_taille(taille);
+        changeSize(taille);
     }
     return;
 }
 
 //Aperçu avant impression
-void DadaWord::apercu_avant_impression(){
+void DadaWord::printPreview(){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -385,7 +385,7 @@ void DadaWord::imprimer(){
 }
 
 //Enregistrement
-void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
+void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
     //---------------------------------------------------
     //Variables globales pour la fonction
     //---------------------------------------------------
@@ -496,7 +496,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
                 find_onglet()->setAccessibleDescription(nom_fichier);
             }else{
             fenetre_temp->setAccessibleDescription(nom_fichier);}*/
-            export_odt(nom_fichier);
+            odtExport(nom_fichier);
         }
         else{
             contenu_fichier = edit_temp->toHtml();
@@ -537,7 +537,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
         }
         else if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
             //On exporte en ODT
-            export_odt();
+            odtExport();
             //On se casse parce qu'on a pas besoin d'écrire
             return;
         }
@@ -627,12 +627,12 @@ void DadaWord::autoSave(){
         return;
     }
     //On renvoie à la fonction d'enregistrement
-    enregistrement(find_onglet(), false, true);
+    save(find_onglet(), false, true);
     return;
 }
 
 //Ouverture d'un fichier
-void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
+void DadaWord::openFile(const QString &fichier, bool autosave){
     //Variables globales
     QString nom_fichier;
     QStringList retour, interdits;
@@ -680,7 +680,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
         }
         else{
             for(int i=0; i<noms_fichiers.size(); i++){
-                this->ouvrir_fichier(noms_fichiers.at(i));
+                this->openFile(noms_fichiers.at(i));
             }
             return;
         }
@@ -805,12 +805,12 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     QTextDocument *document_actuel = new QTextDocument;
 
     if(liste_fichiers.size() == 0){ //Pas d'onglets ouverts -> on en ouvre un
-        ouvre_onglet(true, titre);
+        openTab(true, titre);
     }
     else{
         document_actuel = find_edit()->document();
         if(document_actuel->isModified() || !document_actuel->isEmpty()){
-            ouvre_onglet(true, titre);
+            openTab(true, titre);
         }
         else{
             //Si on ouvre pas un nouvel onglet, on envoie tout de même le signal de changement pour mettre à jour les menus
@@ -901,18 +901,18 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Activation du bouton de fermeture si désactivé
     if(!fichier_fermer->isEnabled()){
         fichier_fermer->setEnabled(true);
-        fichier_fermer_tout->setEnabled(true);
+        fichier_closeAll->setEnabled(true);
     }
     return;
 }
 
 //Export en ODT
-void DadaWord::export_odt(QString nom){
+void DadaWord::odtExport(QString nom){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
     }
-    //Enregistrement ODT
+    //enrigistrement ODT
     QFile fichier;
     while (nom.isNull() || nom.isEmpty()){
         nom = QFileDialog::getSaveFileName(this, tr("Enregistrer un fichier"), settings->getSettings(Enregistrement).toString(), tr("Documents textes (*.odt)"));
@@ -932,12 +932,12 @@ void DadaWord::export_odt(QString nom){
             fichier.remove();
         }
     }
-    QTextDocumentWriter enregistrement_fichier(nom, "odf");
-    //QTextDocumentWriter enregistrement_fichier("/tmp/tagada_tsoin_tsoin.odt");
-    enregistrement_fichier.setFormat("odf");
+    QTextDocumentWriter save_fichier(nom, "odf");
+    //QTextDocumentWriter save_fichier("/tmp/tagada_tsoin_tsoin.odt");
+    save_fichier.setFormat("odf");
     //On exporte l'onglet actuel :
     //QMessageBox::information(0, "nom", nom);
-    enregistrement_fichier.write(find_edit()->document());
+    save_fichier.write(find_edit()->document());
     return;
 }
 
@@ -965,7 +965,7 @@ void DadaWord::export_pdf(){
 }
 
 //Création des listes à puces
-void DadaWord::create_liste_puce(const int ordonne){
+void DadaWord::createList(const int ordonne){
     //Si pas de document ouvert, on quitte
     if(find_edit() == 0){
         return;
@@ -998,7 +998,7 @@ void DadaWord::create_liste_puce(const int ordonne){
                 liste_puce.setStyle(QTextListFormat::ListUpperRoman);
             }
             else{
-                erreur->Erreur_msg(tr("Erreur lors de la transmission du type de liste à DadaWord::create_liste_puce"), QMessageBox::Information);
+                erreur->Erreur_msg(tr("Erreur lors de la transmission du type de liste à DadaWord::createList"), QMessageBox::Information);
                 return;
             }
             //Si on est ici, c'est qu'il n'y a pas eu de bugs.  Donc, on enregistre le type de liste dans "type_liste"
@@ -1015,8 +1015,8 @@ void DadaWord::create_liste_puce(const int ordonne){
         //On affiche la ToolBar des listes à puces
         puces->show();
         affichage_puces->setChecked(true);
-        incremente_puce_bouton->setEnabled(true);
-        desincremente_puce_bouton->setEnabled(true);
+        incrementList_bouton->setEnabled(true);
+        desincrementList_bouton->setEnabled(true);
     }
     else{
         if(settings->getSettings(Alertes).toInt() == HIGH){
@@ -1041,7 +1041,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 if(!contenu_selection.isEmpty()){
                     QChar char_test = contenu_selection.at(0);
                     if(char_test == QChar(8233)){
-                        return desincremente_puce();
+                        return desincrementList();
                     }
                 }
             }//Fin CurrentList
@@ -1065,7 +1065,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                 if(!contenu_selection.isEmpty()){
                     QChar char_test = contenu_selection.at(0);
                     if(char_test == QChar(8233)){
-                        incremente_puce();
+                        incrementList();
                         return true;
                     }
                 }
@@ -1073,8 +1073,8 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
             else{
                 puces->hide();
                 affichage_puces->setChecked(false);
-                incremente_puce_bouton->setEnabled(false);
-                desincremente_puce_bouton->setEnabled(false);
+                incrementList_bouton->setEnabled(false);
+                desincrementList_bouton->setEnabled(false);
             }
         }//Fin du "if"
         if(keyEvent->key() == Qt::Key_Escape){
@@ -1236,7 +1236,7 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
 }
 
 //Désincrémentation dans les listes à puces
-bool DadaWord::desincremente_puce(){
+bool DadaWord::desincrementList(){
     QTextCursor curseur = find_edit()->textCursor();
     QTextListFormat liste_puce;
     if(curseur.currentList() == 0){
@@ -1292,7 +1292,7 @@ bool DadaWord::desincremente_puce(){
 }
 
 //Incrémentation dans les listes à puces
-void DadaWord::incremente_puce(){
+void DadaWord::incrementList(){
     QTextCursor curseur = find_edit()->textCursor();
     QTextListFormat liste_puce;
     QTextList *liste_actuelle = curseur.currentList();
@@ -1343,13 +1343,13 @@ void DadaWord::create_menus(){
     nouveau_document->setIcon(QIcon::fromTheme("document-new", QIcon(":/menus/images/nouveau.png")));
     nouveau_document->setShortcut(QKeySequence(settings->getSettings(RNouveau).toString()));
     nouveau_document->setStatusTip(tr("Créer un nouveau document"));
-    connect(nouveau_document, SIGNAL(triggered()), this, SLOT(ouvre_onglet()));
+    connect(nouveau_document, SIGNAL(triggered()), this, SLOT(openTab()));
 
-    QAction *menu_ouvrir_fichier = menu_fichier->addAction(tr("Ouvrir un fichier"));
-    menu_ouvrir_fichier->setIcon(QIcon::fromTheme("document-open", QIcon(":/menus/images/fileopen.png")));
-    menu_ouvrir_fichier->setShortcut(QKeySequence(settings->getSettings(ROuvrir).toString()));
-    menu_ouvrir_fichier->setStatusTip(tr("Ouvrir un fichier existant"));
-    connect(menu_ouvrir_fichier, SIGNAL(triggered()), this, SLOT(ouvrir_fichier()));
+    QAction *menu_openFile = menu_fichier->addAction(tr("Ouvrir un fichier"));
+    menu_openFile->setIcon(QIcon::fromTheme("document-open", QIcon(":/menus/images/fileopen.png")));
+    menu_openFile->setShortcut(QKeySequence(settings->getSettings(ROuvrir).toString()));
+    menu_openFile->setStatusTip(tr("Ouvrir un fichier existant"));
+    connect(menu_openFile, SIGNAL(triggered()), this, SLOT(openFile()));
 
     QMenu *menu_recents = menu_fichier->addMenu(tr("Récemments ouverts"));menu_recents->setIcon(QIcon::fromTheme("document-open-recent", QIcon(":/menus/images/recents.png")));
     QStringList recemment_ouverts = settings->getSettings(FichiersRecents).toStringList();
@@ -1365,7 +1365,7 @@ void DadaWord::create_menus(){
                 QSignalMapper *mappeur_string = new QSignalMapper;
                 connect(action_ouverts[i], SIGNAL(triggered()), mappeur_string, SLOT(map()));
                 mappeur_string->setMapping(action_ouverts[i], recemment_ouverts.at(i));
-                connect(mappeur_string, SIGNAL(mapped(const QString &)), this, SLOT(ouvrir_fichier(const QString &)));
+                connect(mappeur_string, SIGNAL(mapped(const QString &)), this, SLOT(openFile(const QString &)));
             }
             else{
                 erreur->Erreur_msg(tr("Erreur lors de la génération des fichiers récents; des items vides ont été trouvés"), QMessageBox::Information);
@@ -1377,7 +1377,7 @@ void DadaWord::create_menus(){
     enregistrer->setIcon(QIcon::fromTheme("document-save", QIcon(":/menus/images/filesave.png")));
     enregistrer->setShortcut(QKeySequence(settings->getSettings(REnregistrer).toString()));
     enregistrer->setStatusTip(tr("Enregistrer le fichier courant"));
-    connect(enregistrer, SIGNAL(triggered()), this, SLOT(enregistrement()));
+    connect(enregistrer, SIGNAL(triggered()), this, SLOT(save()));
     //Désactivation par défaut, on a rien modifié
     enregistrer->setEnabled(false);
     //status_is_modified->setText(tr("Pas de modifications"));
@@ -1386,7 +1386,7 @@ void DadaWord::create_menus(){
     enregistrerTout = menu_fichier->addAction(tr("Enregistrer tout"));
     enregistrerTout->setIcon(QIcon::fromTheme("document-save-all", QIcon(":/menus/images/document-save-all.png")));
     enregistrerTout->setStatusTip(tr("Enregistre tous les fichiers ouverts"));
-    connect(enregistrerTout, SIGNAL(triggered()), this, SLOT(enregistrer_tout()));
+    connect(enregistrerTout, SIGNAL(triggered()), this, SLOT(saveAll()));
     enregistrerTout->setEnabled(false);
 
     QAction *enregistrer_sous = menu_fichier->addAction(QIcon::fromTheme("document-save-as", QIcon(":/menus/images/enregistrer_sous.png")), tr("Enregistrer le fichier sous"));
@@ -1401,7 +1401,7 @@ void DadaWord::create_menus(){
     exporter_odt->setIcon(QIcon::fromTheme("application-vnd.oasis.opendocument.text", QIcon(":/menus/images/odt.png")));
     exporter_odt->setShortcut(QKeySequence("Ctrl+E"));
     exporter_odt->setStatusTip(tr("Exporter le fichier courant en ODT"));
-    connect(exporter_odt, SIGNAL(triggered()), this, SLOT(export_odt()));
+    connect(exporter_odt, SIGNAL(triggered()), this, SLOT(odtExport()));
 
     QAction *exporter_pdf = exporter->addAction(tr("PDF"));
     exporter_pdf->setIcon(QIcon::fromTheme("application-pdf", QIcon(":/menus/images/pdf.png")));
@@ -1410,7 +1410,7 @@ void DadaWord::create_menus(){
 
 
     QAction *apercu_impression = menu_fichier->addAction(tr("Aperçu avant impression"));
-    connect(apercu_impression, SIGNAL(triggered()), this, SLOT(apercu_avant_impression()));
+    connect(apercu_impression, SIGNAL(triggered()), this, SLOT(printPreview()));
     apercu_impression->setStatusTip(tr("Afficher un aperçu avant impression"));
     apercu_impression->setIcon(QIcon::fromTheme("document-print-preview", QIcon(":/menus/images/document_preview.png")));
 
@@ -1428,10 +1428,10 @@ void DadaWord::create_menus(){
     fichier_fermer->setStatusTip(tr("Fermer l'onglet courant"));
     connect(fichier_fermer, SIGNAL(triggered()), this, SLOT(close_tab_button()));
 
-    fichier_fermer_tout = menu_fichier->addAction(tr("Fermer tout"));
-    fichier_fermer_tout->setToolTip(tr("Ferme tous les documents ouverts"));
-    fichier_fermer_tout->setStatusTip(tr("Fermer tous les fichiers ouverts"));
-    connect(fichier_fermer_tout, SIGNAL(triggered()), this, SLOT(fermer_tout()));
+    fichier_closeAll = menu_fichier->addAction(tr("Fermer tout"));
+    fichier_closeAll->setToolTip(tr("Ferme tous les documents ouverts"));
+    fichier_closeAll->setStatusTip(tr("Fermer tous les fichiers ouverts"));
+    connect(fichier_closeAll, SIGNAL(triggered()), this, SLOT(closeAll()));
 
     QAction *fichier_quitter = menu_fichier->addAction(tr("Quitter"));
     //Connexion slot
@@ -1495,7 +1495,7 @@ void DadaWord::create_menus(){
     gere_styles->setStatusTip(tr("Gére les styles par défauts et vous permet de créer vos propres styles"));
     Style *instance_style = new Style;
     connect(gere_styles, SIGNAL(triggered()), instance_style, SLOT(affiche_fen()));
-    connect(instance_style, SIGNAL(styles_changed()), this, SLOT(recharge_styles()));
+    connect(instance_style, SIGNAL(styles_changed()), this, SLOT(reloadStyles()));
 
     //Gestion de l'autocorrection
     QAction *autocorrection = menu_edition->addAction(tr("Autocorrection"));
@@ -1588,7 +1588,7 @@ void DadaWord::create_menus(){
     insere_puce->setStatusTip(tr("Insérer une liste à puces"));
     insere_puce->setShortcut(QKeySequence("Shift+F10"));
     insere_puce->setIcon(QIcon::fromTheme("format-list-unordered", QIcon(":/menus/images/puces.png")));
-    connect(insere_puce, SIGNAL(triggered()), this, SLOT(create_liste_puce()));
+    connect(insere_puce, SIGNAL(triggered()), this, SLOT(createList()));
 
     QAction *puce_speciale = menu_insertion->addAction(tr("Liste ordonnée"));
     puce_speciale->setStatusTip(tr("Insérer une liste ordonnée"));
@@ -1597,15 +1597,15 @@ void DadaWord::create_menus(){
     QSignalMapper *mappeur_puce = new QSignalMapper;
     connect(puce_speciale, SIGNAL(triggered()), mappeur_puce, SLOT(map()));
     mappeur_puce->setMapping(puce_speciale, 1);
-    connect(mappeur_puce, SIGNAL(mapped(const int)), this, SLOT(create_liste_puce(const int)));
+    connect(mappeur_puce, SIGNAL(mapped(const int)), this, SLOT(createList(const int)));
 
-    incremente_puce_bouton = menu_insertion->addAction(tr("Incrémenter la puce"));
-    incremente_puce_bouton->setEnabled(false);
-    connect(incremente_puce_bouton, SIGNAL(triggered()), this, SLOT(incremente_puce()));
+    incrementList_bouton = menu_insertion->addAction(tr("Incrémenter la puce"));
+    incrementList_bouton->setEnabled(false);
+    connect(incrementList_bouton, SIGNAL(triggered()), this, SLOT(incrementList()));
 
-    desincremente_puce_bouton = menu_insertion->addAction(tr("Désincrémente la puce"));
-    desincremente_puce_bouton->setEnabled(false);
-    connect(desincremente_puce_bouton, SIGNAL(triggered()), this, SLOT(desincremente_puce()));
+    desincrementList_bouton = menu_insertion->addAction(tr("Désincrémente la puce"));
+    desincrementList_bouton->setEnabled(false);
+    connect(desincrementList_bouton, SIGNAL(triggered()), this, SLOT(desincrementList()));
 
     QAction *insere_caractere = menu_insertion->addAction(tr("Caractères spéciaux"));
     insere_caractere->setIcon(QIcon::fromTheme("character-set", QIcon(":/menus/images/specialchars.png")));
@@ -1808,7 +1808,7 @@ void DadaWord::create_menus(){
     aide_a_propos->setIcon(QIcon::fromTheme("about", QIcon(":/menus/images/about.gif")));
     aide_a_propos->setStatusTip(tr("À propos du créateur de ce génial programme"));
     //Connexion slot
-    connect(aide_a_propos, SIGNAL(triggered()), this, SLOT(affiche_about()));
+    connect(aide_a_propos, SIGNAL(triggered()), this, SLOT(showAbout()));
 
     //AboutQt
     QAction *about_qt = menu_aide->addAction(tr("À propos de Qt"));
@@ -1827,7 +1827,7 @@ void DadaWord::create_menus(){
     if((QIcon::hasThemeIcon("document-new") || (!settings->getSettings(ToolbarIcons).toBool())))
             barre_standard->addAction(nouveau_document);
     if((QIcon::hasThemeIcon("document-open") || (!settings->getSettings(ToolbarIcons).toBool())))
-        barre_standard->addAction(menu_ouvrir_fichier);
+        barre_standard->addAction(menu_openFile);
     if((QIcon::hasThemeIcon("document-save") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(enregistrer);
     if((QIcon::hasThemeIcon("document-close") || (!settings->getSettings(ToolbarIcons).toBool())))
@@ -1836,33 +1836,33 @@ void DadaWord::create_menus(){
     choix_police->setCurrentFont(settings->getSettings(Police).value<QFont>());
     barre_standard->addWidget(choix_police);
     //Connection du slot
-    connect(choix_police, SIGNAL(activated(QString)), this, SLOT(change_police(QString)));
+    connect(choix_police, SIGNAL(activated(QString)), this, SLOT(changeFont(QString)));
 
     taille_police = new QSpinBox;
     taille_police->setValue(settings->getSettings(Taille).toInt());
     barre_standard->addWidget(taille_police);
     //Connexion au slot
-    connect(taille_police, SIGNAL(valueChanged(int)), this, SLOT(change_taille(int)));
+    connect(taille_police, SIGNAL(valueChanged(int)), this, SLOT(changeSize(int)));
 
     gras = new QAction(QIcon::fromTheme("format-text-bold", QIcon(":/menus/images/text_bold.png")), tr("Gras"), menu_format);
     if((QIcon::hasThemeIcon("format-text-bold") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(gras);
     gras->setShortcut(QKeySequence(settings->getSettings(RGras).toString()));
-    connect(gras, SIGNAL(triggered(bool)), this, SLOT(graisse_police(bool)));
+    connect(gras, SIGNAL(triggered(bool)), this, SLOT(fontWeight(bool)));
     gras->setCheckable(true);
 
     italique = new QAction(QIcon::fromTheme("format-text-italic", QIcon(":/menus/images/text_italic.png")), tr("Italique"), menu_format);
     if((QIcon::hasThemeIcon("format-text-italic") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(italique);
     italique->setShortcut(QKeySequence(settings->getSettings(RItalique).toString()));
-    connect(italique, SIGNAL(triggered(bool)), this, SLOT(italique_police(bool)));
+    connect(italique, SIGNAL(triggered(bool)), this, SLOT(fontFamily(bool)));
     italique->setCheckable(true);
 
     souligne = new QAction(QIcon::fromTheme("format-text-underline", QIcon(":/menus/images/text_under.png")), tr("Souligné"), menu_format);
     if((QIcon::hasThemeIcon("format-text-underline") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(souligne);
     souligne->setShortcut(QKeySequence(settings->getSettings(RSouligne).toString()));
-    connect(souligne, SIGNAL(triggered(bool)), this, SLOT(souligne_police(bool)));
+    connect(souligne, SIGNAL(triggered(bool)), this, SLOT(fontUndeline(bool)));
     souligne->setCheckable(true);
 
     QAction *couleur_texte = new QAction(QIcon::fromTheme("format-text-color", QIcon(":/menus/images/couleur_texte.png")), tr("Couleur du texte"), menu_format);
@@ -1952,9 +1952,9 @@ void DadaWord::create_menus(){
     // Remplissage du menu «Format»
     //-----------------------------------
     QAction *police_format = new QAction(tr("Police"), menu_format);
-    connect(police_format, SIGNAL(triggered()), this, SLOT(change_police()));
+    connect(police_format, SIGNAL(triggered()), this, SLOT(changeFont()));
     menu_format->addAction(police_format);
-    menu_format->addAction(tr("Taille"), this, SLOT(change_taille()));
+    menu_format->addAction(tr("Taille"), this, SLOT(changeSize()));
     menu_format->addAction(gras);
     menu_format->addAction(italique);
     menu_format->addAction(souligne);
@@ -1996,10 +1996,10 @@ void DadaWord::create_menus(){
     puces = new QToolBar;
     puces->setWindowTitle(tr("Puces"));
     addToolBar(Qt::TopToolBarArea, puces);
-    incremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-more", QIcon(":/menus/images/suivant.png")));
-    desincremente_puce_bouton->setIcon(QIcon::fromTheme("format-indent-less", QIcon(":/menus/images/precedent.png")));
-    puces->addAction(incremente_puce_bouton);
-    puces->addAction(desincremente_puce_bouton);
+    incrementList_bouton->setIcon(QIcon::fromTheme("format-indent-more", QIcon(":/menus/images/suivant.png")));
+    desincrementList_bouton->setIcon(QIcon::fromTheme("format-indent-less", QIcon(":/menus/images/precedent.png")));
+    puces->addAction(incrementList_bouton);
+    puces->addAction(desincrementList_bouton);
     puces->hide();
 
     //Création de la toolbar des tableaux
@@ -2067,7 +2067,7 @@ void DadaWord::create_menus(){
 }
 
 //Ouverture d'un nouvel onglet
-void DadaWord::ouvre_onglet(bool fichier, QString titre){
+void DadaWord::openTab(bool fichier, QString titre){
     //Titre du document
     QString reponse;
     if(!fichier){
@@ -2142,7 +2142,7 @@ void DadaWord::ouvre_onglet(bool fichier, QString titre){
     //Activation de l'onglet de fermetur
     if(!fichier_fermer->isEnabled()){
         fichier_fermer->setEnabled(true);
-        fichier_fermer_tout->setEnabled(true);
+        fichier_closeAll->setEnabled(true);
     }
     return;
 }
@@ -2284,7 +2284,7 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
 }
 
 //Ferme tous les fichiers ouverts
-void DadaWord::fermer_tout(){
+void DadaWord::closeAll(){
     int id = 0;
     while(zone_centrale->subWindowList().count() > 0){
         this->close_tab_button(id);
@@ -2294,14 +2294,14 @@ void DadaWord::fermer_tout(){
 }
 
 //Alerte d'enregistrement de fichier
-void DadaWord::alerte_enregistrement(QMdiSubWindow *fenetre){
+void DadaWord::saveAlert(QMdiSubWindow *fenetre){
 
     if(settings->getSettings(Alertes).toInt() == LOW){
         return;
     }
     int reponse = QMessageBox::question(this, tr("Enregistrer le fichier?"), "Des modifications ont été apportées au document \""+fenetre->accessibleName()+"\" depuis sa dernière modification.\n Voulez-vous les sauvegarder?", QMessageBox::Yes | QMessageBox::No);
     if(reponse == QMessageBox::Yes){
-        enregistrement(fenetre);
+        save(fenetre);
     }
     else if(reponse == QMessageBox::No){
         //On supprime le fichier des settings
@@ -2413,7 +2413,7 @@ void DadaWord::slot_undo(bool etat){
 //Enregistrer Sous
 void DadaWord::enregistrer_sous(){
     //On balance juste à "enregistrer" avec "saveas" en "true"
-    enregistrement(find_onglet(), true);
+    save(find_onglet(), true);
     return;
 }
 
@@ -2465,7 +2465,7 @@ void DadaWord::add_image(){
     }
 
     //On enregistre le document par mesure de sécurité
-    enregistrement(find_onglet(), false, true);
+    save(find_onglet(), false, true);
 
     //Redimensionnement pour Word
     if(settings->getSettings(Word).toBool()){
@@ -2509,7 +2509,7 @@ void DadaWord::close_tab_button(int index){
     }
     QTextDocument *document_actif = text_edit_actif->document();
     if(document_actif->isModified()){
-        alerte_enregistrement(liste.at(index));
+        saveAlert(liste.at(index));
     }
 
     //Suppression des annexes (s'il y en a)
@@ -2533,7 +2533,7 @@ void DadaWord::close_tab_button(int index){
     //Si plus d'onglets ouverts, on désactive le bouton
     if(zone_centrale->subWindowList().isEmpty()){
         fichier_fermer->setEnabled(false);
-        fichier_fermer_tout->setEnabled(false);
+        fichier_closeAll->setEnabled(false);
     }
     return;
 }
@@ -3320,7 +3320,7 @@ void DadaWord::affiche_menu_perso(){
 }
 
 //Recharge les styles si on en a rajouté un (ou supprimé un)
-void DadaWord::recharge_styles(){
+void DadaWord::reloadStyles(){
     nom_format->clear();
     QSettings settings("DadaWord", "dadaword");
     QStringList noms_styles = settings.value("noms_styles").toStringList();
@@ -3509,7 +3509,7 @@ void DadaWord::rm_annexe(){
     }
     if(annexes.size() > 0){ //S'il y a des annexes
         QDialog *dialog_annexes = new QDialog;
-        connect(this, SIGNAL(delete_annexes()), dialog_annexes, SLOT(close()));
+        connect(this, SIGNAL(deleteAnnexes()), dialog_annexes, SLOT(close()));
         dialog_annexes->setAttribute(Qt::WA_DeleteOnClose);
         QPushButton *rm_button[annexes.size()];
         QPushButton *quit = new QPushButton(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")), tr("Fermer la fenêtre"), dialog_annexes);
@@ -3561,7 +3561,7 @@ void DadaWord::make_rm_annexe(QString annexe){
         if(settings->getSettings(Alertes).toInt() == HIGH){
             QMessageBox::information(this, tr("Annexe supprimée"), tr("L'annexe a été supprimée"));
         }
-        emit delete_annexes();
+        emit deleteAnnexes();
     }
     else{
         if(settings->getSettings(Alertes).toInt() == HIGH){
@@ -3615,12 +3615,12 @@ void DadaWord::hide_menubar(){
 }
 
 //Enregistre tous les fichiers ouverts d'un coup (s'il est nécessaire de les enregistrer)
-void DadaWord::enregistrer_tout(){
+void DadaWord::saveAll(){
     QList<QMdiSubWindow*> fenetres_ouvertes = zone_centrale->subWindowList();
     for(int i = 0; i < fenetres_ouvertes.size(); i++){
         QTextEdit *edit_temp = fenetres_ouvertes.at(i)->findChild<QTextEdit *>();
         if(edit_temp->document()->isModified()){
-            enregistrement(fenetres_ouvertes.at(i));
+            save(fenetres_ouvertes.at(i));
         }
     }
     return;
@@ -3723,7 +3723,7 @@ void DadaWord::updateTab(QString file){
         if(textEdit->accessibleDescription() == file){
             ok = true;
             liste.at(i)->close();
-            this->ouvrir_fichier(file);
+            this->openFile(file);
         }
     }
     if(!ok)

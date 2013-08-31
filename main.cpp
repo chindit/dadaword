@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     DadaWord instance;
 
     //Création de l'interface utilisateur
-    instance.cree_iu();
+    instance.createUI();
 
     //Affichage
     instance.show();

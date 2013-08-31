@@ -68,40 +68,39 @@ class DadaWord : public QMainWindow
 public:
     DadaWord(QWidget *parent = 0);
     ~DadaWord();
-    void cree_iu();
+    void createUI();
 
 public slots:
-    void recharge_styles();
+    void reloadStyles();
 
 signals:
-    void delete_annexes();
-    void signal_couleur(int action, int couleur);
+    void deleteAnnexes();
 
 private slots:
-    void affiche_about();
-    void change_police(QFont nouvelle_police);
-    void change_police(QString police);
-    void change_police();
-    void graisse_police(bool etat);
-    void italique_police(bool etat);
-    void souligne_police(bool etat);
-    void change_taille(int taille);
-    void change_taille();
-    void apercu_avant_impression();
-    void enregistrement(QMdiSubWindow* fenetre_active = 0, bool saveas = false, bool autosave = false);
-    void enregistrer_tout();
+    void showAbout();
+    void changeFont(QFont nouvelle_police);
+    void changeFont(QString police);
+    void changeFont();
+    void fontWeight(bool etat);
+    void fontFamily(bool etat);
+    void fontUndeline(bool etat);
+    void changeSize(int taille);
+    void changeSize();
+    void printPreview();
+    void save(QMdiSubWindow* fenetre_active = 0, bool saveas = false, bool autosave = false);
+    void saveAll();
     void autoSave();
-    void ouvrir_fichier(const QString &fichier = "null", bool autosave = false);
+    void openFile(const QString &fichier = "null", bool autosave = false);
     void print(QPrinter *p);
-    void export_odt(QString nom = "");
-    void create_liste_puce(const int ordonne = 0);
+    void odtExport(QString nom = "");
+    void createList(const int ordonne = 0);
     bool eventFilter(QObject *, QEvent *);
-    void incremente_puce();
-    bool desincremente_puce();
-    void ouvre_onglet(bool fichier = false, QString titre = "null");
+    void incrementList();
+    bool desincrementList();
+    void openTab(bool fichier = false, QString titre = "null");
     void indicateur_modifications();
     void changement_focus(QMdiSubWindow *fenetre_activee);
-    void fermer_tout();
+    void closeAll();
     void change_couleur(const int &value);
     void make_undo();
     void make_redo();
@@ -155,7 +154,7 @@ private slots:
 
 private:
     void create_menus();
-    void alerte_enregistrement(QMdiSubWindow *fenetre);
+    void saveAlert(QMdiSubWindow *fenetre);
     QMdiSubWindow* find_onglet();
     QTextEdit* find_edit();
 
@@ -176,12 +175,12 @@ private:
     QAction *italique;
     QAction *souligne;
     QAction *fichier_fermer;
-    QAction *fichier_fermer_tout;
+    QAction *fichier_closeAll;
     QColor *couleur_actuelle;
     QAction *edition_redo;
     QAction *edition_undo;
-    QAction *incremente_puce_bouton;
-    QAction *desincremente_puce_bouton;
+    QAction *incrementList_bouton;
+    QAction *desincrementList_bouton;
     QAction *lecture_seule;
     QAction *to_text;
     QAction *exposant;
