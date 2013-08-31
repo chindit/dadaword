@@ -5,6 +5,8 @@ Version 1.2.5 :
 - Possibilité de fermer tous les fichiers ouverts.
 - Ouverture par défaut dans le dernier dossier utilisé pour ouvrir un fichier.
 - Amélioration de la coloration syntaxique des langages à balises
+- Détection en temps réel d'un changement externe d'un fichier ouvert dans DadaWord et avertissement de l'utilisateur
+- Suppression de la fonction obsolète "ferme_fichier()" au profit de "close_tab_button()"
 - BUG : icône incorrecte lors de l'ouverture d'un fichier.
 
 Version 1.2.4 :

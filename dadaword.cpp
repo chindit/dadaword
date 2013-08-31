@@ -20,8 +20,10 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     settings = new SettingsManager;
     erreur = new ErrorManager(settings->getSettings(Alertes).toInt());
     outils = new Outils();
+    listFiles = new QFileSystemWatcher;
 
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
+    connect(listFiles, SIGNAL(fileChanged(QString)), this, SLOT(changeDetected(QString)));
 
     //On regarde si le dossier de config existe
     QString dossier = QDir::homePath();
@@ -118,7 +120,7 @@ DadaWord::~DadaWord(){
     delete fichier_fermer;
     delete fichier_fermer_tout;
     delete menu_format;
-
+    delete listFiles;
 }
 
 //Ancien constucteur : génère l'interface utilisateur : À n'appeller que dans le main();
@@ -547,6 +549,7 @@ void DadaWord::enregistrement(QMdiSubWindow* fenetre_active, bool saveas, bool a
     //-----------------------------------------------------
     //Écriture du contenu selon les différentes extentions
     //-----------------------------------------------------
+    justSaved = nom_fichier; //Transfert du nom de fichier dans une variable globale pour désactiver l'alerte de modification externe
     if(nom_fichier.contains(".ddz")){
         DDZ instance_ddz;
         QStringList envoi_ddz;
@@ -893,6 +896,7 @@ void DadaWord::ouvrir_fichier(const QString &fichier, bool autosave){
     //Désactivation des boutons d'enregistrement (pas de modifications vu que le fichier vient d'être ouvert
     enregistrer->setEnabled(false);
     find_onglet()->setWindowIcon(QIcon(":programme/images/dadaword.png"));
+    listFiles->addPath(nom_fichier);
 
     //Activation du bouton de fermeture si désactivé
     if(!fichier_fermer->isEnabled()){
@@ -1422,7 +1426,7 @@ void DadaWord::create_menus(){
     QString nomIcone = QIcon::hasThemeIcon("document-close") ? "document-close" : "process-stop";
     fichier_fermer->setIcon(QIcon::fromTheme(nomIcone, QIcon(":/menus/images/document-close.png")));
     fichier_fermer->setStatusTip(tr("Fermer l'onglet courant"));
-    connect(fichier_fermer, SIGNAL(triggered()), this, SLOT(fermer_fichier()));
+    connect(fichier_fermer, SIGNAL(triggered()), this, SLOT(close_tab_button()));
 
     fichier_fermer_tout = menu_fichier->addAction(tr("Fermer tout"));
     fichier_fermer_tout->setToolTip(tr("Ferme tous les documents ouverts"));
@@ -2279,33 +2283,6 @@ void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
     return;
 }
 
-//Fermeture de l'onglet actif
-void DadaWord::fermer_fichier(){
-    QMdiSubWindow *onglet_actif = find_onglet();
-    QTextEdit *text_edit_actif = find_edit();
-    QTextDocument *document_actif = text_edit_actif->document();
-    if(document_actif->isModified()){
-        alerte_enregistrement(onglet_actif);
-    }
-    //Annexes DDZ
-    if(onglet_actif->accessibleDescription().contains(".ddz", Qt::CaseInsensitive)){
-        for(int i=0; i<liste_annexes.size(); i++){
-            if(liste_annexes.at(i).at(0) == find_onglet()->accessibleName()){
-                liste_annexes.removeAt(i);
-                break;
-            }
-        }
-    }
-    onglet_actif->close();
-
-    //Si plus d'onglets ouverts, on désactive le bouton
-    if(zone_centrale->subWindowList().isEmpty()){
-        fichier_fermer->setEnabled(false);
-        fichier_fermer_tout->setEnabled(false);
-    }
-    return;
-}
-
 //Ferme tous les fichiers ouverts
 void DadaWord::fermer_tout(){
     int id = 0;
@@ -2519,11 +2496,17 @@ void DadaWord::add_image(){
 //Slot de fermeture d'onglet
 void DadaWord::close_tab_button(int index){
     QList<QMdiSubWindow *> liste = zone_centrale->findChildren<QMdiSubWindow *>();
-    if(liste.count() < index){
-        erreur->Erreur_msg("Tentative de fermeture d'un fichier inexistant", QMessageBox::Critical);
-        return;
+    QTextEdit *text_edit_actif;
+    if(index == -1){
+        text_edit_actif = find_edit();
     }
-    QTextEdit *text_edit_actif = liste.at(index)->findChild<QTextEdit *>();
+    else{
+        text_edit_actif = liste.at(index)->findChild<QTextEdit *>();
+        if(liste.count() < index){
+            erreur->Erreur_msg("Tentative de fermeture d'un fichier inexistant", QMessageBox::Critical);
+            return;
+        }
+    }
     QTextDocument *document_actif = text_edit_actif->document();
     if(document_actif->isModified()){
         alerte_enregistrement(liste.at(index));
@@ -2536,8 +2519,22 @@ void DadaWord::close_tab_button(int index){
             i = 100000;
         }
     }
+    if(listFiles->files().contains(text_edit_actif->accessibleDescription())){
+        listFiles->removePath(text_edit_actif->accessibleDescription());
+    }
+    else{
+        erreur->Erreur_msg(tr("Le fichier à fermer n'a pu être trouvé dans la liste de vigilance"), QMessageBox::Ignore);
+    }
+    if(index == -1)
+        find_onglet()->close();
+    else
+        liste.at(index)->close();
 
-    liste.at(index)->close();
+    //Si plus d'onglets ouverts, on désactive le bouton
+    if(zone_centrale->subWindowList().isEmpty()){
+        fichier_fermer->setEnabled(false);
+        fichier_fermer_tout->setEnabled(false);
+    }
     return;
 }
 
@@ -3685,4 +3682,52 @@ void DadaWord::has_maj(){
 //Met à jour le bouton de langue
 void DadaWord::updateLangue(){
     status_langue->setText(orthographe->getDico().split("/").last().split(".").first());
+}
+
+//Avertit d'un changement externe au programme
+void DadaWord::changeDetected(QString file){
+    if(file != justSaved){
+        QFile fichier(file);
+        if(fichier.exists()){
+            int reponse = QMessageBox::question(this, tr("Fichier modifié"), tr("Le fichier <i>%1</i> a été modifié par une source externe.  Souhaitez-vous le recharger?").arg(file.split("/").last()), QMessageBox::Yes | QMessageBox::No);
+            if(reponse == QMessageBox::Yes){
+                this->updateTab(file);
+            }
+        }
+        else{
+            int reponse = QMessageBox::question(this, tr("Fichier supprimé"), tr("Le fichier <i>%1</i> a été déplacé ou supprimé.  Souhaitez-vous le laisser ouvert dans DadaWord?").arg(file.split("/").last()), QMessageBox::Yes | QMessageBox::No);
+            if(reponse == QMessageBox::No){
+                int id = 0;
+                QList<QMdiSubWindow *> liste = zone_centrale->findChildren<QMdiSubWindow *>();
+                for(int i=0; i<liste.count(); i++){
+                    if(liste.at(i)->accessibleDescription() == file){
+                        id = i;
+                        break;
+                    }
+                }
+                close_tab_button(id);
+            }
+        }
+    }
+    else
+        justSaved = "";
+    return;
+}
+
+//Actualise l'onglet si jamais le document a été modifié de manière externe
+void DadaWord::updateTab(QString file){
+    QList<QMdiSubWindow *> liste = zone_centrale->findChildren<QMdiSubWindow *>();
+    bool ok = false;
+    for(int i=0; i<liste.size(); i++){
+        QTextEdit *textEdit = liste.at(i)->findChild<QTextEdit *>();
+        if(textEdit->accessibleDescription() == file){
+            ok = true;
+            liste.at(i)->close();
+            this->ouvrir_fichier(file);
+        }
+    }
+    if(!ok)
+        erreur->Erreur_msg(tr("Le fichier n'a pu être trouvé!"), QMessageBox::Warning);
+
+    return;
 }

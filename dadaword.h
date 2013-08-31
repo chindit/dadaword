@@ -15,6 +15,7 @@
 #include <QDesktopServices>
 #include <QFile>
 #include <QFileDialog>
+#include <QFileSystemWatcher>
 #include <QFont>
 #include <QFontComboBox>
 #include <QFontDialog>
@@ -100,7 +101,6 @@ private slots:
     void ouvre_onglet(bool fichier = false, QString titre = "null");
     void indicateur_modifications();
     void changement_focus(QMdiSubWindow *fenetre_activee);
-    void fermer_fichier();
     void fermer_tout();
     void change_couleur(const int &value);
     void make_undo();
@@ -112,7 +112,7 @@ private slots:
     void add_image();
     void imprimer();
     void export_pdf();
-    void close_tab_button(int index);
+    void close_tab_button(int index = -1);
     void slot_lecture_seule();
     void creer_tableau();
     void tableau_add(const int &pos);
@@ -148,6 +148,8 @@ private slots:
     void hide_menubar();
     void changeEncode(int encodage);
     void updateLangue();
+    void changeDetected(QString file);
+    void updateTab(QString file);
     //Only for Windows
     void has_maj();
 
@@ -205,8 +207,10 @@ private:
     QPushButton *status_langue;
     QAction *colore_html;
 
+    QFileSystemWatcher *listFiles;
     QTextCursor pos_orth;
     QString lastDir;
+    QString justSaved;
     HtmlHighlighter *instance;
     QTextCursor pos_recherche;
     QLineEdit *le_remplace;
