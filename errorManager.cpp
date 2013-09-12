@@ -43,11 +43,9 @@ void ErrorManager::Erreur_msg(QString msg, int etat){
     //1)Inscription dans le log
     //On stocke dans le fichier de log
     //Emplacement du fichier de LOG
-#if defined(Q_OS_WIN32)
-    QString place_log = QDir::currentPath()+"/dadaword.log";
-#else
-    QString place_log = QDir::homePath()+"/.dadaword/dadaword.log";
-#endif
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString place_log = dossiers.first();
+    place_log.append("/dadaword.log");
     QFile fichier(place_log);
     if(fichier.open(QIODevice::Append | QIODevice::Text)){
         QDateTime datetime = QDateTime::currentDateTime();

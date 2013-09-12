@@ -26,12 +26,8 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     connect(listFiles, SIGNAL(fileChanged(QString)), this, SLOT(changeDetected(QString)));
 
     //On regarde si le dossier de config existe
-    QString dossier = QDir::homePath();
-    #ifdef Q_OS_WIN
-        dossier += "/AppData/Local/DadaWord";
-    #else
-        dossier += "/.dadaword";
-    #endif
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString dossier = dossiers.first();
     QDir dir_dossier(dossier);
 
     if(!dir_dossier.exists()){

@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QStandardPaths>
 #include <QTextStream>
 
 #include "constantes.h"

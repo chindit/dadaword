@@ -1,6 +1,7 @@
 DadaWord - Changelog
 
 Version 1.2.5 :
+- Utilisation de QStandardPaths en lieu et place des macros
 - Possibilité d'ouvrir plusieurs fichiers simultanément.
 - Possibilité de fermer tous les fichiers ouverts.
 - Ouverture par défaut dans le dernier dossier utilisé pour ouvrir un fichier.

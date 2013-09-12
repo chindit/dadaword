@@ -334,8 +334,9 @@ void Outils::affiche_log(){
     clean_log->setToolTip(tr("Ne laisse que les dix dernières entrées dans le fichier le log"));
 
     //Remplissage du text edit
-    QString place_log = QDir::homePath();
-    place_log += "/.dadaword/dadaword.log";
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString place_log = dossiers.first();
+    place_log.append("/dadaword.log");;
     QFile fichier(place_log);
     QString contenu = "";
     int nb_lignes = 0;

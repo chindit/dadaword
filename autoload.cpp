@@ -15,7 +15,10 @@ autoLoad::~autoLoad(){
 }
 
 bool autoLoad::hasFilesNames(){
-    QDir autosave = QDir::homePath()+"/.dadaword/autosave";
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString dossier = dossiers.first();
+    dossier.append("/autosave");
+    QDir autosave(dossier);
     names = autosave.entryList();
 
     names.removeAt(0);

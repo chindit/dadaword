@@ -5,12 +5,8 @@ OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent
     QString dictPath;
     dicoActuel = dictionnaire;
 
-    QString repertoire = QDir::homePath();
-    #ifdef Q_OS_WIN
-        repertoire += "/AppData/Local/DadaWord";
-    #else
-        repertoire += "/.dadaword";
-    #endif
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString repertoire = dossiers.first();
     #ifdef Q_OS_WIN
         ErrorManager erreur;
         dictPath = repertoire+"/hunspell/"+dictionnaire;

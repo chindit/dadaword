@@ -34,6 +34,7 @@
 #include <QScrollArea>
 #include <QSignalMapper>
 #include <QSpinBox>
+#include <QStandardPaths>
 #include <QStatusBar>
 #include <QTextCodec>
 #include <QTextDocumentWriter>
