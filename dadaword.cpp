@@ -29,28 +29,28 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     QDir dir_dossier(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
 
     if(!dir_dossier.exists()){
-        if(!dir_dossier.mkdir(dossier)){
+        if(!dir_dossier.mkdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation))){
             erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Information);
         }
         else{
             //On crée un fichier vide
-            QFile dico_perso(dossier+"/perso.dic");
+            QFile dico_perso(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/perso.dic");
             if(dico_perso.open(QFile::WriteOnly)) {
                 dico_perso.close();
             }
             else{
                 erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Information);
             }
-            QDir dir_autosave(dossier+"/autosave");
+            QDir dir_autosave(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave");
             if(!dir_autosave.exists()){
-                dir_autosave.mkdir(dossier+"/autosave");
+                dir_autosave.mkdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave");
             }
         }
     }
 
     //Initialisation du thème
     QStringList locateThemes;
-    locateThemes << dossier+"/icons" << QIcon::themeSearchPaths();
+    locateThemes << QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/icons" << QIcon::themeSearchPaths();
     QIcon::setThemeSearchPaths(locateThemes);
     QIcon::setThemeName(settings->getSettings(Theme).toString());
 
