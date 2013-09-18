@@ -438,7 +438,7 @@ void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
             }
             else{
                 QDateTime temps;
-                nom_fichier = QDir::homePath()+"/.dadaword/autosave/DDWubIntMs"+QString::number(temps.toTime_t())+".ddz";
+                nom_fichier = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave/DDWubIntMs"+QString::number(temps.toTime_t())+".ddz";
             }
         }
 
@@ -524,16 +524,23 @@ void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
             nom_fichier = fenetre_temp->accessibleDescription();
         }
         else{
-            nom_fichier = QDir::homePath()+"/.dadaword/autosave/"+fenetre_temp->accessibleDescription().split("/").last();
+            nom_fichier = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave"+fenetre_temp->accessibleDescription().split("/").last();
         }
         if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && !nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
             contenu_fichier = edit_temp->toHtml();
         }
         else if(nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){
             //On exporte en ODT
-            odtExport();
-            //On se casse parce qu'on a pas besoin d'écrire
-            return;
+            if(autosave){
+                //Autosave -> on sauvegarde en DDZ
+                contenu_fichier = edit_temp->toHtml();
+                nom_fichier.append(".ddz");
+            }
+            else{
+                odtExport();
+                //On se casse parce qu'on a pas besoin d'écrire
+                return;
+            }
         }
         else{ //Fichiers textes
             contenu_fichier = edit_temp->toPlainText();
@@ -2119,6 +2126,8 @@ void DadaWord::openTab(bool fichier, QString titre){
     else{
         zone_document_onglet = zone_centrale->addSubWindow(document_onglet);
     }
+
+    //document_onglet->setViewportMargins();
     zone_document_onglet->setWindowTitle(reponse);
     zone_document_onglet->setAccessibleName(reponse);
     //On delete en plus de fermer

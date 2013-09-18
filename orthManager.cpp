@@ -447,6 +447,13 @@ void OrthManager::setDico(QString langue){
 
     QString nouvelleLangue = (langue.isEmpty()) ? liste->currentText() : langue;
     QDir dossier;
+#ifdef Q_OS_WIN
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString repertoire = dossiers.first();
+    dossier.setPath(repertoire+"/hunspell/");
+#else
+    dossier.setPath("/usr/share/hunspell/");
+#endif
     //On met à jour le dico
     if(dicoActuel != nouvelleLangue){
         dicoActuel = dossier.path()+"/"+nouvelleLangue+".dic";
@@ -547,7 +554,9 @@ void OrthManager::setMotsIgnores(QStringList liste){
 QStringList OrthManager::getDicos(){
     QDir dossier;
 #ifdef Q_OS_WIN
-    dossier.setPath(QDir::homePath() + "/AppData/Local/DadaWord/hunspell/");
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString repertoire = dossiers.first();
+    dossier.setPath(repertoire+"/hunspell/");
 #else
     dossier.setPath("/usr/share/hunspell");
 #endif

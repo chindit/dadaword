@@ -9,6 +9,8 @@ Version 1.2.5 :
 - Détection en temps réel d'un changement externe d'un fichier ouvert dans DadaWord et avertissement de l'utilisateur
 - Suppression de la fonction obsolète "ferme_fichier()" au profit de "close_tab_button()"
 - BUG : icône incorrecte lors de l'ouverture d'un fichier.
+- BUG : échec de la sauvegarde si le fichier est en ODT
+- BUG : SIGSEGV en cas de changement de dictionnaire durant l'édition d'un document.
 
 Version 1.2.4 :
 - Passage de la fenêtre de sélection de puces à l'UI.
