@@ -56,13 +56,14 @@ void Outils::fenetre_config(){
     settingsWidgetLayout->addWidget(valider, 1, 1);
     settingsWidgetLayout->addWidget(fermer, 1, 2);
 
-    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_timer, *label_saving, *label_last_dir, *label_theme, *label_autocorrection, *label_icons, *label_titre, *label_reset;
+    QLabel *affiche_outils, *affiche_taille_police, *affiche_nom_police, *label_fichiers_vides, *label_alertes, *label_word, *label_dicos, *label_orthographe, *label_orthographe_texte, *label_timer, *label_saving, *label_last_dir, *label_theme, *label_autocorrection, *label_icons, *label_titre, *label_reset;
     affiche_outils = new QLabel(tr("Remplacer les onglets par des fenêtres"));
     affiche_taille_police = new QLabel(tr("Taille de la police par défaut"));
     affiche_nom_police = new QLabel(tr("Type de police par défaut"));
     label_fichiers_vides = new QLabel(tr("Autoriser l'ouverture de fichiers vides"));
     label_alertes = new QLabel(tr("Afficher les alertes"));
     label_orthographe = new QLabel(tr("Activer la correction orthographique"));
+    label_orthographe_texte = new QLabel("Uniquement pour les documents en texte riche");
     label_word = new QLabel(tr("Activer la mise en page type \"Word\""));
     label_dicos = new QLabel(tr("Langue du dictionnaire"));
     label_timer = new QLabel(tr("Sauvegarde automatique (en secondes)"));
@@ -89,14 +90,23 @@ void Outils::fenetre_config(){
     checkbox_fichiers_vides = new QCheckBox;
     checkbox_word = new QCheckBox;
     checkbox_orthographe = new QCheckBox;
+    checkbox_orthographe_texte = new QCheckBox;
     checkbox_autocorrection = new QCheckBox;
     checkbox_icons = new QCheckBox;
     checkbox_titre = new QCheckBox;
     checkbox_dir = new QCheckBox;
+
+    //(Dés)activation de l'orthographe des fichiers textuels
+    checkbox_orthographe_texte->setEnabled(checkbox_autocorrection->isChecked());
+    label_orthographe_texte->setEnabled(checkbox_autocorrection->isChecked());
+    connect(checkbox_autocorrection, SIGNAL(toggled(bool)), checkbox_orthographe_texte, SLOT(setEnabled(bool)));
+    connect(checkbox_autocorrection, SIGNAL(toggled(bool)), label_orthographe_texte, SLOT(setEnabled(bool)));
+
     //On y met la configuration déjà existante :
     checkbox_onglets->setChecked(settings->getSettings(Onglets).toBool());
     checkbox_fichiers_vides->setChecked(settings->getSettings(FichiersVides).toBool());
     checkbox_orthographe->setChecked(settings->getSettings(Orthographe).toBool());
+    checkbox_orthographe_texte->setChecked(settings->getSettings(OrthographeTexte).toBool());
     checkbox_word->setChecked(settings->getSettings(Word).toBool());
     checkbox_autocorrection->setChecked(settings->getSettings(Autocorrection).toBool());
     checkbox_icons->setChecked(settings->getSettings(ToolbarIcons).toBool());
@@ -188,8 +198,10 @@ void Outils::fenetre_config(){
     layoutEdition->addWidget(checkbox_orthographe, 4, 1);
     layoutEdition->addWidget(label_autocorrection, 5, 0);
     layoutEdition->addWidget(checkbox_autocorrection, 5, 1);
-    layoutEdition->addWidget(label_titre, 6, 0);
-    layoutEdition->addWidget(checkbox_titre, 6, 1);
+    layoutEdition->addWidget(label_orthographe_texte, 6, 0);
+    layoutEdition->addWidget(checkbox_orthographe_texte, 6, 1);
+    layoutEdition->addWidget(label_titre, 7, 0);
+    layoutEdition->addWidget(checkbox_titre, 7, 1);
 
     //---------------------------------------------------
     // Général
@@ -282,6 +294,7 @@ void Outils::enregistre_config(){
     settings->setSettings(Taille, taille_police_default->value());
     settings->setSettings(Alertes, alertes->itemData(alertes->currentIndex()));
     settings->setSettings(Orthographe, checkbox_orthographe->isChecked());
+    settings->setSettings(OrthographeTexte, checkbox_orthographe_texte->isChecked());
     settings->setSettings(Word, checkbox_word->isChecked());
     settings->setSettings(Dico, liste_dicos->currentText());
     settings->setSettings(Timer, spinbox_timer->value());

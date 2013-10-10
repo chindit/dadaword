@@ -3,8 +3,8 @@
 SettingsManager::SettingsManager(QObject *parent) :
     QObject(parent)
 {
-    names = new QString[24];
-    settings = new QVariant[24];
+    names = new QString[25];
+    settings = new QVariant[25];
 
     names[Onglets] = "onglets";
     names[FichiersVides] = "fichiersVides";
@@ -13,6 +13,7 @@ SettingsManager::SettingsManager(QObject *parent) :
     names[Taille] = "taille";
     names[Alertes] = "alertes";
     names[Orthographe] = "orthographe";
+    names[OrthographeTexte] = "orthographe_texte";
     names[Word] = "word";
     names[Timer] = "timer";
     names[Enregistrement] = "enregistrement";
@@ -60,6 +61,7 @@ void SettingsManager::loadSettings(){
     settings[Taille] = options.value(names[Taille], 12);
     settings[Alertes] = options.value(names[Alertes], HIGH);
     settings[Orthographe] = options.value(names[Orthographe], true);
+    settings[OrthographeTexte] = options.value(names[OrthographeTexte], false);
     settings[Word] = options.value(names[Word], true);
     settings[Timer] = options.value(names[Timer], 300);
     settings[Enregistrement] = options.value(names[Enregistrement], QDir::homePath());

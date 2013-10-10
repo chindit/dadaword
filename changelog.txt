@@ -1,6 +1,7 @@
 DadaWord - Changelog
 
 Version 1.2.5 :
+- Possibilité de ne pas activer l'autocorrection dans les documents en texte simple
 - Utilisation de QStandardPaths en lieu et place des macros
 - Possibilité d'ouvrir plusieurs fichiers simultanément.
 - Possibilité de fermer tous les fichiers ouverts.

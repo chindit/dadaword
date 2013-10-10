@@ -1092,6 +1092,9 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
         }//Fin du "if" de "Escape"
         if(keyEvent->key() == Qt::Key_Space){
             if(settings->getSettings(Orthographe).toBool() || settings->getSettings(Autocorrection).toBool()){
+                QStringList style; style << "odt" << "htm" << "html" << "ddw" << "ddz" << "";
+                if(settings->getSettings(OrthographeTexte).toBool() && !style.contains(find_onglet()->accessibleDescription().split(".").last()))
+                    return false;
                 QTextCursor temp = find_edit()->textCursor();
                 if(temp.movePosition(QTextCursor::PreviousWord)){
                     temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
