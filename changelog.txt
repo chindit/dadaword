@@ -11,6 +11,8 @@ Version 1.2.5 :
 - BUG : icône incorrecte lors de l'ouverture d'un fichier.
 - BUG : échec de la sauvegarde si le fichier est en ODT
 - BUG : SIGSEGV en cas de changement de dictionnaire durant l'édition d'un document.
+- BUG : autosave dans un mauvais dossier
+- BUG : oubli de l'extension «.odt» lors de l'export.
 
 Version 1.2.4 :
 - Passage de la fenêtre de sélection de puces à l'UI.

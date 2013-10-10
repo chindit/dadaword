@@ -26,6 +26,7 @@
 #include <QMdiSubWindow>
 #include <QMenu>
 #include <QMenuBar>
+#include <QPlainTextEdit>
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QPrinterInfo>

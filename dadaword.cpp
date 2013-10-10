@@ -524,7 +524,7 @@ void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
             nom_fichier = fenetre_temp->accessibleDescription();
         }
         else{
-            nom_fichier = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave"+fenetre_temp->accessibleDescription().split("/").last();
+            nom_fichier = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave/"+fenetre_temp->accessibleDescription().split("/").last();
         }
         if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && !nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
             contenu_fichier = edit_temp->toHtml();
@@ -920,6 +920,10 @@ void DadaWord::odtExport(QString nom){
         if(nom.isNull()) {
             // Annulation de la sauvegarde par l'utilisateur
             return;
+        }
+        //On rajoute l'extension s'il n'y en a pas
+        if(!nom.endsWith(".odt", Qt::CaseInsensitive)){
+            nom.append(".odt");
         }
         // Test d'ouverture
         fichier.setFileName(nom);
