@@ -59,14 +59,17 @@ void autoLoad::showFiles(){
 }
 
 QStringList autoLoad::getFilesNames(){
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QString dossier = dossiers.first();
+    dossier.append("/autosave/");
     QStringList filesToRestore;
     for(int i=0; i<names.size(); i++){
         if(items[i].checkState() == Qt::Checked){
-            filesToRestore.append(QDir::homePath()+"/.dadaword/autosave/"+names.at(i));
+            filesToRestore.append(dossier+names.at(i));
         }
         else{
             //L'utilisateur ne veut pas garder -> on vire
-            QFile fichier(QDir::homePath()+"/.dadaword/autosave/"+names.at(i));
+            QFile fichier(dossier+names.at(i));
             fichier.remove();
         }
     }
