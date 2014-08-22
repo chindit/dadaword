@@ -44,7 +44,7 @@ void SettingsManager::setSettings(Setting s, QVariant v){
     if(settings[s] != v){
         settings[s] = v;
         //Enregistrement
-        QSettings options("DadaWord", "dadaword");
+        QSettings options("DadaDesktop", "dadaword");
         options.setValue(names[s], settings[s]);
     }
     else{
@@ -53,7 +53,7 @@ void SettingsManager::setSettings(Setting s, QVariant v){
 }
 
 void SettingsManager::loadSettings(){
-    QSettings options("DadaWord", "dadaword");
+    QSettings options("DadaDesktop", "dadaword");
     settings[Onglets] = options.value(names[Onglets], false);
     settings[FichiersVides] = options.value(names[FichiersVides], false);
     settings[Dico] = options.value(names[Dico], "fr_BE");
@@ -86,7 +86,7 @@ void SettingsManager::loadSettings(){
 void SettingsManager::resetSettings(){
     int resultat = QMessageBox::question(0, tr("Suppression des préférences"), tr("Attention : cette action supprimera <strong>toutes</strong> vos préférences.<br />Etes-vous sur de vouloir continuer?"), QMessageBox::Yes|QMessageBox::No);
     if(resultat == QMessageBox::Yes){
-        QSettings options("DadaWord", "dadaword");
+        QSettings options("DadaDesktop", "dadaword");
         options.clear();
         if(this->getSettings(Alertes).toInt() == HIGH)
             QMessageBox::information(0, tr("Suppression effectuée"), tr("Vos préférences ont été supprimées avec succès.  La suppression sera pleinement effective après redémarrage de DadaWord"));
