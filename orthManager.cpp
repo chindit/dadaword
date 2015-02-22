@@ -4,6 +4,7 @@
 OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent), ui(new Ui::OrthManager){
     QString dictPath;
     dicoActuel = dictionnaire;
+    settings = new SettingsManager;
 
     QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
     QString repertoire = dossiers.first();
@@ -89,6 +90,12 @@ OrthManager::~OrthManager(){
 
 void OrthManager::showWindow(QTextEdit *contenu){
     ui->setupUi(this);
+    if(settings->getSettings(Word).toBool()){
+        QTextFrame *tf = contenu->document()->rootFrame();
+        QTextFrameFormat tff = tf->frameFormat();
+        tff.setMargin(0);
+        tf->setFrameFormat(tff);
+    }
     ui->contenu_texte->setCursor(contenu->cursor());
     ui->contenu_texte->setDocument(contenu->document());
 

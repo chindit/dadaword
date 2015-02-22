@@ -45,9 +45,11 @@ private slots:
 private:
     QString setUserDict();
 
+    SettingsManager *settings;
     Ui::OrthManager *ui;
     SpellChecker* correcteur;
     QTextCursor pos_orth;
+    QTextEdit *copyEdit;
     QStringList list_skip;
     QStringList list_skip_definitively;
     QString word;
