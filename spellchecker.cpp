@@ -37,9 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QTextStream>
 #include <QTextCodec>
 #include <QStringList>
+#include <QVector>
 #include <QDebug>
 
-#include "hunspell.hxx"
+#include "hunspell/hunspell.hxx"
 #include "errorManager.h"
 
 SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDictionary)
@@ -107,21 +108,22 @@ SpellChecker::~SpellChecker()
 bool SpellChecker::spell(const QString &word)
 {
     // Encode from Unicode to the encoding used by current dictionary
-    return instance_hunspell->spell(codec->fromUnicode(word).constData()) != 0;
+    return instance_hunspell->spell(std::string(codec->fromUnicode(word).constData())) != 0;
 }
 
 
 QStringList SpellChecker::suggest(const QString &word)
 {
-    char **suggestWordList;
-
     // Encode from Unicode to the encoding used by current dictionary
-    int numSuggestions = instance_hunspell->suggest(&suggestWordList, codec->fromUnicode(word).constData());
-    QStringList suggestions;
-    for(int i=0; i < numSuggestions; ++i) {
-        suggestions << codec->toUnicode(suggestWordList[i]);
-        free(suggestWordList[i]);
+    std::vector<std::string> numSuggestions = instance_hunspell->suggest(std::string(codec->fromUnicode(word).constData()));
+    QVector<std::string> vectorWithStdString = QVector<std::string>::fromStdVector(numSuggestions);
+    QList<std::string> listWithStdString = QList<std::string>::fromVector(vectorWithStdString);
+    QStringList suggestions = QStringList();
+    QList<std::string>::iterator i;
+    for (i = listWithStdString.begin(); i != listWithStdString.end(); ++i) {
+        suggestions.append(QString::fromStdString(*i));
     }
+
     return suggestions;
 }
 
@@ -133,7 +135,7 @@ void SpellChecker::ignoreWord(const QString &word)
 
 
 void SpellChecker::put_word(const QString word){
-    instance_hunspell->add(codec->fromUnicode(word).constData());
+    instance_hunspell->add(std::string(codec->fromUnicode(word).constData()));
     return;
 }
 

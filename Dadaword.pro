@@ -13,6 +13,7 @@ TARGET = dadaword
 
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++17
 
 SOURCES += main.cpp\
         dadaword.cpp \
@@ -29,7 +30,8 @@ SOURCES += main.cpp\
     replaceManager.cpp \
     orthManager.cpp \
     puces.cpp \
-    highlighter.cpp
+    highlighter.cpp \
+    storagemanager.cpp
 
 HEADERS  += dadaword.h \
     constantes.h \
@@ -47,7 +49,8 @@ HEADERS  += dadaword.h \
     replaceManager.h \
     orthManager.h \
     puces.h \
-    highlighter.h
+    highlighter.h \
+    storagemanager.h
 
 RESOURCES += \
     images.qrc
@@ -55,9 +58,9 @@ RESOURCES += \
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
 unix {
-    LIBS += /usr/lib/libhunspell.so
+    LIBS += /usr/lib/x86_64-linux-gnu/libhunspell-1.7.so.0
     #Zlib
-    LIBS += /usr/lib/libz.so
+    LIBS += /usr/lib/x86_64-linux-gnu/libz.so
 }
 win32 {
     LIBS += C:\Users\Jean\Downloads\dadaword-master\libhunspell.dll

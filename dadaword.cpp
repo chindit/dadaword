@@ -25,27 +25,11 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     connect(outils, SIGNAL(settingsUpdated()), settings, SLOT(loadSettings()));
     connect(listFiles, SIGNAL(fileChanged(QString)), this, SLOT(changeDetected(QString)));
 
-    //On regarde si le dossier de config existe
-    QDir dir_dossier(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
-
-    if(!dir_dossier.exists()){
-        if(!dir_dossier.mkdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation))){
-            erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Information);
-        }
-        else{
-            //On crée un fichier vide
-            QFile dico_perso(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/perso.dic");
-            if(dico_perso.open(QFile::WriteOnly)) {
-                dico_perso.close();
-            }
-            else{
-                erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Information);
-            }
-            QDir dir_autosave(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave");
-            if(!dir_autosave.exists()){
-                dir_autosave.mkdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave");
-            }
-        }
+    if (!StorageManager::isConfigDirectoryReadable()) {
+        erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Warning);
+    }
+    if (!OrthManager::initPersonalDictionnary()) {
+        erreur->Erreur_msg(tr("Unable to create personal dictionnary"), QMessageBox::Warning);
     }
 
     //Initialisation du thème

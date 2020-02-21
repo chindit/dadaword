@@ -44,4 +44,5 @@ enum { UTF8, LATIN1 };
 //Énumération pour les settings
 enum Setting { Onglets, FichiersVides, Police, Taille, Alertes, Orthographe, OrthographeTexte, Word, Dico, Timer, Enregistrement, Theme, Cles, Valeurs, Autocorrection, ToolbarIcons, FichiersRecents, DelTitre, UseDir, RGras, RItalique, RSouligne, RNouveau, ROuvrir, REnregistrer };
 
+#define PERSONAL_DICTIONNARY "perso.dic"
 #endif // CONSTANTES_H

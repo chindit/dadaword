@@ -88,6 +88,12 @@ OrthManager::~OrthManager(){
     delete ui;
 }
 
+bool OrthManager::initPersonalDictionnary(){
+    QFile personalDictionnary(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QString(PERSONAL_DICTIONNARY));
+
+    return personalDictionnary.isWritable();
+}
+
 void OrthManager::showWindow(QTextEdit *contenu){
     ui->setupUi(this);
     if(settings->getSettings(Word).toBool()){
