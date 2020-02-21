@@ -55,9 +55,9 @@ RESOURCES += \
 #Hunspell
 INCLUDEPATH += hunspell/src/hunspell
 unix {
-    LIBS += /usr/lib/libhunspell.so
+    LIBS += /usr/lib/x86_64-linux-gnu/libhunspell-1.7.so.0
     #Zlib
-    LIBS += /usr/lib/libz.so
+    LIBS += /usr/lib/x86_64-linux-gnu/libz.so
 }
 win32 {
     LIBS += C:\Users\Jean\Downloads\dadaword-master\libhunspell.dll
