@@ -7,7 +7,7 @@
 
 #include "constantes.h"
 #include "outils.h"
-#include "orthManager.h" //Include dans le CPP pour éviter des problèmes de non-connaissance de classe
+#include "widgets/spellCheckerWidget.h" //Include dans le CPP pour éviter des problèmes de non-connaissance de classe
 
 Outils::Outils(){
 }
@@ -126,7 +126,7 @@ void Outils::fenetre_config(){
     connect(changeSaving, SIGNAL(clicked()), this, SLOT(returnDir()));
 
     liste_dicos = new QComboBox;
-    QStringList dicos = OrthManager::getDicos();
+    QStringList dicos = SpellCheckerWidget::getDicos();
     //On récupère le dico actuel
     QString nom_dico = settings->getSettings(Dico).toString();
     for(int i=0; i<dicos.size(); i++){

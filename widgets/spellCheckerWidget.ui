@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OrthManager</class>
- <widget class="QDialog" name="OrthManager">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>602</width>
-    <height>443</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>DadaWord - Orthographe</string>
+    <class>SpellCheckerWidget</class>
+    <widget class="QDialog" name="SpellCheckerWidget">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>602</width>
+                <height>443</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>DadaWord - Orthographe</string>
   </property>
   <property name="windowIcon">
    <iconset resource="images.qrc">
@@ -229,7 +229,7 @@ dictionnaire</string>
   <connection>
    <sender>bouton_fermer</sender>
    <signal>clicked()</signal>
-   <receiver>OrthManager</receiver>
+      <receiver>SpellCheckerWidget</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

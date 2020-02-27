@@ -1,13 +1,11 @@
 /*
-  Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
-  Date : 16/08/12
-  Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
-  Merci de ne pas supprimer cette notice.
-  */
+  @author : David Lumaye (littletiger58@gmail.com)
+  @date : 27/02/19
+  @license : GPLv3
+  DO NOT REMOVE THIS NOTICE
+*/
 
 #include "dadaword.h"
-
-OrthManager *orthographe;
 
 //Constructeur
 DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
@@ -28,7 +26,7 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     if (!StorageManager::isConfigDirectoryReadable()) {
         erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Warning);
     }
-    if (!OrthManager::initPersonalDictionary()) {
+    if (!SpellCheckerWidget::initPersonalDictionary()) {
         erreur->Erreur_msg(tr("Unable to create personal dictionnary"), QMessageBox::Warning);
     }
 
@@ -39,7 +37,7 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     QIcon::setThemeName(settings->getSettings(Theme).toString());
 
     //Initialisation du correcteur
-    orthographe = new OrthManager(settings->getSettings(Dico).toString(), this);
+    spellCheckerWidget = new SpellCheckerWidget(settings->getSettings(Dico).toString(), this);
 
     qsrand(QDateTime::currentDateTime().toTime_t());
     //On crée le timer pour enregistrer automatiquement le fichier
@@ -66,6 +64,7 @@ DadaWord::~DadaWord(){
     }
 
     //On fait les delete
+    delete spellCheckerWidget;
     delete settings;
     delete erreur;
     delete outils;
@@ -114,12 +113,12 @@ void DadaWord::createUI(){
     //Initialisation des boutons
     //Langue du document en cours
     status_langue = new QPushButton(statusBar());
-    QString nom_dico = orthographe->getDico();
+    QString nom_dico = spellCheckerWidget->getDico();
     status_langue->setText(nom_dico);
     status_langue->setToolTip(tr("Langue pour le document actuel"));
     status_langue->setFlat(true);
-    connect(status_langue, SIGNAL(clicked()), orthographe, SLOT(setDico()));
-    connect(orthographe, SIGNAL(langueChangee()), this, SLOT(updateLangue()));
+    connect(status_langue, SIGNAL(clicked()), spellCheckerWidget, SLOT(setDico()));
+    connect(spellCheckerWidget, SIGNAL(langueChangee()), this, SLOT(updateLangue()));
     statusBar()->addPermanentWidget(status_langue);
 
     //Surécriture
@@ -545,7 +544,8 @@ void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
                 i = 100000;
             }
         }
-        if(!instance_ddz.enregistre(nom_fichier, contenu_fichier, status_langue->text(), envoi_ddz, orthographe->getListSkip(true))){
+        if (!instance_ddz.enregistre(nom_fichier, contenu_fichier, status_langue->text(), envoi_ddz,
+                                     spellCheckerWidget->getListSkip(true))) {
             erreur->Erreur_msg(tr("Impossible d'enregistrer au format DDZ"), QMessageBox::Warning);
         }
         add_ddz_annexe->setVisible(true);
@@ -741,7 +741,7 @@ void DadaWord::openFile(const QString &fichier, bool autosave){
         if(retour.size() > 2){
             annexes = true;
         }
-        orthographe->setMotsIgnores(instance_ddz.getMotsIgnores());
+        spellCheckerWidget->setMotsIgnores(instance_ddz.getMotsIgnores());
         add_ddz_annexe->setVisible(true);
         rm_ddz_annexe->setVisible(true);
         ddz_annexes->setEnabled(true);
@@ -831,7 +831,7 @@ void DadaWord::openFile(const QString &fichier, bool autosave){
         QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
         if((nom_fichier.endsWith(".ddz", Qt::CaseInsensitive)) && retour.at(1) != "default" && is_dico.exactMatch(retour.at(1))){
             //Normalement on ne doit pas vérifier le dico, mais on n'est jamais trop prudent
-            orthographe->setDico(retour.at(1));
+            spellCheckerWidget->setDico(retour.at(1));
         }
         if(annexes){
             retour.removeAt(0);
@@ -842,7 +842,7 @@ void DadaWord::openFile(const QString &fichier, bool autosave){
         }
         if(settings->getSettings(Orthographe).toBool()){
             //On corrige tout le document
-            orthographe->checkAll(find_edit());
+            spellCheckerWidget->checkAll(find_edit());
         }
     }
     else if(texte){
@@ -1119,7 +1119,8 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 return false;
                             }
 
-                            if(!orthographe->getListSkip().contains(word) && !orthographe->isCorrectWord(word)){
+                            if (!spellCheckerWidget->getListSkip().contains(word) &&
+                                !spellCheckerWidget->isCorrectWord(word)) {
                                 // highlight the unknown word
                                 QTextCharFormat marquage_erreurs;
                                 QColor couleur(Qt::red);
@@ -1164,34 +1165,34 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                          temp.movePosition(QTextCursor::PreviousWord);
                          temp.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
                          QString mot2 = temp.selectedText();
-                         if(!orthographe->isCorrectWord(mot2)){
-                             QTextCharFormat marquage_erreurs;
-                             QColor couleur(Qt::red);
-                             marquage_erreurs.setUnderlineColor(couleur);
-                             marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+                        if (!spellCheckerWidget->isCorrectWord(mot2)) {
+                            QTextCharFormat marquage_erreurs;
+                            QColor couleur(Qt::red);
+                            marquage_erreurs.setUnderlineColor(couleur);
+                            marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-                             //Sélection de texte (pour le surlignage)
-                             QTextEdit::ExtraSelection es;
-                             es.cursor = temp;
-                             es.format = marquage_erreurs;
-                             extraSelections.append(es);
+                            //Sélection de texte (pour le surlignage)
+                            QTextEdit::ExtraSelection es;
+                            es.cursor = temp;
+                            es.format = marquage_erreurs;
+                            extraSelections.append(es);
                          }
                          //MOT 1 (début de la sélection)
                          temp = selection.cursor;
                          temp.movePosition(QTextCursor::PreviousWord);
                          temp.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor, 1);
                          QString mot1 = temp.selectedText().trimmed();
-                         if(!orthographe->isCorrectWord(mot1)){
-                             QTextCharFormat marquage_erreurs;
-                             QColor couleur(Qt::red);
-                             marquage_erreurs.setUnderlineColor(couleur);
-                             marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
+                        if (!spellCheckerWidget->isCorrectWord(mot1)) {
+                            QTextCharFormat marquage_erreurs;
+                            QColor couleur(Qt::red);
+                            marquage_erreurs.setUnderlineColor(couleur);
+                            marquage_erreurs.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
-                             //Sélection de texte (pour le surlignage)
-                             QTextEdit::ExtraSelection es;
-                             es.cursor = temp;
-                             es.format = marquage_erreurs;
-                             extraSelections.append(es);
+                            //Sélection de texte (pour le surlignage)
+                            QTextEdit::ExtraSelection es;
+                            es.cursor = temp;
+                            es.format = marquage_erreurs;
+                            extraSelections.append(es);
                          }
                          //Actualisation des sélections
                          find_edit()->setExtraSelections(extraSelections);
@@ -1208,16 +1209,16 @@ bool DadaWord::eventFilter(QObject *obj, QEvent *event){
                                 temp.setPosition(cursorPos, QTextCursor::KeepAnchor);
                                 word = temp.selectedText();
                             }
-                            if(orthographe->isCorrectWord(word)){
-                                //On supprime le soulignement du mot
-                                extraSelections.removeAt(i);
-                                find_edit()->setExtraSelections(extraSelections);
-                                QTextCharFormat marquage_erreurs;
-                                marquage_erreurs.setUnderlineStyle(QTextCharFormat::NoUnderline);
-                                //selection.cursor.setCharFormat(marquage_erreurs);
-                                //On quitte la boucle pour éviter des problèmes et parce que ça ne sert à rien de continuer.
-                                break;
-                            }
+                        if (spellCheckerWidget->isCorrectWord(word)) {
+                            //On supprime le soulignement du mot
+                            extraSelections.removeAt(i);
+                            find_edit()->setExtraSelections(extraSelections);
+                            QTextCharFormat marquage_erreurs;
+                            marquage_erreurs.setUnderlineStyle(QTextCharFormat::NoUnderline);
+                            //selection.cursor.setCharFormat(marquage_erreurs);
+                            //On quitte la boucle pour éviter des problèmes et parce que ça ne sert à rien de continuer.
+                            break;
+                        }
 
                     }
                 }
@@ -1735,7 +1736,7 @@ void DadaWord::create_menus(){
     QAction *change_langue = menu_outils->addAction(tr("Langue du correcteur"));
     change_langue->setStatusTip(tr("Change la langue du correcteur orthographique"));
     change_langue->setIcon(QIcon::fromTheme("preferences-desktop-locale", QIcon(":/menus/images/langue.png")));
-    connect(change_langue, SIGNAL(triggered()), orthographe, SLOT(setDico()));
+    connect(change_langue, SIGNAL(triggered()), spellCheckerWidget, SLOT(setDico()));
 
     //Mode texte
     to_text = menu_outils->addAction(tr("Mode texte seul"));
@@ -3155,22 +3156,22 @@ void DadaWord::change_style(int style){
 }
 
 //Orthographe : slot principal de vérification orthographique
-void DadaWord::verif_orthographe(){
+void DadaWord::verif_orthographe() {
     //Si pas de document ouvert, on quitte
-    if(find_edit() == 0){
+    if (find_edit() == 0) {
         return;
     }
 
-    orthographe->showWindow(find_edit());
-    orthographe->exec();
+    spellCheckerWidget->showWindow(find_edit());
+    spellCheckerWidget->exec();
 
     return;
 }
 
 //Autocorrection
-void DadaWord::orth_autocorrection(QString remplacement){
-    orthographe->setTextCursor(find_edit()->textCursor());
-    orthographe->autocorrection(remplacement);
+void DadaWord::orth_autocorrection(QString remplacement) {
+    spellCheckerWidget->setTextCursor(find_edit()->textCursor());
+    spellCheckerWidget->autocorrection(remplacement);
 }
 
 //Couper
@@ -3253,30 +3254,33 @@ void DadaWord::affiche_menu_perso(){
     //On récupère le mot sous le curseur
     QTextCursor cursor = editor->textCursor();
     cursor.select(QTextCursor::WordUnderCursor);
-    QString mot  = cursor.selectedText();
+    QString mot = cursor.selectedText();
 
     QStringList propositions;
-    if(!mot.isEmpty() && !orthographe->getListSkip().contains(mot) && !orthographe->isCorrectWord(mot)){
-        propositions = orthographe->getSuggestList(mot);
-        for(int i=0; i<propositions.size(); i++){
+    if (!mot.isEmpty() && !spellCheckerWidget->getListSkip().contains(mot) && !spellCheckerWidget->isCorrectWord(mot)) {
+        propositions = spellCheckerWidget->getSuggestList(mot);
+        for (int i = 0; i < propositions.size(); i++) {
             menu_contextuel->addAction(propositions.at(i));
         }
         //S'il y a des propositions, on ajoute un séparateur
         menu_contextuel->addSeparator();
         //On ajoute "Ignorer" et "Ajouter au dictionnaire" au menu
-        QSignalMapper *orth1, *orth2, *orth3;  orth1 = new QSignalMapper;  orth2 = new QSignalMapper; orth3 = new QSignalMapper;
+        QSignalMapper *orth1, *orth2, *orth3;
+        orth1 = new QSignalMapper;
+        orth2 = new QSignalMapper;
+        orth3 = new QSignalMapper;
         QAction *mc_ignore = menu_contextuel->addAction(tr("Ignorer ce mot"));
         QAction *mc_ignore_def = menu_contextuel->addAction(tr("Ignorer définitivement"));
         QAction *mc_add = menu_contextuel->addAction(tr("Ajouter au dictionnaire"));
         connect(mc_ignore, SIGNAL(triggered()), orth1, SLOT(map()));
         orth1->setMapping(mc_ignore, mot);
-        connect(orth1, SIGNAL(mapped(QString)), orthographe, SLOT(ignore(QString)));
+        connect(orth1, SIGNAL(mapped(QString)), spellCheckerWidget, SLOT(ignore(QString)));
         connect(mc_add, SIGNAL(triggered()), orth2, SLOT(map()));
         orth2->setMapping(mc_add, mot);
-        connect(orth2, SIGNAL(mapped(QString)), orthographe, SLOT(addDico(QString)));
+        connect(orth2, SIGNAL(mapped(QString)), spellCheckerWidget, SLOT(addDico(QString)));
         connect(mc_ignore_def, SIGNAL(triggered()), orth3, SLOT(map()));
         orth3->setMapping(mc_ignore_def, mot);
-        connect(orth3, SIGNAL(mapped(QString)), orthographe, SLOT(ignoreDef(QString)));
+        connect(orth3, SIGNAL(mapped(QString)), spellCheckerWidget, SLOT(ignoreDef(QString)));
         QMenu *menu_contextuel_remplacement = menu_contextuel->addMenu(tr("Autocorrection"));
         if(propositions.size() > 0){
             for(int i=0; i<propositions.size(); i++){
@@ -3302,11 +3306,11 @@ void DadaWord::affiche_menu_perso(){
     QAction *choix = menu_contextuel->exec(this->cursor().pos());
 
     if(choix){
-        if((propositions.contains(choix->text())) && !choix->isSeparator()){
+        if((propositions.contains(choix->text())) && !choix->isSeparator()) {
             //On veut changer un mot
             //On transfère le QTextCursor
-            orthographe->setTextCursor(cursor);
-            orthographe->remplacer(choix->text());
+            spellCheckerWidget->setTextCursor(cursor);
+            spellCheckerWidget->remplacer(choix->text());
         }
     }
     delete menu_contextuel;
@@ -3675,7 +3679,7 @@ void DadaWord::has_maj(){
 
 //Met à jour le bouton de langue
 void DadaWord::updateLangue(){
-    status_langue->setText(orthographe->getDico().split("/").last().split(".").first());
+    status_langue->setText(spellCheckerWidget->getDico().split("/").last().split(".").first());
 }
 
 //Avertit d'un changement externe au programme

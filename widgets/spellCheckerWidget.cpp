@@ -1,76 +1,77 @@
-#include "orthManager.h"
-#include "ui_orthManager.h"
+#include "spellCheckerWidget.h"
+#include "ui_spellCheckerWidget.h"
 
-OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent), ui(new Ui::OrthManager){
+SpellCheckerWidget::SpellCheckerWidget(QString dictionnaire, QWidget *parent) : QDialog(parent),
+                                                                                ui(new Ui::SpellCheckerWidget) {
     QString dictPath;
     dicoActuel = dictionnaire;
     settings = new SettingsManager;
 
     QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
     QString repertoire = dossiers.first();
-    #ifdef Q_OS_WIN
-        ErrorManager erreur;
-        dictPath = repertoire+"/hunspell/"+dictionnaire;
-        QFile test_dico(dictPath+".dic");
-        if(!test_dico.exists()){
-            //On téléchage les dicos
-            int qdown = QMessageBox::question(this, tr("Téléchargement des dictionnaires"), tr("Les dictionnaires pour la correction orthographique n'ont pas étés détectés.<br />Voulez-vous les télécharger?<br /><b>N.B.</b>L'absence des dictionnaires rendra la correction orthographique inopérante"), QMessageBox::Yes | QMessageBox::No);
-            if(qdown == QMessageBox::Yes){
-                QDir temp(repertoire+"/hunspell/");
-                if(!temp.exists() && !temp.mkdir(repertoire+"/hunspell/")){
-                    erreur.Erreur_msg(tr("Impossible de créer le repertoire de dictionnaires"), QMessageBox::Warning);
-                }
-                else{
-                    QNetworkAccessManager nw_manager;
-                    QNetworkRequest request(QUrl("https://raw.github.com/chindit/dadaword/master/liste_dicos.txt"));
-                    QNetworkReply *reponse = nw_manager.get(request);
-                    QEventLoop eventLoop;
-                    QObject::connect(reponse, SIGNAL(finished()), &eventLoop, SLOT(quit()));
-                    eventLoop.exec();
-                    QNetworkReply *reply_dico;
-                    QDialog *progression = new QDialog(this);
-                    progression->setWindowTitle(tr("Téléchargement des dictionnaires"));
-                    QLabel *titleProgress, *actDownDic;
-                    titleProgress = new QLabel(tr("Progression du téléchagrement des dictionnaires"));
-                    actDownDic = new QLabel;
-                    QProgressBar *progressDownDic = new QProgressBar;
-                    QVBoxLayout *layoutProgress = new QVBoxLayout(progression);
-                    layoutProgress->addWidget(titleProgress);
-                    layoutProgress->addWidget(progressDownDic);
-                    layoutProgress->addWidget(actDownDic);
-                    setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
-                    int posDown = 1;
-                    float maxDico = reponse->readLine().trimmed().toFloat();
-                    progressDownDic->setRange(0, 100);
-                    progressDownDic->setValue(0);
-                    progression->show();
-                    while(!reponse->atEnd()){
-                        QString baseUrl = "https://raw.github.com/chindit/dadaword/master/dicos/";
-                        QString nom_dico = reponse->readLine();
-                        baseUrl = baseUrl.append(nom_dico.trimmed());
-                        QNetworkAccessManager get_file;
-                        QNetworkRequest get_dico(QUrl("https://raw.github.com/chindit/dadaword/master/dicos/"+nom_dico.trimmed()));
-                        reply_dico = get_file.get(get_dico);
-                        QEventLoop wait_dico;
-                        QObject::connect(reply_dico, SIGNAL(finished()), &wait_dico, SLOT(quit()));
-                        wait_dico.exec();
-                        QFile save_dico(repertoire+"/hunspell/"+nom_dico.trimmed());
-                        if(!save_dico.open(QIODevice::WriteOnly)){
-                            QMessageBox::critical(0, "this", "Échec");
-                        }
-                        save_dico.write(reply_dico->readAll());
-                        save_dico.close();
-                        progressDownDic->setValue((posDown/maxDico)*100);
-                        posDown++;
-                        //Màj du nom
-                        actDownDic->setText(nom_dico.trimmed());
-                        progression->show();
+#ifdef Q_OS_WIN
+    ErrorManager erreur;
+    dictPath = repertoire+"/hunspell/"+dictionnaire;
+    QFile test_dico(dictPath+".dic");
+    if(!test_dico.exists()){
+        //On téléchage les dicos
+        int qdown = QMessageBox::question(this, tr("Téléchargement des dictionnaires"), tr("Les dictionnaires pour la correction orthographique n'ont pas étés détectés.<br />Voulez-vous les télécharger?<br /><b>N.B.</b>L'absence des dictionnaires rendra la correction orthographique inopérante"), QMessageBox::Yes | QMessageBox::No);
+        if(qdown == QMessageBox::Yes){
+            QDir temp(repertoire+"/hunspell/");
+            if(!temp.exists() && !temp.mkdir(repertoire+"/hunspell/")){
+                erreur.Erreur_msg(tr("Impossible de créer le repertoire de dictionnaires"), QMessageBox::Warning);
+            }
+            else{
+                QNetworkAccessManager nw_manager;
+                QNetworkRequest request(QUrl("https://raw.github.com/chindit/dadaword/master/liste_dicos.txt"));
+                QNetworkReply *reponse = nw_manager.get(request);
+                QEventLoop eventLoop;
+                QObject::connect(reponse, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+                eventLoop.exec();
+                QNetworkReply *reply_dico;
+                QDialog *progression = new QDialog(this);
+                progression->setWindowTitle(tr("Téléchargement des dictionnaires"));
+                QLabel *titleProgress, *actDownDic;
+                titleProgress = new QLabel(tr("Progression du téléchagrement des dictionnaires"));
+                actDownDic = new QLabel;
+                QProgressBar *progressDownDic = new QProgressBar;
+                QVBoxLayout *layoutProgress = new QVBoxLayout(progression);
+                layoutProgress->addWidget(titleProgress);
+                layoutProgress->addWidget(progressDownDic);
+                layoutProgress->addWidget(actDownDic);
+                setWindowIcon(QIcon(":/programme/images/dadaword.gif"));
+                int posDown = 1;
+                float maxDico = reponse->readLine().trimmed().toFloat();
+                progressDownDic->setRange(0, 100);
+                progressDownDic->setValue(0);
+                progression->show();
+                while(!reponse->atEnd()){
+                    QString baseUrl = "https://raw.github.com/chindit/dadaword/master/dicos/";
+                    QString nom_dico = reponse->readLine();
+                    baseUrl = baseUrl.append(nom_dico.trimmed());
+                    QNetworkAccessManager get_file;
+                    QNetworkRequest get_dico(QUrl("https://raw.github.com/chindit/dadaword/master/dicos/"+nom_dico.trimmed()));
+                    reply_dico = get_file.get(get_dico);
+                    QEventLoop wait_dico;
+                    QObject::connect(reply_dico, SIGNAL(finished()), &wait_dico, SLOT(quit()));
+                    wait_dico.exec();
+                    QFile save_dico(repertoire+"/hunspell/"+nom_dico.trimmed());
+                    if(!save_dico.open(QIODevice::WriteOnly)){
+                        QMessageBox::critical(0, "this", "Échec");
                     }
-                    progression->close();
-                    delete progression;
+                    save_dico.write(reply_dico->readAll());
+                    save_dico.close();
+                    progressDownDic->setValue((posDown/maxDico)*100);
+                    posDown++;
+                    //Màj du nom
+                    actDownDic->setText(nom_dico.trimmed());
+                    progression->show();
                 }
+                progression->close();
+                delete progression;
             }
         }
+    }
     #else
         dictPath = "/usr/share/hunspell/"+dictionnaire;
     #endif
@@ -84,12 +85,13 @@ OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent
     correcteur = new SpellChecker(dictPath, this->setUserDict());
 }
 
-OrthManager::~OrthManager(){
+SpellCheckerWidget::~SpellCheckerWidget() {
     delete ui;
 }
 
-bool OrthManager::initPersonalDictionary(){
-    QFile personalDictionary(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QString(PERSONAL_DICTIONNARY));
+bool SpellCheckerWidget::initPersonalDictionary() {
+    QFile personalDictionary(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() +
+                             QString(PERSONAL_DICTIONNARY));
 
     if (!personalDictionary.exists()) {
         if (personalDictionary.open(QIODevice::Truncate | QIODevice::ReadWrite)) {
@@ -102,9 +104,9 @@ bool OrthManager::initPersonalDictionary(){
     return (QFileDevice::WriteOwner & permissions) || (QFileDevice::WriteGroup & permissions) || (QFileDevice::WriteOther & permissions);
 }
 
-void OrthManager::showWindow(QTextEdit *contenu){
+void SpellCheckerWidget::showWindow(QTextEdit *contenu) {
     ui->setupUi(this);
-    if(settings->getSettings(Word).toBool()){
+    if (settings->getSettings(Word).toBool()) {
         QTextFrame *tf = contenu->document()->rootFrame();
         QTextFrameFormat tff = tf->frameFormat();
         tff.setMargin(0);
@@ -136,14 +138,14 @@ void OrthManager::showWindow(QTextEdit *contenu){
 }
 
 //Vérifie l'orthographe
-void OrthManager::checkWord(){
+void SpellCheckerWidget::checkWord() {
     QTextCursor cursor(ui->contenu_texte->document());
 
     //Sélection de texte (pour le surlignage)
     QTextEdit::ExtraSelection es;
 
     //On regarde si on est déjà en train de vérifier:
-    if(!pos_orth.isNull() && !pos_orth.atStart()){
+    if (!pos_orth.isNull() && !pos_orth.atStart()) {
         pos_orth.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
         cursor = pos_orth;
     }
@@ -230,11 +232,10 @@ void OrthManager::checkWord(){
 }
 
 //Ignore un mot
-void OrthManager::ignore(QString mot){
-    if(!mot.isEmpty()){
+void SpellCheckerWidget::ignore(QString mot) {
+    if (!mot.isEmpty()) {
         list_skip.append(mot);
-    }
-    else{
+    } else {
         list_skip.append(word);
         checkWord();
     }
@@ -242,12 +243,11 @@ void OrthManager::ignore(QString mot){
 }
 
 //Ajoute un mot au dictionnaire
-void OrthManager::addDico(QString mot){
-    if(!mot.isEmpty()){
+void SpellCheckerWidget::addDico(QString mot) {
+    if (!mot.isEmpty()) {
         correcteur->addToUserWordlist(mot);
-    }
-    else{
-        if(!word.isEmpty() && !word.isNull()){
+    } else {
+        if (!word.isEmpty() && !word.isNull()) {
             correcteur->addToUserWordlist(word);
             checkWord();
         }
@@ -256,29 +256,27 @@ void OrthManager::addDico(QString mot){
 }
 
 //Ignore définitivement un mot pour ce document
-void OrthManager::ignoreDef(QString mot){
-    if(mot.isEmpty()){
+void SpellCheckerWidget::ignoreDef(QString mot) {
+    if (mot.isEmpty()) {
         list_skip_definitively.append(word);
         checkWord();
-    }
-    else{
+    } else {
         list_skip_definitively.append(mot);
     }
     return;
 }
 
 //Remplace un mot
-void OrthManager::remplacer(QString nmot){
+void SpellCheckerWidget::remplacer(QString nmot) {
     QTextCursor temp;
     QString mot;
     QModelIndexList selected;
-    if(!nmot.isEmpty()){
+    if (!nmot.isEmpty()) {
         mot = nmot;
-    }
-    else{
+    } else {
         selected = ui->liste_corrections->selectionModel()->selectedIndexes();
     }
-    if(selected.count() > 0 || !mot.isEmpty()){
+    if (selected.count() > 0 || !mot.isEmpty()) {
         if(mot.isEmpty()){
             mot  = selected.at(0).data().toString();
         }
@@ -301,10 +299,10 @@ void OrthManager::remplacer(QString nmot){
 }
 
 //Remplace toutes les occurences d'un mot
-void OrthManager::remplacerTout(){
+void SpellCheckerWidget::remplacerTout() {
     int nb_remplacements = 0;
     QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
-    if(selected.count() == 0){
+    if (selected.count() == 0) {
         return;
     }
     // save the position of the current cursor
@@ -356,46 +354,46 @@ void OrthManager::remplacerTout(){
 }
 
 //Retourne la liste des mots à ignorer
-QStringList OrthManager::getListSkip(bool definitive){
-    if(definitive)
+QStringList SpellCheckerWidget::getListSkip(bool definitive) {
+    if (definitive)
         return list_skip_definitively;
     QStringList temp;
     temp = list_skip;
-    for(int i=0; i<list_skip_definitively.count(); i++){
+    for (int i = 0; i < list_skip_definitively.count(); i++) {
         temp.append(list_skip_definitively.at(i));
     }
     return temp;
 }
 
 //Vérifie si le mot envoyé est correctement orthographié
-bool OrthManager::isCorrectWord(QString word){
+bool SpellCheckerWidget::isCorrectWord(QString word) {
     return correcteur->spell(word);
 }
 
 //Retourne la liste des suggestions pour le mot erroné
-QStringList OrthManager::getSuggestList(QString word){
+QStringList SpellCheckerWidget::getSuggestList(QString word) {
     QStringList suggestions;
-    if(!correcteur->spell(word)){
+    if (!correcteur->spell(word)) {
         suggestions = correcteur->suggest(word);
     }
     return suggestions;
 }
 
 //Transfère le curseur d'une classe à l'autre
-void OrthManager::setTextCursor(QTextCursor cursor){
+void SpellCheckerWidget::setTextCursor(QTextCursor cursor) {
     pos_orth = cursor;
 }
 
 //Ajoute le mot à corriger à l'autocorrection
-void OrthManager::autocorrection(QString remplacement){
+void SpellCheckerWidget::autocorrection(QString remplacement) {
     SettingsManager settings;
     ErrorManager erreur;
     QTextCursor cursor;
     cursor = pos_orth;
     bool make_remplace = false;
-    if(remplacement.isEmpty()){
+    if (remplacement.isEmpty()) {
         QModelIndexList selected = ui->liste_corrections->selectionModel()->selectedIndexes();
-        if(selected.count() == 0){
+        if (selected.count() == 0) {
             return;
         }
         remplacement = selected.at(0).data().toString();
@@ -430,17 +428,17 @@ void OrthManager::autocorrection(QString remplacement){
 }
 
 //Change le dictionnaire actif
-void OrthManager::setDico(QString langue){
+void SpellCheckerWidget::setDico(QString langue) {
 
     QComboBox *liste = new QComboBox;
-    if(langue.isEmpty()){
+    if (langue.isEmpty()) {
         QDialog *fen = new QDialog;
         fen->setWindowTitle(tr("Langue du correcteur"));
         fen->setWindowModality(Qt::ApplicationModal);
         QLabel *titre, *actuelle, *choix;
         QPushButton *valider = new QPushButton(tr("Valider"));
         titre = new QLabel("<h1>Langue du correcteur<h1>");
-        actuelle = new QLabel(tr("Dictionnaire actuel : ")+this->getDico().split("/").last().split(".").first());
+        actuelle = new QLabel(tr("Dictionnaire actuel : ") + this->getDico().split("/").last().split(".").first());
         choix = new QLabel(tr("Nouvelle langue"));
 
         QStringList liste_dicos = this->getDicos();
@@ -493,12 +491,12 @@ void OrthManager::setDico(QString langue){
 }
 
 //Renvoie le dictionnaire actuellement utilisé (chemin absolu)
-QString OrthManager::getDico(){
+QString SpellCheckerWidget::getDico() {
     return dicoActuel;
 }
 
 //Établi le chemin vers le dictionnaire personnel selon l'OS
-QString OrthManager::setUserDict(){
+QString SpellCheckerWidget::setUserDict() {
     QString userDict, fallbackDict;
 #ifdef Q_OS_WIN
     userDict = QDir::homePath() + "/AppData/Roaming/LibreOffice/4/user/wordbook/standard.dic";
@@ -507,7 +505,7 @@ QString OrthManager::setUserDict(){
     userDict = QDir::homePath() + "/.config/libreoffice/4/user/wordbook/standard.dic";
     fallbackDict = QDir::homePath() + "/.dadaword/perso.dic";
 #endif
-    if(!QFile::exists(userDict)){
+    if (!QFile::exists(userDict)) {
         userDict = fallbackDict;
     }
     return userDict;
@@ -515,12 +513,13 @@ QString OrthManager::setUserDict(){
 
 
 //Affiche les options orthographiques
-void OrthManager::options(){
-    QMessageBox::information(this, tr("Fonctionnalité non-implémentée"), tr("Malheureusement, cette fonctionnalité n'est pas encore disponible, mais ce n'est qu'une question de temps ;-)"));
+void SpellCheckerWidget::options() {
+    QMessageBox::information(this, tr("Fonctionnalité non-implémentée"),
+                             tr("Malheureusement, cette fonctionnalité n'est pas encore disponible, mais ce n'est qu'une question de temps ;-)"));
 }
 
 //Souligne tous les mots mal orthographiés (lancement à l'initialisation)
-void OrthManager::checkAll(QTextEdit *contenu){
+void SpellCheckerWidget::checkAll(QTextEdit *contenu) {
     QTextCharFormat erreurs;
     QColor couleur(Qt::red);
     erreurs.setUnderlineColor(couleur);
@@ -530,7 +529,7 @@ void OrthManager::checkAll(QTextEdit *contenu){
     cursor.movePosition(QTextCursor::Start);
     QList<QTextEdit::ExtraSelection> esList;
 
-    while(!cursor.atEnd()) {
+    while (!cursor.atEnd()) {
         cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
         word = cursor.selectedText();
 
@@ -567,12 +566,12 @@ void OrthManager::checkAll(QTextEdit *contenu){
 }
 
 //Transfère les mots ignorés au correcteur
-void OrthManager::setMotsIgnores(QStringList liste){
+void SpellCheckerWidget::setMotsIgnores(QStringList liste) {
     list_skip_definitively = liste;
 }
 
 //Retourne la liste de tous les dictionnaires disponibles
-QStringList OrthManager::getDicos(){
+QStringList SpellCheckerWidget::getDicos() {
     QDir dossier;
 #ifdef Q_OS_WIN
     QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);

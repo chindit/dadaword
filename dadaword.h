@@ -1,9 +1,9 @@
 /*
-  Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
-  Date : 02/04/13
-  Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
-  Merci de ne pas supprimer cette notice.
-  */
+  @author : David Lumaye (littletiger58@gmail.com)
+  @date : 27/02/19
+  @license : GPLv3
+  DO NOT REMOVE THIS NOTICE
+*/
 
 #ifndef DADAWORD_H
 #define DADAWORD_H
@@ -46,7 +46,7 @@
 #include <QToolButton>
 #include <QWidgetAction>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 #include "autoload.h"
 #include "outils.h"
@@ -56,7 +56,7 @@
 #include "puces.h"
 #include "highlighter.h"
 #include "opendocument.h"
-#include "orthManager.h"
+#include "widgets/spellCheckerWidget.h"
 #include "replaceManager.h"
 #include "settingsManager.h"
 #include "specialchars.h"
@@ -151,16 +151,23 @@ private slots:
     void changeEncode(int encodage);
     void updateLangue();
     void changeDetected(QString file);
+
     void updateTab(QString file);
+
     //Only for Windows
     void has_maj();
 
 private:
     void create_menus();
-    void saveAlert(QMdiSubWindow *fenetre);
-    QMdiSubWindow* find_onglet();
-    QTextEdit* find_edit();
 
+    void saveAlert(QMdiSubWindow *fenetre);
+
+    QMdiSubWindow *find_onglet();
+
+    QTextEdit *find_edit();
+
+    // Widgets
+    SpellCheckerWidget *spellCheckerWidget;
     Outils *outils;
     SettingsManager *settings;
     ErrorManager *erreur;

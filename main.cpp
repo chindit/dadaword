@@ -3,7 +3,7 @@
   @date : 27/02/19
   @license : GPLv3
   DO NOT REMOVE THIS NOTICE
-  */
+*/
 
 #include <QApplication>
 #include <QLocale>

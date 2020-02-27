@@ -25,31 +25,129 @@
     <message>
         <location filename="dadaword.cpp" line="466"/>
         <source>Format texte</source>
-        <translation>Formato de texto</translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="711"/>
-        <source>Fichier déjà ouvert</source>
-        <oldsource>Fichier dÃ©jÃ  ouvert</oldsource>
-        <translation type="unfinished">Fichero ya abierto</translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="771"/>
-        <source>Une erreur s&apos;est produite lors de l&apos;ouverture du fichier : aucun contenu n&apos;a été détecté. 
- Êtes-vous sûr que le fichier n&apos;est pas corrompu?</source>
-        <oldsource>Une erreur s&apos;est produite lors de l&apos;ouverture du fichier : aucun contenu n&apos;a Ã©tÃ© dÃ©tectÃ©. 
- Ãtes-vous sÃ»r que le fichier n&apos;est pas corrompu?</oldsource>
-        <translation type="unfinished">Un error se ha producido durante la abertura del fichere : ningún contenido ha sido detectado.
-¿Está Vd seguro de que el fichero no ha sido corrupto?</translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="794"/>
-        <source>Le fichier demandé n&apos;a pu être ouvert. 
- Veuillez réessayer.</source>
-        <oldsource>Le fichier demandÃ© n&apos;a pu Ãªtre ouvert. 
- Veuillez rÃ©essayer.</oldsource>
-        <translation type="unfinished">El fichero no ha podido estar abierto.
-Intente otra vez.</translation>
+< translation > Formato
+de
+texto < /translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "711" / >
+    <source>Fichier
+déjà
+ouvert < /source>
+< oldsource > Fichier
+dÃ©jÃ
+ouvert < /oldsource>
+< translation
+type = "unfinished" > Fichero
+ya
+abierto < /translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "771" / >
+    <source>Une
+erreur
+s & apos;
+est
+produite
+lors
+de
+l & apos;
+ouverture
+du
+aucun
+contenu
+n & apos;
+a
+été
+détecté.Êtes - vous
+sûr
+que
+le
+fichier
+n & apos;
+est
+pas
+corrompu ? </source>
+    < oldsource > Une erreur
+s & apos;
+est
+produite
+lors
+de
+l & apos;
+ouverture
+du
+aucun
+contenu
+n & apos;
+a
+Ã©tÃ© dÃ©tectÃ©.
+Ãtes - vous
+sÃ»r
+que
+le
+fichier
+n & apos;
+est
+pas
+corrompu ? </oldsource>
+    < translation type = "unfinished" > Un
+error
+se
+ha
+producido
+durante
+la
+abertura
+del
+ningún
+contenido
+ha
+sido
+detectado.
+¿Está
+Vd
+seguro
+de
+que
+el
+fichero
+no
+ha
+sido
+corrupto ? </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp" line = "794" / >
+    <source>Le
+fichier
+demandé
+n & apos;
+a
+pu
+être
+ouvert.Veuillez
+réessayer. < /source>
+< oldsource > Le
+fichier
+demandÃ© n & apos;
+a
+pu
+Ãªtre
+ouvert.Veuillez
+rÃ©essayer. < /oldsource>
+< translation
+type = "unfinished" > El
+fichero
+no
+ha
+podido
+estar
+abierto.Intente
+otra
+vez. < /translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="686"/>
@@ -495,38 +593,136 @@ Intente otra vez.</translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="711"/>
-        <source>Le fichier que vous tentez d&apos;ouvrir est déjà ouvert.
- Si ce n&apos;est pas le cas, deux fichiers portent un nom identique. Veuillez les renommer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="721"/>
-        <source>Impossible d&apos;ouvrir le fichier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="721"/>
-        <source>Malheureusement, le format de fichier que vous tentez d&apos;ouvrir n&apos;est pas pris en charge par DadaWord :-(</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="764"/>
-        <source>Le fichier que vous allez ouvrir est d&apos;une grande taille.  Il se peut que vous notiez des ralentissements dans DadaWord jusqu&apos;à sa fermeture.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="875"/>
-        <source>Erreur lors de l&apos;ouverture de fichier : il n&apos;a pu être déterminé si le fichier s&apos;ouvrait ou non en mode texte</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="954"/>
-        <source>Aucune imprimante PDF n&apos;a été trouvée sur votre système.
- Annulation de l&apos;impression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="997"/>
+        <source>Le fichier que vous tentez d&apos;ouvrir est déjà ouvert.Si
+ce
+n & apos;
+est
+pas
+le
+cas, deux
+fichiers
+portent
+un
+nom
+identique.Veuillez
+les
+renommer. < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "721" / >
+    <source>Impossible
+d & apos;
+ouvrir
+le
+fichier < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "721" / >
+    <source>Malheureusement, le
+format
+de
+fichier
+que
+vous
+tentez
+d & apos;
+ouvrir
+n & apos;
+est
+pas
+pris
+en
+charge
+par - (</source>
+    < translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "764" / >
+    <source>Le
+fichier
+que
+vous
+allez
+ouvrir
+est
+d & apos;
+une
+grande
+taille.Il
+se
+peut
+que
+vous
+notiez
+des
+ralentissements
+dans
+DadaWord
+jusqu & apos;
+à
+sa
+fermeture. < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "875" / >
+    <source>Erreur
+lors
+de
+l & apos;
+ouverture
+de
+il
+n & apos;
+a
+pu
+être
+déterminé
+si
+le
+fichier
+s & apos;
+ouvrait
+ou
+non
+en
+mode
+texte < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "954" / >
+    <source>Aucune
+imprimante
+PDF
+n & apos;
+a
+été
+trouvée
+sur
+votre
+système.Annulation
+de
+l & apos;
+impression < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "997" / >
         <source>Erreur lors de la transmission du type de liste à DadaWord::create_liste_puce</source>
         <translation type="unfinished"></translation>
     </message>
@@ -963,27 +1159,49 @@ Intente otra vez.</translation>
     </message>
     <message>
         <location filename="dadaword.cpp" line="2756"/>
-        <source>Remplacer dans …</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2759"/>
-        <source>Rechercher dans …</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2772"/>
-        <source>Phrase à rechecher :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2773"/>
-        <source>Sensible à la casse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="2846"/>
-        <source>Tentative de recheche à partir d&apos;une chaine vide</source>
+    <source>Remplacer
+dans …</source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "2759" / >
+    <source>Rechercher
+dans …</source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "2772" / >
+    <source>Phrase
+à < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "2773" / >
+    <source>Sensible
+à
+la
+casse < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "2846" / >
+    <source>Tentative
+de
+recheche
+à
+partir
+d & apos;
+une
+chaine
+vide < /source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1009,8 +1227,8 @@ Peut-être devriez-vous essayer avec des critères moins stricts?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dadaword.cpp" line="3028"/>
-        <source>Caractères totaux:</source>
+        <location filename="dadaword.cpp" line= "3028" / >
+    <source>Caractères < /source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1088,27 +1306,39 @@ Voulez-vous la télécharger?</source>
     <message>
         <location filename="dadaword.cpp" line="2954"/>
         <source>Recherche infructueuse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="3023"/>
-        <source>&lt;h1&gt;Statistiques
-&lt;/h1&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="3024"/>
-        <source>&lt;b&gt;Document actif:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="3025"/>
-        <source>Lignes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dadaword.cpp" line="3026"/>
-        <source>Mots:</source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "3023" / >
+    <source>&lt;h1&gt;Statistiques
+    &lt; /h1&gt;</s
+ource >
+<translation type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "3024" / >
+    <source>&lt;b&gt;Document &lt; /b&gt;</s
+ource >
+<translation type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "3025" / >
+    <source>Lignes
+:
+</source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "dadaword.cpp"
+line = "3026" / >
+    <source>Mots
+:
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1317,190 +1547,420 @@ Por securidad, el programa va a cerrarse.</translation>
     </message>
     <message>
         <location filename="opendocument.cpp" line="438"/>
-        <source>ODT : type de données non supporté</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="557"/>
-        <source>ODT : aucune cellule détectée dans le tableau</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="628"/>
-        <source>ODT : format non trouvé : application du style par défaut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="658"/>
-        <source>ODT : Type de graisse non supporté</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="672"/>
-        <source>ODT : erreur lors de la réception de l&apos;italique</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="686"/>
-        <source>Type de soulignement non pris en charge -&gt; désactivation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="907"/>
-        <source>ODT : Mauvais paramètre envoyé : fonction de lecture d&apos;image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="924"/>
-        <source>ODT : Erreur lors du téléchargement d&apos;éléments distants</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="943"/>
-        <source>ODT : Sauvegarde échouée de l&apos;image téléchargée</source>
+    <source>ODT
+:
+type de
+données
+non
+supporté < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "557" / >
+    <source>ODT
+:
+aucune
+cellule
+détectée
+dans
+le
+tableau < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "628" / >
+    <source>ODT
+:
+format
+non
+application
+du
+style
+par
+défaut < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "658" / >
+    <source>ODT
+:
+Type
+de
+graisse
+non
+supporté < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "672" / >
+    <source>ODT
+:
+erreur
+lors
+de
+la
+réception
+de
+l & apos;
+italique < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "686" / >
+    <source>Type
+de
+soulignement
+non
+pris
+en
+charge - &gt; désactivation < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "907" / >
+    <source>ODT
+:
+Mauvais
+paramètre
+fonction
+de
+lecture
+d & apos;
+image < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "924" / >
+    <source>ODT
+:
+Erreur
+lors
+du
+téléchargement
+d & apos;
+éléments
+distants < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "943" / >
+    <source>ODT
+:
+Sauvegarde
+échouée
+de
+l & apos;
+image
+téléchargée < /source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="opendocument.cpp" line="949"/>
-        <source>ODT : Téléchargement échoué d&apos;une image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="969"/>
-        <source>ODT : source d&apos;image non trouvée</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="1032"/>
-        <source>ODT : erreur de troncation de code dans les listes à puces : élément non déterminé</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="45"/>
-        <source>ODT : échec de la sélection du contenu</source>
-        <oldsource>ODT : Ã©chec de la sÃ©lection du contenu</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="49"/>
+    <source>ODT
+:
+Téléchargement
+échoué
+d & apos;
+une
+image < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "969" / >
+    <source>ODT
+:
+source
+d & apos;
+image
+non
+trouvée < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "1032" / >
+    <source>ODT
+:
+erreur
+de
+troncation
+de
+code
+dans
+les
+listes
+à
+élément
+non
+déterminé < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "45" / >
+    <source>ODT
+:
+échec
+de
+la
+sélection
+du
+contenu < /source>
+< oldsource > ODT
+:
+Ã©chec
+de
+la
+sÃ©lection
+du
+contenu < /oldsource>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "49" / >
         <source>ODT : échec de l&apos;ouverture du fichier de contenu</source>
         <oldsource>ODT : Ã©chec de l&apos;ouverture du fichier de contenu</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="opendocument.cpp" line="282"/>
-        <source>ODT : Une erreur est survenue lors de la lecture des tableaux; il est donc probable qu&apos;il ne s&apos;affiche pas.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="477"/>
-        <source>ODT : style de puces invalide, annulation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="515"/>
-        <source>ODT : Puces : exception dans le contenu des puces</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="778"/>
-        <source>ODT : style d&apos;image introuvable : %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="806"/>
-        <source>ODT : &lt;span&gt; invalide</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="850"/>
-        <source>ODT : type de &lt;span&gt; non détecté</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="opendocument.cpp" line="885"/>
-        <source>ODT : lien invalide: skipping!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OrthManager</name>
-    <message>
-        <location filename="orthManager.ui" line="14"/>
-        <source>DadaWord - Orthographe</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="33"/>
-        <source>Ignorer tout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="46"/>
-        <source>Ajouter à
-l&apos;autocorrection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="60"/>
-        <source>Remplacer tout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="73"/>
-        <source>Remplacer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="86"/>
-        <source>Ignorer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="99"/>
-        <source>Ignorer
-définitivement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="113"/>
-        <source>Fermer</source>
-        <translation type="unfinished">Cerrar</translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="130"/>
-        <source>Options
-orthographiques</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="158"/>
-        <source>Erreur(s) :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="171"/>
-        <source>Suggestion :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="197"/>
-        <source>Ajouter au
-dictionnaire</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.ui" line="221"/>
-        <source>PushButton</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="orthManager.cpp" line="20"/>
-        <location filename="orthManager.cpp" line="35"/>
-        <source>Téléchargement des dictionnaires</source>
-        <oldsource>TÃ©lÃ©chargement des dictionnaires</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
+    <source>ODT
+:
+Une
+erreur
+est
+survenue
+lors
+de
+la
+lecture
+des
+tableaux;
+il
+est
+donc
+probable
+qu & apos;
+il
+ne
+s & apos;
+affiche
+pas. < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "477" / >
+    <source>ODT
+:
+style
+de
+puces
+invalide, annulation < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "515" / >
+    <source>ODT
+:
+exception
+dans
+le
+contenu
+des
+puces < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "778" / >
+    <source>ODT
+:
+style
+d & apos;
+image
+introuvable : %
+1 < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "806" / >
+    <source>ODT
+:
+&lt;span&gt;invalide < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "850" / >
+    <source>ODT
+:
+type de&lt;span&gt;
+non
+détecté < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "opendocument.cpp"
+line = "885" / >
+    <source>ODT
+:
+lien
+skipping! < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< /context>
+< context >
+<name>OrthManager < /name>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "14" / >
+    <source>DadaWord - Orthographe < /source>
+    < translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "33" / >
+    <source>Ignorer
+tout < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "46" / >
+    <source>Ajouter
+à
+l & apos;
+autocorrection < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "60" / >
+    <source>Remplacer
+tout < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "73" / >
+    <source>Remplacer < /source>
+    < translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "86" / >
+    <source>Ignorer < /source>
+    < translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "99" / >
+    <source>Ignorer
+définitivement < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "113" / >
+    <source>Fermer < /source>
+    < translation
+type = "unfinished" > Cerrar < /translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "130" / >
+    <source>Options
+orthographiques < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "158" / >
+    <source>Erreur(s)
+:
+</source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "171" / >
+    <source>Suggestion
+:
+</source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "197" / >
+    <source>Ajouter
+au
+dictionnaire < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "spellCheckerWidget.ui"
+line = "221" / >
+    <source>PushButton < /source>
+    < translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "orthManager.cpp"
+line = "20" / >
+<location filename = "orthManager.cpp"
+line = "35" / >
+    <source>Téléchargement
+des
+dictionnaires < /source>
+< oldsource > TÃ©lÃ©chargement
+des
+dictionnaires < /oldsource>
+< translation
+type = "unfinished" > </translation>
+< /message>
     <message>
         <location filename="orthManager.cpp" line="24"/>
         <source>Impossible de créer le repertoire de dictionnaires</source>
@@ -1567,8 +2027,8 @@ dictionnaire</source>
         <translation type="unfinished">OK</translation>
     </message>
     <message>
-        <location filename="orthManager.cpp" line="426"/>
-        <source>Dictionnaire actuel : </source>
+        <location filename="orthManager.cpp" line= "426" / >
+    <source>Dictionnaire < /source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1802,27 +2262,47 @@ dictionnaire</source>
     </message>
     <message>
         <location filename="outils.cpp" line="109"/>
-        <source>Toutes</source>
-        <translation>Todas</translation>
-    </message>
-    <message>
-        <location filename="outils.cpp" line="161"/>
-        <source>Exception dans la valeur de l&apos;alerte</source>
-        <translation>Error en el valor de alerta</translation>
-    </message>
-    <message>
-        <location filename="outils.cpp" line="230"/>
-        <source>Majuscule : &lt;i&gt;Shift&lt;/i&gt;, Contrôle : &lt;i&gt;Ctrl&lt;/i&gt;, Conjonction de touches : &lt;i&gt;+&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="outils.cpp" line="234"/>
-        <source>Souligné</source>
-        <translation type="unfinished">Subrayado</translation>
-    </message>
-    <message>
-        <location filename="outils.cpp" line="235"/>
-        <source>Ouvrir</source>
+<source>Toutes < /source>
+< translation > Todas < /translation>
+< /message>
+< message >
+<location filename = "outils.cpp"
+line = "161" / >
+    <source>Exception
+dans
+la
+valeur
+de
+l & apos;
+alerte < /source>
+< translation > Error
+en
+el
+valor
+de
+alerta < /translation>
+< /message>
+< message >
+<location filename = "outils.cpp"
+line = "230" / >
+    <source>Majuscule
+:
+&lt;i&gt;Shift &lt; /i&gt;, Contrôle : &lt;i&gt;Ctrl&lt;/i &gt;, Conjonction
+de &lt; i &gt; +&lt;/i&gt;</s
+ource >
+<translation type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "outils.cpp"
+line = "234" / >
+    <source>Souligné < /source>
+    < translation
+type = "unfinished" > Subrayado < /translation>
+< /message>
+< message >
+<location filename = "outils.cpp"
+line = "235" / >
+    <source>Ouvrir < /source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1957,29 +2437,95 @@ Il se peut qu&apos;il manque certaines icônes.</source>
     </message>
     <message>
         <location filename="puces.ui" line="111"/>
-        <source>Valider</source>
-        <translation type="unfinished">OK</translation>
-    </message>
-    <message>
-        <location filename="puces.ui" line="128"/>
-        <source>Annuler</source>
-        <translation type="unfinished">Cancelar</translation>
-    </message>
-    <message>
-        <location filename="puces.cpp" line="44"/>
-        <source>Erreur lors de la détection du choix de liste : aucun style n&apos;a été coché</source>
-        <oldsource>Erreur lors de la dÃ©tection du choix de liste : aucun style n&apos;a Ã©tÃ© cochÃ©</oldsource>
-        <translation type="unfinished">Error durante la detección del estilo de lista : ningún estilo elegido</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="ddz.cpp" line="48"/>
-        <source>Problème lors de la détection d&apos;images -&gt; annulation de la sauvegarde</source>
-        <oldsource>ProblÃ¨me lors de la dÃ©tection d&apos;images -&gt; annulation de la sauvegarde</oldsource>
-        <translation type="unfinished">Problema durante la detección de imágenes -&gt; cancelación del registro</translation>
-    </message>
+    <source>Valider < /source>
+    < translation
+type = "unfinished" > OK < /translation>
+< /message>
+< message >
+<location filename = "puces.ui"
+line = "128" / >
+    <source>Annuler < /source>
+    < translation
+type = "unfinished" > Cancelar < /translation>
+< /message>
+< message >
+<location filename = "puces.cpp"
+line = "44" / >
+    <source>Erreur
+lors
+de
+la
+détection
+du
+choix
+de
+aucun
+style
+n & apos;
+a
+été
+coché < /source>
+< oldsource > Erreur
+lors
+de
+la
+dÃ©tection
+du
+choix
+de
+aucun
+style
+n & apos;
+a
+Ã©tÃ© cochÃ©</oldsource>
+< translation
+type = "unfinished" > Error
+durante
+la
+detección
+del
+estilo
+de
+ningún
+estilo
+elegido < /translation>
+< /message>
+< /context>
+< context >
+<name>QObject < /name>
+< message >
+<location filename = "ddz.cpp"
+line = "48" / >
+    <source>Problème
+lors
+de
+la
+détection
+d & apos;
+images - &gt; annulation
+de
+la
+sauvegarde < /source>
+< oldsource > ProblÃ¨me
+lors
+de
+la
+dÃ©tection
+d & apos;
+images - &gt; annulation
+de
+la
+sauvegarde < /oldsource>
+< translation
+type = "unfinished" > Problema
+durante
+la
+detección
+de
+imágenes - &gt; cancelación
+del
+registro < /translation>
+< /message>
     <message>
         <location filename="ddz.cpp" line="48"/>
         <source>Problème lors de la détection d&apos;images -&gt; annulation de la sauvegarde</source>
@@ -2080,35 +2626,73 @@ Aucune valeur ne sera enregistrÃ©e</oldsource>
         <source>Suppression effectuée</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="settingsManager.cpp" line="90"/>
-        <source>Vos préférences ont été supprimées avec succès.  La suppression sera pleinement effective après redémarrage de DadaWord</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SpellChecker</name>
-    <message>
-        <location filename="spellchecker.cpp" line="75"/>
-        <source>Encodage par défaut : </source>
-        <oldsource>Encodage par dÃ©faut : </oldsource>
-        <translation type="unfinished">Encodamiento por defecto : </translation>
-    </message>
-    <message>
-        <location filename="spellchecker.cpp" line="75"/>
-        <source>Encodage par défaut : </source>
-        <oldsource>Encodage par dÃ©faut : </oldsource>
-        <translation type="unfinished">Encodamiento por defecto : </translation>
-    </message>
-    <message>
-        <location filename="spellchecker.cpp" line="92"/>
-        <source>Le dictionnaire </source>
-        <translation>El diccionario</translation>
-    </message>
-    <message>
-        <location filename="spellchecker.cpp" line="96"/>
-        <source>Dictionnaire utilisateur non défini.</source>
-        <oldsource>Dictionnaire utilisateur non dÃ©fini.</oldsource>
+< message >
+<location filename = "settingsManager.cpp"
+line = "90" / >
+    <source>Vos
+préférences
+ont
+été
+supprimées
+avec
+succès.La
+suppression
+sera
+pleinement
+effective
+après
+redémarrage
+de
+DadaWord < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< /context>
+< context >
+<name>SpellChecker < /name>
+< message >
+<location filename = "spellchecker.cpp"
+line = "75" / >
+    <source>Encodage
+par < /source>
+< oldsource > Encodage
+par
+dÃ©</oldsource>
+< translation
+type = "unfinished" > Encodamiento
+por < /translation>
+< /message>
+< message >
+<location filename = "spellchecker.cpp"
+line = "75" / >
+    <source>Encodage
+par < /source>
+< oldsource > Encodage
+par
+dÃ©</oldsource>
+< translation
+type = "unfinished" > Encodamiento
+por < /translation>
+< /message>
+< message >
+<location filename = "spellchecker.cpp"
+line = "92" / >
+    <source>Le
+dictionnaire < /source>
+< translation > El
+diccionario < /translation>
+< /message>
+< message >
+<location filename = "spellchecker.cpp"
+line = "96" / >
+    <source>Dictionnaire
+utilisateur
+non
+défini. < /source>
+< oldsource > Dictionnaire
+utilisateur
+non
+dÃ©fini. < /oldsource>
         <translation type="unfinished">Diccionario personal indefinido.</translation>
     </message>
     <message>
@@ -2265,46 +2849,157 @@ Aucune valeur ne sera enregistrÃ©e</oldsource>
         <source>Souligné</source>
         <oldsource>SoulignÃ©</oldsource>
         <translation type="unfinished">Subrayado</translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="197"/>
-        <location filename="style.cpp" line="336"/>
-        <source>Couleur d&apos;arrière-plan</source>
-        <oldsource>Couleur d&apos;arriÃ¨re-plan</oldsource>
-        <translation type="unfinished">Color de fondo</translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="300"/>
-        <source>Nom du style : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="302"/>
-        <source>Vous devez fournir un nom de style.
-Annulation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="314"/>
-        <source>Impossible de récupérer le contenu de la fenêtre de style</source>
-        <oldsource>Impossible de rÃ©cupÃ©rer le contenu de la fenÃªtre de style</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="419"/>
-        <source>Style:: Exception dans le changement de couleur : pas de bouton spécifié</source>
-        <oldsource>Style:: Exception dans le changement de couleur : pas de bouton spÃ©cifiÃ©</oldsource>
-        <translation type="unfinished">Style:: error durante el cambio de color : ningún botón especificado</translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="518"/>
-        <source>Il s&apos;agit d&apos;un style par défaut, vous ne pouvez pas le supprimer.
-Par contre, vous pouvez le modifier comme vous le souhaitez.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="439"/>
-        <source>Une erreur est survenue lors de l&apos;enregistrement des styles, une valeur erronée de l&apos;index a sans doute été fournie.</source>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "197" / >
+<location filename = "style.cpp"
+line = "336" / >
+    <source>Couleur
+d & apos;
+arrière - plan < /source>
+< oldsource > Couleur
+d & apos;
+arriÃ¨re - plan < /oldsource>
+< translation
+type = "unfinished" > Color
+de
+fondo < /translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "300" / >
+    <source>Nom
+du < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "302" / >
+    <source>Vous
+devez
+fournir
+un
+nom
+de
+style.Annulation. < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "314" / >
+    <source>Impossible
+de
+récupérer
+le
+contenu
+de
+la
+fenêtre
+de
+style < /source>
+< oldsource > Impossible
+de
+rÃ©cupÃ©rer
+le
+contenu
+de
+la
+fenÃªtre
+de
+style < /oldsource>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "419" / >
+    <source>Style
+::
+Exception
+dans
+le
+changement
+de
+pas
+de
+bouton
+spécifié < /source>
+< oldsource > Style
+::
+Exception
+dans
+le
+changement
+de
+pas
+de
+bouton
+spÃ©cifiÃ©</oldsource>
+< translation
+type = "unfinished" > Style
+::
+error
+durante
+el
+cambio
+de
+ningún
+botón
+especificado < /translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "518" / >
+    <source>Il
+s & apos;
+agit
+d & apos;
+un
+style
+par
+défaut, vous
+ne
+pouvez
+pas
+le
+supprimer.Par
+contre, vous
+pouvez
+le
+modifier
+comme
+vous
+le
+souhaitez. < /source>
+< translation
+type = "unfinished" > </translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "439" / >
+    <source>Une
+erreur
+est
+survenue
+lors
+de
+l & apos;
+enregistrement
+des
+styles, une
+valeur
+erronée
+de
+l & apos;
+index
+a
+sans
+doute
+été
+fournie. < /source>
         <oldsource>Une erreur est survenue lors de l&apos;enregistrement des styles, une valeur erronÃ©e de l&apos;index a sans doute Ã©tÃ© fournie.</oldsource>
         <translation type="unfinished"></translation>
     </message>
@@ -2374,43 +3069,153 @@ Par contre, vous pouvez le modifier comme vous le souhaitez.</source>
         <source>Style::Id de modification erronnée, annulation</source>
         <translation type="obsolete">Style::Id de modificación falsa, salida</translation>
     </message>
-    <message>
-        <source>Valider</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Annuler</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="419"/>
-        <source>Style:: Exception dans le changement de couleur : pas de bouton spécifié</source>
-        <translation type="unfinished">Style:: error durante el cambio de color : ningún botón especificado</translation>
-    </message>
-    <message>
-        <location filename="style.cpp" line="431"/>
-        <source>Champs non-remplis</source>
-        <translation>Campos vacíos</translation>
-    </message>
-    <message>
-        <source>Veuillez compléter les champs &quot;Titre&quot;, &quot;Police&quot; et &quot;Taille&quot; avant de poursuivre.
-Merci</source>
-        <translation type="obsolete">Por favor, rellene los campos &quot;Título&quot;, &quot;Tipo de letra&quot; y &quot;Tamaño&quot; antes de seguir.
-Gracias</translation>
-    </message>
-    <message>
-        <source>Style::Impossible de modifier le style, le nom n&apos;a pas été reconnu</source>
-        <translation type="obsolete">Style::Imposible modificar el estilo : el nombre no es conocido</translation>
-    </message>
-    <message>
-        <source>Style:: Tentative de suppression d&apos;un style par défaut</source>
-        <translation type="obsolete">Style:: Intento de supresión de un estilo por defecto</translation>
-    </message>
-    <message>
-        <source>Style::ID de style incorrecte lors de la suppression</source>
-        <translation type="obsolete">Style::ID de estilo incorrecta durante la supresión</translation>
-    </message>
-    <message>
+< message >
+<source>Valider < /source>
+< translation
+type = "obsolete" > OK < /translation>
+    < /message>
+    < message >
+    <source>Annuler < /source>
+    < translation
+type = "obsolete" > Cancelar < /translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "419" / >
+    <source>Style
+::
+Exception
+dans
+le
+changement
+de
+pas
+de
+bouton
+spécifié < /source>
+< translation
+type = "unfinished" > Style
+::
+error
+durante
+el
+cambio
+de
+ningún
+botón
+especificado < /translation>
+< /message>
+< message >
+<location filename = "style.cpp"
+line = "431" / >
+    <source>Champs
+non - remplis < /source>
+< translation > Campos
+vacíos < /translation>
+< /message>
+< message >
+<source>Veuillez
+compléter
+les
+champs & quot;
+Titre & quot;
+, &
+quot;
+Police & quot;
+et & quot;
+Taille & quot;
+avant
+de
+poursuivre.Merci < /source>
+< translation
+type = "obsolete" > Por
+favor, rellene
+los
+campos & quot;
+Título & quot;
+, &
+quot;
+Tipo
+de
+letra & quot;
+y & quot;
+Tamaño & quot;
+antes
+de
+seguir.Gracias < /translation>
+< /message>
+< message >
+<source>Style
+::
+Impossible
+de
+modifier
+le
+style, le
+nom
+n & apos;
+a
+pas
+été
+reconnu < /source>
+< translation
+type = "obsolete" > Style
+::
+Imposible
+modificar
+el
+el
+nombre
+no
+es
+conocido < /translation>
+< /message>
+< message >
+<source>Style
+::
+Tentative
+de
+suppression
+d & apos;
+un
+style
+par
+défaut < /source>
+< translation
+type = "obsolete" > Style
+::
+Intento
+de
+supresión
+de
+un
+estilo
+por
+defecto < /translation>
+< /message>
+< message >
+<source>Style
+::
+ID
+de
+style
+incorrecte
+lors
+de
+la
+suppression < /source>
+< translation
+type = "obsolete" > Style
+::
+ID
+de
+estilo
+incorrecta
+durante
+la
+supresión < /translation>
+< /message>
+< message >
         <location filename="style.cpp" line="481"/>
         <source>Supprimer un style</source>
         <translation>Borrar un estilo</translation>
@@ -2480,29 +3285,79 @@ Vous pourrez ensuite enregistrer le document rÃ©cupÃ©rÃ© sous le nom que v
     <message>
         <source>&amp;Chiffres romains minuscules</source>
         <translation type="obsolete">&amp;Cifras romanos minúsculos</translation>
-    </message>
-    <message>
-        <source>C&amp;hiffres romains majuscules</source>
-        <translation type="obsolete">C&amp;ifras romanos mayúsculos</translation>
-    </message>
-    <message>
-        <source>Valider</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Erreur lors de la détection du choix de liste : aucun style n&apos;a été coché</source>
-        <oldsource>Erreur lors de la déterction du choix de liste : aucun style n&apos;a été coché</oldsource>
-        <translation type="obsolete">Error durante la detección del estilo de lista : ningún estilo elegido</translation>
-    </message>
-</context>
-<context>
-    <name>specialChars</name>
-    <message>
-        <location filename="specialchars.cpp" line="9"/>
-        <source>Insérer un caractère spécial</source>
-        <oldsource>InsÃ©rer un caractÃ¨re spÃ©cial</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
+< /message>
+< message >
+<source>C &amp; hiffres
+romains
+majuscules < /source>
+< translation
+type = "obsolete" > C &amp; ifras
+romanos
+mayúsculos < /translation>
+< /message>
+< message >
+<source>Valider < /source>
+< translation
+type = "obsolete" > OK < /translation>
+    < /message>
+    < message >
+    <source>Erreur
+lors
+de
+la
+détection
+du
+choix
+de
+aucun
+style
+n & apos;
+a
+été
+coché < /source>
+< oldsource > Erreur
+lors
+de
+la
+déterction
+du
+choix
+de
+aucun
+style
+n & apos;
+a
+été
+coché < /oldsource>
+< translation
+type = "obsolete" > Error
+durante
+la
+detección
+del
+estilo
+de
+ningún
+estilo
+elegido < /translation>
+< /message>
+< /context>
+< context >
+<name>specialChars < /name>
+< message >
+<location filename = "specialchars.cpp"
+line = "9" / >
+    <source>Insérer
+un
+caractère
+spécial < /source>
+< oldsource > InsÃ©rer
+un
+caractÃ¨re
+spÃ©cial < /oldsource>
+< translation
+type = "unfinished" > </translation>
+< /message>
     <message>
         <location filename="specialchars.cpp" line="47"/>
         <source>Caractères récemment utilisés</source>

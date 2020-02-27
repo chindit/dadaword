@@ -1,33 +1,49 @@
-#ifndef ORTHMANAGER_H
-#define ORTHMANAGER_H
+#ifndef SPELL_CHECKER_WIDGET_H
+#define SPELL_CHECKER_WIDGET_H
 
+#include <QComboBox>
 #include <QDialog>
+#include <QGridLayout>
 #include <QModelIndexList>
 #include <QStandardItem>
+#include <QtCore/QStandardPaths>
+#include <QtWidgets/QTextEdit>
+#include <QTextFrame>
 
-#include "dadaword.h"
-#include "spellchecker.h"
+#include <errorManager.h>
+#include <settingsManager.h>
+#include <spellchecker.h>
 
 namespace Ui {
-class OrthManager;
+    class SpellCheckerWidget;
 }
 
-class OrthManager : public QDialog
-{
-    Q_OBJECT
-    
+class SpellCheckerWidget : public QDialog {
+Q_OBJECT
+
 public:
-    explicit OrthManager(QString dictionnaire, QWidget *parent = 0);
-    ~OrthManager();
+    explicit SpellCheckerWidget(QString dictionnaire, QWidget *parent = 0);
+
+    ~SpellCheckerWidget() override;
+
     void showWindow(QTextEdit *contenu);
+
     QStringList getListSkip(bool definitive = false);
+
     bool isCorrectWord(QString word);
+
     QStringList getSuggestList(QString word);
+
     void setTextCursor(QTextCursor cursor);
+
     QString getDico();
-    static QStringList getDicos(); //Comme son nom l'indique, cette fonction retourne TOUS les dictionnaires disponibles et pas seulement l'actuel
+
+    static QStringList
+    getDicos(); //Comme son nom l'indique, cette fonction retourne TOUS les dictionnaires disponibles et pas seulement l'actuel
     void checkAll(QTextEdit *contenu);
+
     void setMotsIgnores(QStringList liste);
+
     static bool initPersonalDictionary();
 
 public slots:
@@ -47,8 +63,8 @@ private:
     QString setUserDict();
 
     SettingsManager *settings;
-    Ui::OrthManager *ui;
-    SpellChecker* correcteur;
+    Ui::SpellCheckerWidget *ui;
+    SpellChecker *correcteur;
     QTextCursor pos_orth;
     QTextEdit *copyEdit;
     QStringList list_skip;
@@ -60,4 +76,4 @@ signals:
     void langueChangee();
 };
 
-#endif // ORTHMANAGER_H
+#endif // SPELL_CHECKER_WIDGET_H

@@ -72,6 +72,6 @@
         <file>images/document-encrypt.png</file>
     </qresource>
     <qresource prefix="/">
-        <file>images/chargement.png</file>
+        <file>images/loading.png</file>
     </qresource>
 </RCC>

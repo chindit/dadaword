@@ -49,12 +49,12 @@ set(SOURCES
         autoload.cpp
         specialchars.cpp
         replaceManager.cpp
-        orthManager.cpp
+        widgets/spellCheckerWidget.cpp
         )
 
 # User interface files
 set(FORMS
-        orthManager.ui
+        widgets/spellCheckerWidget.ui
         puces.ui
         )
 
