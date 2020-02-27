@@ -1,54 +1,56 @@
 /*
-  Développeur : David Lumaye (littletiger58.aro-base.gmail.com)
-  Date : 02/04/13
-  Ce code est concédé sous licence GPL v3 (texte fourni avec le programme).
-  Merci de ne pas supprimer cette notice.
+  @author : David Lumaye (littletiger58@gmail.com)
+  @date : 27/02/19
+  @license : GPLv3
+  DO NOT REMOVE THIS NOTICE
   */
 
 #include <QApplication>
 #include <QLocale>
-#include <QObject>
 #include <QTranslator>
 #include <QLibraryInfo>
-#include <QMessageBox>
 #include <QTextCodec>
 #include <QSplashScreen>
+
 #include "dadaword.h"
 
 int main(int argc, char *argv[])
 {
 
     QApplication app(argc, argv);
-    QSplashScreen screen(QPixmap(":/images/chargement.png"));
+    QSplashScreen screen(QPixmap(":/images/loading.png"));
     screen.show();
-    app.processEvents();
+    QApplication::processEvents();
 
-    //Traduction des boutons
+    // Loading locales
     QString locale = QLocale::system().name().section('_', 0, 0);
     QTranslator translator;
     translator.load(QString("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&translator);
+    QApplication::installTranslator(&translator);
     
     //-----------------------------------------------------
-    // Vérification de l'existence d'une autre instance
+    // Check if another mainWindow is running
     //-----------------------------------------------------
-    app.setApplicationName("Dadaword");
-    QSharedMemory sharedMemory(app.applicationName());
+    QApplication::setApplicationName("Dadaword");
+    QSharedMemory sharedMemory(QApplication::applicationName());
     
-    // On vérifie à la création de cette zone mémoire si celle-ci existe
-    if(sharedMemory.create(sizeof(int))==false){
-        QMessageBox::warning(nullptr, QObject::tr("Programme en cours d'exécution"), QObject::tr("Dadaword est déjà en cours d'exécution.  Veuillez fermer l'instance ouverte avant de le lance à nouveau."));
+    // If memory zone already exists, it means program is already running
+    if(!sharedMemory.create(sizeof(int))){
+#ifndef QT_DEBUG
+        QMessageBox::warning(nullptr, QObject::tr("Programme en cours d'exécution"), QObject::tr("Dadaword est déjà en cours d'exécution.  Veuillez fermer l'mainWindow ouverte avant de le lance à nouveau."));
         exit(EXIT_SUCCESS);
+#endif
     }
 
-    DadaWord instance;
+    DadaWord mainWindow;
 
-    //Création de l'interface utilisateur
-    instance.createUI();
+    // Creating UI
+    mainWindow.createUI();
 
-    //Affichage
-    instance.show();
-    screen.finish(&instance);
+    // Display
+    mainWindow.show();
+    screen.finish(&mainWindow);
 
-    return app.exec();
+    // Start main loop
+    return QApplication::exec();
 }

@@ -1,4 +1,8 @@
 DadaWord - Changelog
+Version 2.0.0 :
+- Réorganisation du code
+- Passage à CMake
+- Suppression des librairies externes embarquées
 
 Version 1.2.5 :
 - Possibilité de ne pas activer l'autocorrection dans les documents en texte simple

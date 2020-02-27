@@ -38,7 +38,7 @@ set(SOURCES
         outils.cpp
         opendocument.cpp
         puces.cpp
-        storagemanager.cpp
+        storageManager.cpp
         spellchecker.cpp
         highlighter.cpp
         ddz.cpp

@@ -28,7 +28,7 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     if (!StorageManager::isConfigDirectoryReadable()) {
         erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Warning);
     }
-    if (!OrthManager::initPersonalDictionnary()) {
+    if (!OrthManager::initPersonalDictionary()) {
         erreur->Erreur_msg(tr("Unable to create personal dictionnary"), QMessageBox::Warning);
     }
 

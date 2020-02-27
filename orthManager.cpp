@@ -88,10 +88,18 @@ OrthManager::~OrthManager(){
     delete ui;
 }
 
-bool OrthManager::initPersonalDictionnary(){
-    QFile personalDictionnary(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QString(PERSONAL_DICTIONNARY));
+bool OrthManager::initPersonalDictionary(){
+    QFile personalDictionary(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator() + QString(PERSONAL_DICTIONNARY));
 
-    return personalDictionnary.isWritable();
+    if (!personalDictionary.exists()) {
+        if (personalDictionary.open(QIODevice::Truncate | QIODevice::ReadWrite)) {
+            personalDictionary.close();
+        }
+    }
+
+    QFileDevice::Permissions permissions = personalDictionary.permissions();
+
+    return (QFileDevice::WriteOwner & permissions) || (QFileDevice::WriteGroup & permissions) || (QFileDevice::WriteOther & permissions);
 }
 
 void OrthManager::showWindow(QTextEdit *contenu){

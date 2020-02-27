@@ -28,7 +28,7 @@ public:
     static QStringList getDicos(); //Comme son nom l'indique, cette fonction retourne TOUS les dictionnaires disponibles et pas seulement l'actuel
     void checkAll(QTextEdit *contenu);
     void setMotsIgnores(QStringList liste);
-    static bool initPersonalDictionnary();
+    static bool initPersonalDictionary();
 
 public slots:
     void autocorrection(QString remplacement = "");

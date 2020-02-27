@@ -61,7 +61,7 @@
 #include "settingsManager.h"
 #include "specialchars.h"
 #include "spellchecker.h"
-#include "storagemanager.h"
+#include "storageManager.h"
 #include "style.h"
 
 class DadaWord : public QMainWindow

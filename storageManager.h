@@ -1,5 +1,5 @@
-#ifndef STORAGEMANAGER_H
-#define STORAGEMANAGER_H
+#ifndef STORAGE_MANAGER_H
+#define STORAGE_MANAGER_H
 
 #include <QDir>
 #include <QFileInfo>
@@ -12,4 +12,4 @@ public:
     static bool isConfigDirectoryReadable();
 };
 
-#endif // STORAGEMANAGER_H
+#endif // STORAGE_MANAGER_H
