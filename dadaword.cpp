@@ -3626,7 +3626,7 @@ void DadaWord::saveAll(){
     return;
 }
 
-//Fonction de changement d'encodage
+//Fonction de changement d'encoding
 void DadaWord::changeEncode(int encodage){
     if(encodage == LATIN1){    
         QByteArray temp = find_edit()->toHtml().toLatin1();

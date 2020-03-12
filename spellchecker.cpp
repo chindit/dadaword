@@ -43,79 +43,73 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "hunspell/hunspell.hxx"
 #include "errorManager.h"
 
-SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDictionary)
-{
-    UserDictionary = userDictionary;
-    dictionnaire_standard = dictionaryPath;
-    ErrorManager instance_erreur;
-    QString dictFile;
+SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDictionaryPath) {
+    userDictionary = userDictionaryPath;
+
+    QString dictionaryFile;
     QString affixFile;
-    if(!dictionaryPath.endsWith(".dic")){
-        dictFile = dictionaryPath + ".dic";
+    if (!dictionaryPath.endsWith(".dic")) {
+        dictionaryFile = dictionaryPath + ".dic";
         affixFile = dictionaryPath + ".aff";
+    } else {
+        dictionaryFile = dictionaryPath;
+        affixFile = QString(dictionaryPath).remove(".dic") + ".aff";
     }
-    else{
-        dictFile = dictionaryPath;
-        QString temp = dictionaryPath;
-        temp.remove(".dic");
-        affixFile = temp + ".aff";
-    }
-    QByteArray dictFilePathBA = dictFile.toLocal8Bit();
+    QByteArray dictFilePathBA = dictionaryFile.toLocal8Bit();
     QByteArray affixFilePathBA = affixFile.toLocal8Bit();
-    instance_hunspell = new Hunspell(affixFilePathBA.constData(), dictFilePathBA.constData());
+    hunspell = new Hunspell(affixFilePathBA.constData(), dictFilePathBA.constData());
 
     // detect encoding analyzing the SET option in the affix file
-    encodage = "UTF-8";
+    QString encoding = "UTF-8";
     QFile _affixFile(affixFile);
     if (_affixFile.open(QIODevice::ReadOnly)) {
         QTextStream stream(&_affixFile);
-        QRegExp enc_detector("^\\s*SET\\s+([A-Z0-9\\-]+)\\s*", Qt::CaseInsensitive);
+        QRegExp encodingDetector(R"(^\s*SET\s+([A-Z0-9\-]+)\s*)", Qt::CaseInsensitive);
         for(QString line = stream.readLine(); !line.isEmpty(); line = stream.readLine()) {
-            if (enc_detector.indexIn(line) > -1) {
-                encodage = enc_detector.cap(1);
-                instance_erreur.Erreur_msg(tr("Encodage par défaut : ") + encodage, QMessageBox::Ignore);
+            if (encodingDetector.indexIn(line) > -1) {
+                encoding = encodingDetector.cap(1);
+                qDebug() << "Default encoding: " << encoding;
                 break;
             }
         }
         _affixFile.close();
     }
-    codec = QTextCodec::codecForName(this->encodage.toLatin1().constData());
+    codec = QTextCodec::codecForName(encoding.toLatin1().constData());
 
-    if(!UserDictionary.isEmpty()){
-        QFile userDictonaryFile(UserDictionary);
-        if(userDictonaryFile.open(QIODevice::ReadOnly)){
-            QTextStream stream(&userDictonaryFile);
-            for(QString word = stream.readLine(); !word.isEmpty(); word = stream.readLine())
-                put_word(word);
-            userDictonaryFile.close();
+    if (!userDictionary.isEmpty()) {
+        QFile userDictionaryFile(userDictionary);
+        if (userDictionaryFile.open(QIODevice::ReadOnly)) {
+            QTextStream stream(&userDictionaryFile);
+            for (QString word = stream.readLine(); !word.isEmpty(); word = stream.readLine()) {
+                addWordToIgnoreList(word);
+            }
+            userDictionaryFile.close();
+        } else {
+            qInfo() << "Unable to open user dictionary";
         }
-        else{
-            instance_erreur.Erreur_msg(tr("Le dictionnaire ")+UserDictionary+tr(" n'a pu être ouvert"), QMessageBox::Information);
-        }
-    }
-    else{
-        instance_erreur.Erreur_msg(tr("Dictionnaire utilisateur non défini."), QMessageBox::Information);
+    } else {
+        qInfo() << "Undefined user dictionary";
     }
 }
 
 
 SpellChecker::~SpellChecker()
 {
-    delete instance_hunspell;
+    delete hunspell;
 }
 
 
 bool SpellChecker::spell(const QString &word)
 {
     // Encode from Unicode to the encoding used by current dictionary
-    return instance_hunspell->spell(std::string(codec->fromUnicode(word).constData())) != 0;
+    return hunspell->spell(std::string(codec->fromUnicode(word).constData())) != 0;
 }
 
 
 QStringList SpellChecker::suggest(const QString &word)
 {
     // Encode from Unicode to the encoding used by current dictionary
-    std::vector<std::string> numSuggestions = instance_hunspell->suggest(std::string(codec->fromUnicode(word).constData()));
+    std::vector<std::string> numSuggestions = hunspell->suggest(std::string(codec->fromUnicode(word).constData()));
     QVector<std::string> vectorWithStdString = QVector<std::string>::fromStdVector(numSuggestions);
     QList<std::string> listWithStdString = QList<std::string>::fromVector(vectorWithStdString);
     QStringList suggestions = QStringList();
@@ -128,29 +122,22 @@ QStringList SpellChecker::suggest(const QString &word)
 }
 
 
-void SpellChecker::ignoreWord(const QString &word)
-{
-    put_word(word);
+void SpellChecker::addWordToIgnoreList(const QString &word) {
+    hunspell->add(std::string(codec->fromUnicode(word).constData()));
 }
 
 
-void SpellChecker::put_word(const QString word){
-    instance_hunspell->add(std::string(codec->fromUnicode(word).constData()));
-    return;
-}
+void SpellChecker::addToUserWordList(const QString &word) {
+    addWordToIgnoreList(word);
 
-
-void SpellChecker::addToUserWordlist(const QString &word)
-{
-    put_word(word);
-    if(!UserDictionary.isEmpty()) {
-        QFile userDictonaryFile(UserDictionary);
-        if(userDictonaryFile.open(QIODevice::Append)) {
-            QTextStream stream(&userDictonaryFile);
+    if (!userDictionary.isEmpty()) {
+        QFile userDictionaryFile(userDictionary);
+        if (userDictionaryFile.open(QIODevice::Append)) {
+            QTextStream stream(&userDictionaryFile);
             stream << word << "\n";
-            userDictonaryFile.close();
+            userDictionaryFile.close();
         } else {
-            qWarning() << "User dictionary in " << UserDictionary << "could not be opened for appending a new word";
+            qWarning() << "User dictionary in " << userDictionary << "could not be opened for appending a new word";
         }
     } else {
         qDebug() << "User dictionary not set.";

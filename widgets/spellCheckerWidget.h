@@ -22,7 +22,8 @@ class SpellCheckerWidget : public QDialog {
 Q_OBJECT
 
 public:
-    explicit SpellCheckerWidget(QString dictionnaire, QWidget *parent = 0);
+    explicit SpellCheckerWidget(const QString &dictionaryName, QWidget *parent = nullptr);
+
     ~SpellCheckerWidget() override;
     void showWindow(QTextEdit *contenu);
     QStringList getListSkip(bool definitive = false);
@@ -59,7 +60,7 @@ private:
     QStringList list_skip;
     QStringList list_skip_definitively;
     QString word;
-    QString dicoActuel;
+    QString currentDictionary;
 
 signals:
     void langueChangee();

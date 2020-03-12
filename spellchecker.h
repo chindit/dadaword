@@ -39,26 +39,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Hunspell;
 
-class SpellChecker : public QObject{
+class SpellChecker : public QObject {
 
-   Q_OBJECT
+Q_OBJECT
 
 public:
-    SpellChecker(const QString &dictionaryPath, const QString &userDictionary);
-    ~SpellChecker();
+    SpellChecker(const QString &dictionaryPath, const QString &userDictionaryPath);
+
+    ~SpellChecker() override;
 
     bool spell(const QString &word);
+
     QStringList suggest(const QString &word);
-    void ignoreWord(const QString &word);
-    void addToUserWordlist(const QString &word);
-    QString replacement() const;
+
+    void addToUserWordList(const QString &word);
 
 private:
-    void put_word(const QString word);
-    Hunspell *instance_hunspell;
-    QString UserDictionary;
-    QString encodage;
-    QString dictionnaire_standard;
+    void addWordToIgnoreList(const QString &word);
+
+    Hunspell *hunspell;
+    QString userDictionary;
     QTextCodec *codec;
 };
 

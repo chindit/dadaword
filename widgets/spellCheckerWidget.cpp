@@ -1,18 +1,18 @@
 #include "spellCheckerWidget.h"
 #include "ui_spellCheckerWidget.h"
 
-SpellCheckerWidget::SpellCheckerWidget(QString dictionnaire, QWidget *parent) : QDialog(parent),
-                                                                                ui(new Ui::SpellCheckerWidget) {
-    QString dictPath;
-    dicoActuel = dictionnaire;
-    settings = new SettingsManager;
+SpellCheckerWidget::SpellCheckerWidget(const QString &dictionaryName, QWidget *parent) : QDialog(parent),
+                                                                                         ui(new Ui::SpellCheckerWidget) {
+    QString dictionaryPath;
+    currentDictionary = dictionaryName;
 
+    // TODO Check/rework WIN part (and update dicts)
+#ifdef Q_OS_WIN
     QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
     QString repertoire = dossiers.first();
-#ifdef Q_OS_WIN
     ErrorManager erreur;
-    dictPath = repertoire+"/hunspell/"+dictionnaire;
-    QFile test_dico(dictPath+".dic");
+    dictionaryPath = repertoire+"/hunspell/"+dictionaryName;
+    QFile test_dico(dictionaryPath+".dic");
     if(!test_dico.exists()){
         //On téléchage les dicos
         int qdown = QMessageBox::question(this, tr("Téléchargement des dictionnaires"), tr("Les dictionnaires pour la correction orthographique n'ont pas étés détectés.<br />Voulez-vous les télécharger?<br /><b>N.B.</b>L'absence des dictionnaires rendra la correction orthographique inopérante"), QMessageBox::Yes | QMessageBox::No);
@@ -72,17 +72,17 @@ SpellCheckerWidget::SpellCheckerWidget(QString dictionnaire, QWidget *parent) : 
             }
         }
     }
-    #else
-        dictPath = "/usr/share/hunspell/"+dictionnaire;
-    #endif
+#else
+    dictionaryPath = "/usr/share/hunspell/" + dictionaryName;
+#endif
 
-    //Vérification des liens symboliques
-    QFileInfo testDico(dictPath);
-    if(testDico.isSymLink())
-        dictPath = testDico.symLinkTarget();
+    //Check if dictionary exists at system level
+    QFileInfo dictionaryFileInfo(dictionaryPath);
+    if (dictionaryFileInfo.isSymLink()) {
+        dictionaryPath = dictionaryFileInfo.symLinkTarget();
+    }
 
-    //Création de l'instance du correcteur
-    correcteur = new SpellChecker(dictPath, this->setUserDict());
+    correcteur = new SpellChecker(dictionaryPath, this->setUserDict());
 }
 
 SpellCheckerWidget::~SpellCheckerWidget() {
@@ -245,10 +245,10 @@ void SpellCheckerWidget::ignore(QString mot) {
 //Ajoute un mot au dictionnaire
 void SpellCheckerWidget::addDico(QString mot) {
     if (!mot.isEmpty()) {
-        correcteur->addToUserWordlist(mot);
+        correcteur->addToUserWordList(mot);
     } else {
         if (!word.isEmpty() && !word.isNull()) {
-            correcteur->addToUserWordlist(word);
+            correcteur->addToUserWordList(word);
             checkWord();
         }
     }
@@ -474,17 +474,17 @@ void SpellCheckerWidget::setDico(QString langue) {
     dossier.setPath("/usr/share/hunspell/");
 #endif
     //On met à jour le dico
-    if(dicoActuel != nouvelleLangue){
-        dicoActuel = dossier.path()+"/"+nouvelleLangue+".dic";
+    if (currentDictionary != nouvelleLangue) {
+        currentDictionary = dossier.path() + "/" + nouvelleLangue + ".dic";
         //Vérification des liens symboliques
-        QFileInfo testDico(dicoActuel);
-        if(testDico.isSymLink())
-            dicoActuel = testDico.symLinkTarget();
+        QFileInfo testDico(currentDictionary);
+        if (testDico.isSymLink())
+            currentDictionary = testDico.symLinkTarget();
 
         //On re-déclare le correcteur
         delete correcteur;
 
-        correcteur = new SpellChecker(dicoActuel, this->setUserDict());
+        correcteur = new SpellChecker(currentDictionary, this->setUserDict());
         emit langueChangee();
     }
     return;
@@ -492,7 +492,7 @@ void SpellCheckerWidget::setDico(QString langue) {
 
 //Renvoie le dictionnaire actuellement utilisé (chemin absolu)
 QString SpellCheckerWidget::getDico() {
-    return dicoActuel;
+    return currentDictionary;
 }
 
 //Établi le chemin vers le dictionnaire personnel selon l'OS
