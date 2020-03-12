@@ -44,9 +44,6 @@ int main(int argc, char *argv[])
 
     DadaWord mainWindow;
 
-    // Creating UI
-    mainWindow.createUI();
-
     // Display
     mainWindow.show();
     screen.finish(&mainWindow);

@@ -23,27 +23,17 @@ Q_OBJECT
 
 public:
     explicit SpellCheckerWidget(QString dictionnaire, QWidget *parent = 0);
-
     ~SpellCheckerWidget() override;
-
     void showWindow(QTextEdit *contenu);
-
     QStringList getListSkip(bool definitive = false);
-
     bool isCorrectWord(QString word);
-
     QStringList getSuggestList(QString word);
-
     void setTextCursor(QTextCursor cursor);
-
     QString getDico();
-
     static QStringList
     getDicos(); //Comme son nom l'indique, cette fonction retourne TOUS les dictionnaires disponibles et pas seulement l'actuel
     void checkAll(QTextEdit *contenu);
-
     void setMotsIgnores(QStringList liste);
-
     static bool initPersonalDictionary();
 
 public slots:
@@ -66,7 +56,6 @@ private:
     Ui::SpellCheckerWidget *ui;
     SpellChecker *correcteur;
     QTextCursor pos_orth;
-    QTextEdit *copyEdit;
     QStringList list_skip;
     QStringList list_skip_definitively;
     QString word;

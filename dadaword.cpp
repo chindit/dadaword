@@ -11,6 +11,7 @@
 DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     //Constructeur vide pour permettre la création d'instances DadaWord
     //On initialise tout de même type_liste par sécurité
+    // TODO Move and rename
     type_liste = "";
     lastDir = "";
 
@@ -27,7 +28,7 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
         erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Warning);
     }
     if (!SpellCheckerWidget::initPersonalDictionary()) {
-        erreur->Erreur_msg(tr("Unable to create personal dictionnary"), QMessageBox::Warning);
+        erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Warning);
     }
 
     //Initialisation du thème
@@ -47,6 +48,7 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     timer_save->start();
     QObject::connect(timer_save, SIGNAL(timeout()), this, SLOT(autoSave()));
 
+    this->createUI();
 }
 
 //Destructeur
