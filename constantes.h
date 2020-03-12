@@ -38,7 +38,7 @@ enum { GAUCHE, DROITE };
 //Énumérations pour l'interligne
 enum { INT_AUTRE };
 
-//Énumérations pour l'encoding
+//Énumérations pour l'encodage
 enum { UTF8, LATIN1 };
 
 //Énumération pour les settings
