@@ -6,7 +6,7 @@ OrthManager::OrthManager(QString dictionnaire, QWidget *parent) : QDialog(parent
     dicoActuel = dictionnaire;
     settings = new SettingsManager;
 
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString repertoire = dossiers.first();
     #ifdef Q_OS_WIN
         ErrorManager erreur;
@@ -455,7 +455,7 @@ void OrthManager::setDico(QString langue){
     QString nouvelleLangue = (langue.isEmpty()) ? liste->currentText() : langue;
     QDir dossier;
 #ifdef Q_OS_WIN
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString repertoire = dossiers.first();
     dossier.setPath(repertoire+"/hunspell/");
 #else
@@ -561,7 +561,7 @@ void OrthManager::setMotsIgnores(QStringList liste){
 QStringList OrthManager::getDicos(){
     QDir dossier;
 #ifdef Q_OS_WIN
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString repertoire = dossiers.first();
     dossier.setPath(repertoire+"/hunspell/");
 #else

@@ -6,7 +6,7 @@
 
 QT       += core gui \
             xml widgets \
-	    network printsupport
+            network printsupport
 
 TARGET = dadaword
 #TARGET.path = $$PREFIX/
@@ -68,7 +68,7 @@ win32 {
 TRANSLATIONS = dadaword_es.ts
 #CODECFORTR = UTF-8
 
-INCLUDEPATH += /usr/include/qt5
+INCLUDEPATH += /usr/include/qt6
 
 FORMS += \
     orthManager.ui \

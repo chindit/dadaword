@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QString>
 #include <QApplication>
+#include <QRegularExpression>
 
 class Hunspell;
 
@@ -59,7 +60,6 @@ private:
     QString UserDictionary;
     QString encodage;
     QString dictionnaire_standard;
-    QTextCodec *codec;
 };
 
 #endif // SPELLCHECKER_H

@@ -43,7 +43,7 @@ void ErrorManager::Erreur_msg(QString msg, int etat){
     //1)Inscription dans le log
     //On stocke dans le fichier de log
     //Emplacement du fichier de LOG
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString place_log = dossiers.first();
     place_log.append("/dadaword.log");
     QFile fichier(place_log);

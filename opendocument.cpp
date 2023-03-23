@@ -935,8 +935,8 @@ bool OpenDocument::traite_image(QTextCursor &curseur, QDomElement e, QString nom
         image.loadFromData(reponse->readAll());
         QString ext = url_image.toString();
         ext = ext.remove(0, (ext.size()-4));
-        qsrand(QDateTime::currentDateTime ().toTime_t ());
-        file = QDir::tempPath()+QDir::separator()+QString::number(qrand())+".png";
+        srand(QDateTime::currentDateTime ().currentSecsSinceEpoch());
+        file = QDir::tempPath()+QDir::separator()+QString::number(rand())+".png";
         if(!image.isNull()){
             if(!image.save(file, "PNG")){
                 //!sauvegarde

@@ -270,8 +270,7 @@ void Outils::fenetre_config(){
     layoutRaccourcis->addWidget(racc_new, 5, 2);
     layoutRaccourcis->addWidget(lr_new, 5, 3);
 
-
-    configure_fen->move((QApplication::desktop()->width() - configure_fen->width())/2, (QApplication::desktop()->height() - configure_fen->height())/2);
+    configure_fen->move(QGuiApplication::screens().first()->availableGeometry().center());
     configure_fen->show();
     return;
 }
@@ -347,7 +346,7 @@ void Outils::affiche_log(){
     clean_log->setToolTip(tr("Ne laisse que les dix dernières entrées dans le fichier le log"));
 
     //Remplissage du text edit
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString place_log = dossiers.first();
     place_log.append("/dadaword.log");;
     QFile fichier(place_log);
@@ -377,7 +376,7 @@ void Outils::affiche_log(){
     connect(clean_log, SIGNAL(clicked()), this, SLOT(clean_log()));
 
     //Affichage de la fenêtre
-    log_fen->move((QApplication::desktop()->width() - log_fen->width())/2, (QApplication::desktop()->height() - log_fen->height())/2);
+    log_fen->move(QGuiApplication::screens().first()->availableGeometry().center());
     log_fen->show();
     return;
 }
@@ -398,7 +397,7 @@ bool Outils::clean_log(){
     }
 
     //Calcul des lignes restantes
-    QStringList liste_erreurs = contenu.split("\n", QString::SkipEmptyParts);
+    QStringList liste_erreurs = contenu.split("\n", Qt::SkipEmptyParts);
     if(liste_erreurs.size() <= ITEMS_LOG){
         //On ne fait rien, il n'y a pas assez de données dans le fichier de log
         return true;

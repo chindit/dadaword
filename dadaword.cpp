@@ -26,38 +26,38 @@ DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     connect(listFiles, SIGNAL(fileChanged(QString)), this, SLOT(changeDetected(QString)));
 
     //On regarde si le dossier de config existe
-    QDir dir_dossier(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+    QDir dir_dossier(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 
     if(!dir_dossier.exists()){
-        if(!dir_dossier.mkdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation))){
+        if(!dir_dossier.mkdir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation))){
             erreur->Erreur_msg(tr("Impossible de créer le dossier de configuration"), QMessageBox::Information);
         }
         else{
             //On crée un fichier vide
-            QFile dico_perso(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/perso.dic");
+            QFile dico_perso(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/perso.dic");
             if(dico_perso.open(QFile::WriteOnly)) {
                 dico_perso.close();
             }
             else{
                 erreur->Erreur_msg(tr("Impossible de créer le dictionnaire personnel"), QMessageBox::Information);
             }
-            QDir dir_autosave(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave");
+            QDir dir_autosave(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/autosave");
             if(!dir_autosave.exists()){
-                dir_autosave.mkdir(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave");
+                dir_autosave.mkdir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/autosave");
             }
         }
     }
 
     //Initialisation du thème
     QStringList locateThemes;
-    locateThemes << QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/icons" << QIcon::themeSearchPaths();
+    locateThemes << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/icons" << QIcon::themeSearchPaths();
     QIcon::setThemeSearchPaths(locateThemes);
     QIcon::setThemeName(settings->getSettings(Theme).toString());
 
     //Initialisation du correcteur
     orthographe = new OrthManager(settings->getSettings(Dico).toString(), this);
 
-    qsrand(QDateTime::currentDateTime().toTime_t());
+    srand(QDateTime::currentDateTime().toSecsSinceEpoch());
     //On crée le timer pour enregistrer automatiquement le fichier
     QTimer *timer_save = new QTimer;
     timer_save->setSingleShot(false); //Timer répétitif
@@ -337,11 +337,11 @@ void DadaWord::printPreview(){
         return;
     }
     QPrinter printer;
-    printer.setPaperSize(QPrinter::A4);
+    printer.setPageSize(QPageSize::A4);
     if(settings->getSettings(Word).toBool()){
-        printer.setPageMargins(0, 0, 0, 0, QPrinter::Pica);
+        printer.setPageMargins(QMargins(0, 0, 0, 0), QPageLayout::Pica);
     }
-    printer.setOrientation(QPrinter::Portrait);
+    printer.setPageOrientation(QPageLayout::Portrait);
     QPrintPreviewDialog *pd = new QPrintPreviewDialog(&printer);
     connect(pd,SIGNAL(paintRequested(QPrinter*)),this,SLOT(print(QPrinter*)));
     pd->exec();
@@ -368,7 +368,7 @@ void DadaWord::imprimer(){
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
     //On imprime que la sélection
     if(find_edit()->textCursor().hasSelection()){
-        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+        dlg->setOption(QAbstractPrintDialog::PrintSelection);
     }
     dlg->setWindowTitle(tr("Imprimer le document"));
     if(dlg->exec() == QDialog::Accepted){
@@ -438,7 +438,7 @@ void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
             }
             else{
                 QDateTime temps;
-                nom_fichier = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave/DDWubIntMs"+QString::number(temps.toTime_t())+".ddz";
+                nom_fichier = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/autosave/DDWubIntMs"+QString::number(temps.toSecsSinceEpoch())+".ddz";
             }
         }
 
@@ -524,7 +524,7 @@ void DadaWord::save(QMdiSubWindow* fenetre_active, bool saveas, bool autosave){
             nom_fichier = fenetre_temp->accessibleDescription();
         }
         else{
-            nom_fichier = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/autosave/"+fenetre_temp->accessibleDescription().split("/").last();
+            nom_fichier = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/autosave/"+fenetre_temp->accessibleDescription().split("/").last();
         }
         if(extensions_style.contains(QFileInfo(nom_fichier).completeSuffix()) && !nom_fichier.endsWith(".odt", Qt::CaseInsensitive)){ //Tout le style sauf l'ODT
             contenu_fichier = edit_temp->toHtml();
@@ -764,7 +764,7 @@ void DadaWord::openFile(const QString &fichier, bool autosave){
     }
     //Gestions des fichiers en mode texte simple
     else if(file.open(QFile::ReadOnly)){
-        if(file.size() > (2*1024*1024) && settings->getSettings(Alertes).toBool() == HIGH){
+        if(file.size() > (2*1024*1024) && settings->getSettings(Alertes) == HIGH){
             QMessageBox::warning(this, tr("Fichier imposant"), tr("Le fichier que vous allez ouvrir est d'une grande taille.  Il se peut que vous notiez des ralentissements dans DadaWord jusqu'à sa fermeture."));
         }
         contenu = file.readAll();
@@ -844,8 +844,8 @@ void DadaWord::openFile(const QString &fichier, bool autosave){
         find_edit()->setAcceptRichText(true);
         find_edit()->insertHtml(contenu);
         //Actualisation du dictionnaire
-        QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
-        if((nom_fichier.endsWith(".ddz", Qt::CaseInsensitive)) && retour.at(1) != "default" && is_dico.exactMatch(retour.at(1))){
+        QRegularExpression is_dico("^[a-z]{2}_[A-Z]{2}$");
+        if((nom_fichier.endsWith(".ddz", Qt::CaseInsensitive)) && retour.at(1) != "default" && is_dico.match(retour.at(1)).hasMatch()){
             //Normalement on ne doit pas vérifier le dico, mais on n'est jamais trop prudent
             orthographe->setDico(retour.at(1));
         }
@@ -2096,10 +2096,10 @@ void DadaWord::openTab(bool fichier, QString titre){
         zone_document_onglet = new QMdiSubWindow;
         zone_centrale->addSubWindow(zone_document_onglet);
         QPrinter printer(QPrinter::HighResolution);
-        printer.setPaperSize(QPrinter::A4);
-        document_onglet->setMaximumHeight((printer.paperSize(QPrinter::Point)).toSize().rheight()+MARGIN_WORD);
-        document_onglet->setMinimumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
-        document_onglet->setMaximumWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()+MARGIN_WORD+TAMPON_WORD);
+        printer.setPageSize(QPageSize::A4);
+        document_onglet->setMaximumHeight(printer.pageLayout().pageSize().size(QPageSize::Point).rheight()+MARGIN_WORD);
+        document_onglet->setMinimumWidth(printer.pageLayout().pageSize().size(QPageSize::Point).rwidth()+MARGIN_WORD+TAMPON_WORD);//Addition d'un tampon parce qu'on est pas tout à fait juste
+        document_onglet->setMaximumWidth(printer.pageLayout().pageSize().size(QPageSize::Point).rwidth()+MARGIN_WORD+TAMPON_WORD);
         QVBoxLayout *layout_horizontal = new QVBoxLayout;
         QScrollArea *widget = new QScrollArea; //Sert juste pour le layout
         layout_horizontal->addWidget(document_onglet, 0, Qt::AlignHCenter);
@@ -2187,8 +2187,9 @@ QTextEdit* DadaWord::find_edit(){
 
 //Si on change d'onglet actif, il faut mettre à jour les menus
 void DadaWord::changement_focus(QMdiSubWindow *fenetre_activee){
-
-
+    if (fenetre_activee == nullptr) {
+        return;
+    }
     QTextEdit *text_edit_temp = fenetre_activee->findChild<QTextEdit *>();
     if(text_edit_temp != 0){
         //Mise à jour des paramètres dans le menu
@@ -2481,17 +2482,17 @@ void DadaWord::add_image(){
     if(settings->getSettings(Word).toBool()){
         QImage image(chemin_image);
         QPrinter printer(QPrinter::HighResolution);
-        printer.setPaperSize(QPrinter::A4);
-        if(image.width() > (printer.paperSize(QPrinter::Point)).toSize().rwidth()){
-            image = image.scaledToWidth((printer.paperSize(QPrinter::Point)).toSize().rwidth()-60, Qt::FastTransformation);
+        printer.setPageSize(QPageSize::A4);
+        if(image.width() > (printer.pageLayout().pageSize().size(QPageSize::Point).rwidth())){
+            image = image.scaledToWidth((printer.pageLayout().pageSize().size(QPageSize::Point).rwidth()-60), Qt::FastTransformation);
             QString extention = chemin_image.split(".").last();
-            chemin_image = "/tmp/"+QString::number(qrand())+"."+extention;
+            chemin_image = "/tmp/"+QString::number(rand())+"."+extention;
             image.save(chemin_image);
         }
-        if(image.height() > (printer.paperSize(QPrinter::Point)).toSize().rheight()){
-            image = image.scaledToWidth((printer.paperSize(QPrinter::Point)).toSize().rheight()-60, Qt::FastTransformation);
+        if(image.height() > (printer.pageLayout().pageSize().size(QPageSize::Point).rheight())){
+            image = image.scaledToWidth((printer.pageLayout().pageSize().size(QPageSize::Point).rheight()-60), Qt::FastTransformation);
             QString extention = chemin_image.split(".").last();
-            chemin_image = "/tmp/"+QString::number(qrand())+"."+extention;
+            chemin_image = "/tmp/"+QString::number(rand())+"."+extention;
             image.save(chemin_image);
         }
     }
@@ -3638,13 +3639,13 @@ void DadaWord::saveAll(){
 
 //Fonction de changement d'encodage
 void DadaWord::changeEncode(int encodage){
-    if(encodage == LATIN1){    
+    /*if(encodage == LATIN1){
         QByteArray temp = find_edit()->toHtml().toLatin1();
         QTextCodec *codec;
         codec = QTextCodec::codecForLocale();
         find_edit()->clear();
         find_edit()->setHtml(codec->toUnicode(temp));
-    }
+    }*/
     return;
 }
 

@@ -37,7 +37,6 @@
 #include <QSpinBox>
 #include <QStandardPaths>
 #include <QStatusBar>
-#include <QTextCodec>
 #include <QTextDocumentWriter>
 #include <QTextEdit>
 #include <QTextList>

@@ -24,9 +24,7 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
     nom_fichier.remove(nom_fichier.size()-4, nom_fichier.size()).append(".ddw");
 
 
-    QByteArray array_contenu;
-    array_contenu.append(contenu);
-    ddz_global.addFile(nom_fichier, array_contenu);
+    ddz_global.addFile(nom_fichier, contenu.toUtf8());
 
     //On regarde s'il y avait des images
     int nb_images = contenu.count("<img src=");
@@ -34,13 +32,13 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
     //Il y a des images, on rentre dans la boucle
     if(nb_images > 0){
         //Définition de la RegExp
-        QRegExp regexp_images("<img[^>]*src=\"([^\"]*)");
+        QRegularExpression regexp_images("<img[^>]*src=\"([^\"]*)");
 
         //Récupération des images
         int pos = 0; QStringList list;
-        while ((pos = regexp_images.indexIn(contenu, pos)) != -1){
-            list << regexp_images.cap(1);
-            pos += regexp_images.matchedLength();
+        QRegularExpressionMatch match = regexp_images.match(contenu);
+        for (int i = 0; i <= match.lastCapturedIndex(); ++i) {
+            list << match.captured(i);
         }
 
         if(nb_images != list.size()){
@@ -96,9 +94,7 @@ bool DDZ::enregistre(QString fichier, QString contenu, QString langue, QStringLi
     preferences.appendChild(xmlConfig);
     QDomNode noeud = preferences.createProcessingInstruction("xml","version=\"1.0\"");
     preferences.insertBefore(noeud, preferences.firstChild());
-    QByteArray array_prefs;
-    array_prefs.append(preferences.toString());
-    ddz_global.addFile("config.xml", array_prefs);
+    ddz_global.addFile("config.xml", preferences.toByteArray());
 
     //On ferme tout
     ddz_global.close();
@@ -149,13 +145,13 @@ QStringList DDZ::ouvre(QString nom){
     //Il y a des images, on rentre dans la boucle
     if(nb_images > 0){
         //Définition de la RegExp
-        QRegExp regexp_images("<img[^>]*src=\"([^\"]*)");
+        QRegularExpression regexp_images("<img[^>]*src=\"([^\"]*)");
+        QStringList list = QStringList();
 
         //Récupération des images
-        int pos = 0; QStringList list;
-        while ((pos = regexp_images.indexIn(contenu, pos)) != -1){
-            list << regexp_images.cap(1);
-            pos += regexp_images.matchedLength();
+        QRegularExpressionMatch match = regexp_images.match(contenu);
+        for (int i = 0; i <= match.lastCapturedIndex(); ++i) {
+            list << match.captured(i);
         }
 
         if(nb_images != list.size()){
@@ -198,8 +194,8 @@ QString *erreur = new QString;int *er1 =new int;int *er2 = new int;
     QDomNodeList langue = racine.elementsByTagName("langue");
     if(!langue.isEmpty()){
         QString Slangue = langue.at(0).toElement().text();
-        QRegExp is_dico("^[a-z]{2}_[A-Z]{2}$");
-        if(is_dico.exactMatch(Slangue)){
+        QRegularExpression is_dico("^[a-z]{2}_[A-Z]{2}$");
+        if(is_dico.match(Slangue).hasMatch()){
             retour.append(Slangue);
         }
         else{

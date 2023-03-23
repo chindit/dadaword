@@ -15,7 +15,7 @@ autoLoad::~autoLoad(){
 }
 
 bool autoLoad::hasFilesNames(){
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString dossier = dossiers.first();
     dossier.append("/autosave");
     QDir autosave(dossier);
@@ -59,7 +59,7 @@ void autoLoad::showFiles(){
 }
 
 QStringList autoLoad::getFilesNames(){
-    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    QStringList dossiers = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     QString dossier = dossiers.first();
     dossier.append("/autosave/");
     QStringList filesToRestore;

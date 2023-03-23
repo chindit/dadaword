@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QFile>
 #include <QTextStream>
-#include <QTextCodec>
 #include <QStringList>
 #include <QVector>
 #include <QDebug>
@@ -69,18 +68,15 @@ SpellChecker::SpellChecker(const QString &dictionaryPath, const QString &userDic
     QFile _affixFile(affixFile);
     if (_affixFile.open(QIODevice::ReadOnly)) {
         QTextStream stream(&_affixFile);
-        QRegExp enc_detector("^\\s*SET\\s+([A-Z0-9\\-]+)\\s*", Qt::CaseInsensitive);
+        QRegularExpression enc_detector("^\\s*SET\\s+([A-Z0-9\\-]+)\\s*");
         for(QString line = stream.readLine(); !line.isEmpty(); line = stream.readLine()) {
-            if (enc_detector.indexIn(line) > -1) {
-                encodage = enc_detector.cap(1);
-                instance_erreur.Erreur_msg(tr("Encodage par défaut : ") + encodage, QMessageBox::Ignore);
+            if (enc_detector.match(line).capturedLength() > 0) {
+                instance_erreur.Erreur_msg(tr("Encodage par défaut : ") + enc_detector.match(line).captured(), QMessageBox::Ignore);
                 break;
             }
         }
         _affixFile.close();
     }
-    codec = QTextCodec::codecForName(this->encodage.toLatin1().constData());
-
     if(!UserDictionary.isEmpty()){
         QFile userDictonaryFile(UserDictionary);
         if(userDictonaryFile.open(QIODevice::ReadOnly)){
@@ -108,15 +104,15 @@ SpellChecker::~SpellChecker()
 bool SpellChecker::spell(const QString &word)
 {
     // Encode from Unicode to the encoding used by current dictionary
-    return instance_hunspell->spell(std::string(codec->fromUnicode(word).constData())) != 0;
+    return instance_hunspell->spell(word.toStdString()) != 0;
 }
 
 
 QStringList SpellChecker::suggest(const QString &word)
 {
     // Encode from Unicode to the encoding used by current dictionary
-    std::vector<std::string> numSuggestions = instance_hunspell->suggest(std::string(codec->fromUnicode(word).constData()));
-    QVector<std::string> vectorWithStdString = QVector<std::string>::fromStdVector(numSuggestions);
+    std::vector<std::string> numSuggestions = instance_hunspell->suggest(word.toStdString());
+    QVector<std::string> vectorWithStdString = QVector<std::string>(numSuggestions.begin(), numSuggestions.end());
     QList<std::string> listWithStdString = QList<std::string>::fromVector(vectorWithStdString);
     QStringList suggestions = QStringList();
     QList<std::string>::iterator i;
@@ -135,7 +131,7 @@ void SpellChecker::ignoreWord(const QString &word)
 
 
 void SpellChecker::put_word(const QString word){
-    instance_hunspell->add(std::string(codec->fromUnicode(word).constData()));
+    instance_hunspell->add(word.toStdString());
     return;
 }
 
