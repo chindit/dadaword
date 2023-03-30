@@ -13,7 +13,7 @@ OrthManager *orthographe;
 DadaWord::DadaWord(QWidget *parent) : QMainWindow(parent){
     //Constructeur vide pour permettre la création d'instances DadaWord
     //On initialise tout de même type_liste par sécurité
-    type_liste = "";
+    listType = "";
     lastDir = "";
 
     //Initialisation des dicos
@@ -1007,12 +1007,12 @@ void DadaWord::createList(const int ordonne){
                 return;
             }
             //Si on est ici, c'est qu'il n'y a pas eu de bugs.  Donc, on enregistre le type de liste dans "type_liste"
-            type_liste = choix;
+            listType = choix;
         }
         else{
             liste_puce.setStyle(QTextListFormat::ListDisc);
             //On oublie pas de mettre à jour type_liste pour ne pas avoir de problèmes
-            type_liste = "";
+            listType = "";
         }
         curseur.beginEditBlock();
         curseur.createList(liste_puce);
@@ -1260,19 +1260,19 @@ bool DadaWord::desincrementList(){
     curseur.movePosition(QTextCursor::NextBlock);
 
     //Type de liste
-    if(type_liste == "QTextListFormat::ListDecimal"){
+    if(listType == "QTextListFormat::ListDecimal"){
         liste_puce.setStyle(QTextListFormat::ListDecimal);
     }
-    else if(type_liste == "QTextListFormat::ListLowerAlpha"){
+    else if(listType == "QTextListFormat::ListLowerAlpha"){
         liste_puce.setStyle(QTextListFormat::ListLowerAlpha);
     }
-    else if(type_liste == "QTextListFormat::ListUpperAlpha"){
+    else if(listType == "QTextListFormat::ListUpperAlpha"){
         liste_puce.setStyle(QTextListFormat::ListUpperAlpha);
     }
-    else if(type_liste == "QTextListFormat::ListLowerRoman"){
+    else if(listType == "QTextListFormat::ListLowerRoman"){
         liste_puce.setStyle(QTextListFormat::ListLowerRoman);
     }
-    else if(type_liste == "QTextListFormat::ListUpperRoman"){
+    else if(listType == "QTextListFormat::ListUpperRoman"){
         liste_puce.setStyle(QTextListFormat::ListUpperRoman);
     }
     else{
@@ -1309,19 +1309,19 @@ void DadaWord::incrementList(){
     curseur.beginEditBlock();
     curseur.movePosition(QTextCursor::NextBlock);
 
-    if(type_liste == "QTextListFormat::ListDecimal"){
+    if(listType == "QTextListFormat::ListDecimal"){
         liste_puce.setStyle(QTextListFormat::ListDecimal);
     }
-    else if(type_liste == "QTextListFormat::ListLowerAlpha"){
+    else if(listType == "QTextListFormat::ListLowerAlpha"){
         liste_puce.setStyle(QTextListFormat::ListLowerAlpha);
     }
-    else if(type_liste == "QTextListFormat::ListUpperAlpha"){
+    else if(listType == "QTextListFormat::ListUpperAlpha"){
         liste_puce.setStyle(QTextListFormat::ListUpperAlpha);
     }
-    else if(type_liste == "QTextListFormat::ListLowerRoman"){
+    else if(listType == "QTextListFormat::ListLowerRoman"){
         liste_puce.setStyle(QTextListFormat::ListLowerRoman);
     }
-    else if(type_liste == "QTextListFormat::ListUpperRoman"){
+    else if(listType == "QTextListFormat::ListUpperRoman"){
         liste_puce.setStyle(QTextListFormat::ListUpperRoman);
     }
     else{
@@ -1351,7 +1351,7 @@ void DadaWord::create_menus(){
     nouveau_document->setIcon(QIcon::fromTheme("document-new", QIcon(":/menus/images/nouveau.png")));
     nouveau_document->setShortcut(QKeySequence(settings->getSettings(RNouveau).toString()));
     nouveau_document->setStatusTip(tr("Créer un nouveau document"));
-    connect(nouveau_document, SIGNAL(triggered()), this, SLOT(openTab()));
+    connect(nouveau_document, &QAction::triggered, [this](){ openTab(); });
 
     QAction *menu_openFile = menu_fichier->addAction(tr("Ouvrir un fichier"));
     menu_openFile->setIcon(QIcon::fromTheme("document-open", QIcon(":/menus/images/fileopen.png")));
@@ -1365,15 +1365,13 @@ void DadaWord::create_menus(){
         menu_recents->setEnabled(false);
     }
     else{
-        QAction *action_ouverts[recemment_ouverts.size()];
+        QAction* action_ouverts[recemment_ouverts.size()];
         for(int i=0; i<recemment_ouverts.size(); i++){
             QString temp = recemment_ouverts.at(i);
             if(!temp.isEmpty() && !temp.isNull()){
                 action_ouverts[i] = menu_recents->addAction(temp.split("/").last());
-                QSignalMapper *mappeur_string = new QSignalMapper;
-                connect(action_ouverts[i], SIGNAL(triggered()), mappeur_string, SLOT(map()));
-                mappeur_string->setMapping(action_ouverts[i], recemment_ouverts.at(i));
-                connect(mappeur_string, SIGNAL(mapped(const QString &)), this, SLOT(openFile(const QString &)));
+                QString text = recemment_ouverts.at(i);
+                connect(action_ouverts[i], &QAction::triggered, [this, text] { openFile(text); });
             }
             else{
                 erreur->Erreur_msg(tr("Erreur lors de la génération des fichiers récents; des items vides ont été trouvés"), QMessageBox::Information);
@@ -1517,34 +1515,25 @@ void DadaWord::create_menus(){
     alignement_gauche->setToolTip(tr("Aligner le texte à gauche (écritures latines)"));
     alignement_gauche->setIcon(QIcon::fromTheme("format-justify-left", QIcon(":/menus/images/format_gauche.png")));
     alignement_gauche->setShortcut(QKeySequence("Ctrl+Shift+G"));
-    QSignalMapper *mappeur_alignement = new QSignalMapper;
-    connect(alignement_gauche, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
-    mappeur_alignement->setMapping(alignement_gauche, Qt::AlignLeft);
-    connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
+    connect(alignement_gauche, &QAction::triggered, [this]{ change_align(Qt::AlignLeft); });
 
     QAction *alignement_centre = alignement->addAction(tr("Centré"));
     alignement_centre->setToolTip(tr("Texte centré"));
     alignement_centre->setIcon(QIcon::fromTheme("format-justify-center", QIcon(":/menus/images/format_centre.png")));
     alignement_centre->setShortcut(QKeySequence("Ctrl+Shift+C"));
-    connect(alignement_centre, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
-    mappeur_alignement->setMapping(alignement_centre, Qt::AlignCenter);
-    connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
+    connect(alignement_centre, &QAction::triggered, [this]{ change_align(Qt::AlignCenter); });
 
     QAction *alignement_droit = alignement->addAction(tr("Droite"));
     alignement_droit->setToolTip(tr("Alignement à droite (écritures orientales)"));
     alignement_droit->setIcon(QIcon::fromTheme("format-justify-right", QIcon(":/menus/images/format_droite.png")));
     alignement_droit->setShortcut(QKeySequence("Ctrl+Shift+D"));
-    connect(alignement_droit, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
-    mappeur_alignement->setMapping(alignement_droit, Qt::AlignRight);
-    connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
+    connect(alignement_droit, &QAction::triggered, [this]{ change_align(Qt::AlignRight); });
 
     QAction *alignement_justifie = alignement->addAction(tr("Justifié"));
     alignement_justifie->setToolTip(tr("Justifié (sans marges)"));
     alignement_justifie->setIcon(QIcon::fromTheme("format-justify-fill", QIcon(":/menus/images/format_justifie.png")));
     alignement_justifie->setShortcut(QKeySequence("Ctrl+Shift+J"));
-    connect(alignement_justifie, SIGNAL(triggered()), mappeur_alignement, SLOT(map()));
-    mappeur_alignement->setMapping(alignement_justifie, Qt::AlignJustify);
-    connect(mappeur_alignement, SIGNAL(mapped(const int &)), this, SLOT(change_align(const int &)));
+    connect(alignement_justifie, &QAction::triggered, [this]{ change_align(Qt::AlignJustify); });
 
     //Interligne
     QMenu *edit_interligne = menu_edition->addMenu(tr("Interligne"));
@@ -1555,39 +1544,14 @@ void DadaWord::create_menus(){
     QAction *int_medium = edit_interligne->addAction(tr("Moyen (1,5)"));
     QAction *int_large = edit_interligne->addAction(tr("Large (2)"));
     QAction *int_perso = edit_interligne->addAction(tr("Personnalisé"));
-    QSignalMapper *mappeur_interligne[4];
-    for(int i=0; i<4; i++){
-        mappeur_interligne[i] = new QSignalMapper;
-    }
-    connect(int_simple, SIGNAL(triggered()), mappeur_interligne[0], SLOT(map()));
-    connect(int_medium, SIGNAL(triggered()), mappeur_interligne[1], SLOT(map()));
-    connect(int_large, SIGNAL(triggered()), mappeur_interligne[2], SLOT(map()));
-    connect(int_perso, SIGNAL(triggered()), mappeur_interligne[3], SLOT(map()));
-    mappeur_interligne[0]->setMapping(int_simple, 1);
-    mappeur_interligne[1]->setMapping(int_medium, 150);
-    mappeur_interligne[2]->setMapping(int_large, 200);
-    mappeur_interligne[3]->setMapping(int_perso, INT_AUTRE);
-    for(int i=0; i<4; i++){
-        connect(mappeur_interligne[i], SIGNAL(mapped(int)), this, SLOT(set_interligne(int)));
-    }
 
+    connect(int_simple, &QAction::triggered, [this]{ set_interligne(1); });
+    connect(int_medium, &QAction::triggered, [this]{ set_interligne(150); });
+    connect(int_large, &QAction::triggered, [this]{ set_interligne(200); });
+    connect(int_perso, &QAction::triggered, [this]{ set_interligne(INT_AUTRE); });
 
     //Création de la barre de menu "Format"
     menu_format = menuBar()->addMenu(tr("Format"));
-    QMenu *format_encodage = menu_format->addMenu(tr("Encodage"));
-    QAction *encode_utf = format_encodage->addAction("UTF-8");
-    encode_utf->setCheckable(true);
-    QAction *encode_iso = format_encodage->addAction("ISO-8859-1");
-    encode_iso->setCheckable(true);
-    QSignalMapper *mapEncode[2];
-    mapEncode[0] = new QSignalMapper; mapEncode[1] = new QSignalMapper;
-    connect(encode_utf, SIGNAL(triggered()), mapEncode[0], SLOT(map()));
-    connect(encode_iso, SIGNAL(triggered()), mapEncode[1], SLOT(map()));
-    mapEncode[0]->setMapping(encode_utf, UTF8);
-    mapEncode[1]->setMapping(encode_iso, LATIN1);
-    connect(mapEncode[0], SIGNAL(mapped(int)), this, SLOT(changeEncode(int)));
-    connect(mapEncode[1], SIGNAL(mapped(int)), this, SLOT(changeEncode(int)));
-
 
     //Création de la barre de menu "Insertion"
     QMenu *menu_insertion = menuBar()->addMenu(tr("Insérer"));
@@ -1602,10 +1566,7 @@ void DadaWord::create_menus(){
     puce_speciale->setStatusTip(tr("Insérer une liste ordonnée"));
     puce_speciale->setShortcut(QKeySequence("Shift+F11"));
     puce_speciale->setIcon(QIcon::fromTheme("format-list-ordered", QIcon(":/menus/images/liste_ordonnee.png")));
-    QSignalMapper *mappeur_puce = new QSignalMapper;
-    connect(puce_speciale, SIGNAL(triggered()), mappeur_puce, SLOT(map()));
-    mappeur_puce->setMapping(puce_speciale, 1);
-    connect(mappeur_puce, SIGNAL(mapped(const int)), this, SLOT(createList(const int)));
+    connect(puce_speciale, &QAction::triggered, [this]{ createList(1); });
 
     incrementList_bouton = menu_insertion->addAction(tr("Incrémenter la puce"));
     incrementList_bouton->setEnabled(false);
@@ -1635,34 +1596,22 @@ void DadaWord::create_menus(){
     QAction *ajoute_ligne = menu_tableau->addAction(tr("Ajouter une ligne"));
     ajoute_ligne->setIcon(QIcon::fromTheme("edit-table-insert-row-below", QIcon(":/menus/images/add_row.png")));
     ajoute_ligne->setStatusTip(tr("Ajouter une ligne au tableau"));
-    QSignalMapper *tableau = new QSignalMapper;
-    connect(ajoute_ligne, SIGNAL(triggered()), tableau, SLOT(map()));
-    tableau->setMapping(ajoute_ligne, ROW);
-    connect(tableau, SIGNAL(mapped(const int &)), this, SLOT(tableau_add(const int &)));
+    connect(ajoute_ligne, &QAction::triggered, [this]{ tableau_add(ROW); });
 
     QAction *ajoute_colonne = menu_tableau->addAction(tr("Ajouter une colonne"));
     ajoute_colonne->setIcon(QIcon::fromTheme("edit-table-insert-column-right", QIcon(":/menus/images/add_column.jpeg")));
     ajoute_colonne->setStatusTip(tr("Ajoute une colonne au tableau"));
-    QSignalMapper *tableau2 = new QSignalMapper;
-    connect(ajoute_colonne, SIGNAL(triggered()), tableau2, SLOT(map()));
-    tableau2->setMapping(ajoute_colonne, COLL);
-    connect(tableau2, SIGNAL(mapped(const int &)), this, SLOT(tableau_add(const int &)));
+    connect(ajoute_colonne, &QAction::triggered, [this]{ tableau_add(COLL); });
 
     QAction *delete_ligne = menu_tableau->addAction(tr("Supprimer une ligne"));
     delete_ligne->setIcon(QIcon::fromTheme("edit-table-delete-row", QIcon(":/menus/images/delete_row.jpeg")));
     delete_ligne->setStatusTip(tr("Supprime une ligne précise du tableau"));
-    QSignalMapper *tableau3 = new QSignalMapper;
-    connect(delete_ligne, SIGNAL(triggered()), tableau3, SLOT(map()));
-    tableau3->setMapping(delete_ligne, ROW);
-    connect(tableau3, SIGNAL(mapped(const int &)), this, SLOT(tableau_remove(const int &)));
+    connect(delete_ligne, &QAction::triggered, [this]{ tableau_remove(ROW); });
 
     QAction *delete_colonne = menu_tableau->addAction(tr("Supprimer une colonne"));
     delete_colonne->setIcon(QIcon::fromTheme("edit-table-delete-column", QIcon(":/menus/images/delete_column.gif")));
     delete_colonne->setStatusTip(tr("Supprime une colonne précise du tableau"));
-    QSignalMapper *tableau4 = new QSignalMapper;
-    connect(delete_colonne, SIGNAL(triggered()), tableau4, SLOT(map()));
-    tableau4->setMapping(delete_colonne, COLL);
-    connect(tableau4, SIGNAL(mapped(const int &)), this, SLOT(tableau_remove(const int &)));
+    connect(delete_colonne, &QAction::triggered, [this]{ tableau_remove(COLL); });
 
     add_ddz_annexe = menu_insertion->addAction(tr("Ajouter une annexe DDZ"));
     add_ddz_annexe->setIcon(QIcon::fromTheme("archive-insert", QIcon(":/menus/images/annexe.png")));
@@ -1704,30 +1653,12 @@ void DadaWord::create_menus(){
     affichage_edition->setChecked(false);
 
     //On connecte les affichages au slot
-    QSignalMapper *mappeur_toolbar = new QSignalMapper;
-    connect(affichage_default, SIGNAL(triggered()), mappeur_toolbar, SLOT(map()));
-    mappeur_toolbar->setMapping(affichage_default, DEFAULT);
-    connect(mappeur_toolbar, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
-    QSignalMapper *mappeur_toolbar2 = new QSignalMapper;
-    connect(affichage_puces, SIGNAL(triggered()), mappeur_toolbar2, SLOT(map()));
-    mappeur_toolbar2->setMapping(affichage_puces, PUCES);
-    connect(mappeur_toolbar2, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
-    QSignalMapper *mappeur_toolbar3 = new QSignalMapper;
-    connect(affichage_tableau, SIGNAL(triggered()), mappeur_toolbar3, SLOT(map()));
-    mappeur_toolbar3->setMapping(affichage_tableau, TABLEAUX);
-    connect(mappeur_toolbar3, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
-    QSignalMapper *mappeur_toolbar4 = new QSignalMapper;
-    connect(affichage_recherche, SIGNAL(triggered()), mappeur_toolbar4, SLOT(map()));
-    mappeur_toolbar4->setMapping(affichage_recherche, RECHERCHE);
-    connect(mappeur_toolbar4, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
-    QSignalMapper *mappeur_toolbar8 = new QSignalMapper;
-    connect(affichage_format, SIGNAL(triggered()), mappeur_toolbar8, SLOT(map()));
-    mappeur_toolbar8->setMapping(affichage_format, FORMAT);
-    connect(mappeur_toolbar8, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
-    QSignalMapper *mappeur_toolbar10 = new QSignalMapper;
-    connect(affichage_edition, SIGNAL(triggered()), mappeur_toolbar10, SLOT(map()));
-    mappeur_toolbar10->setMapping(affichage_edition, EDITION);
-    connect(mappeur_toolbar10, SIGNAL(mapped(const int)), this, SLOT(hide_toolbar(const int)));
+    connect(affichage_default, &QAction::triggered, [this]{ hide_toolbar(DEFAULT); });
+    connect(affichage_puces, &QAction::triggered, [this]{ hide_toolbar(PUCES); });
+    connect(affichage_tableau, &QAction::triggered, [this]{ hide_toolbar(TABLEAUX); });
+    connect(affichage_recherche, &QAction::triggered, [this]{ hide_toolbar(RECHERCHE); });
+    connect(affichage_format, &QAction::triggered, [this]{ hide_toolbar(FORMAT); });
+    connect(affichage_edition, &QAction::triggered, [this]{ hide_toolbar(EDITION); });
 
     QAction *hideMenuBar = menu_outils->addAction(tr("Cacher la barre de menu"));
     hideMenuBar->setShortcut(QKeySequence("Ctrl+L"));
@@ -1877,20 +1808,15 @@ void DadaWord::create_menus(){
     if((QIcon::hasThemeIcon("format-text-color") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addAction(couleur_texte);
     //Mappeur pour passer la value à la fonction
-    QSignalMapper *mappeur_couleur = new QSignalMapper;
-    connect(couleur_texte, SIGNAL(triggered()), mappeur_couleur, SLOT(map()));
-    mappeur_couleur->setMapping(couleur_texte, TEXTE);
-    connect(mappeur_couleur, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    connect(couleur_texte, &QAction::triggered, [this]{ change_couleur(TEXTE); });
 
     QToolButton *button_highlight = new QToolButton;
     button_highlight->setIcon(QIcon::fromTheme("fill-color", QIcon(":/menus/images/couleur_highlight.png")));
     if((QIcon::hasThemeIcon("fill-color") || (!settings->getSettings(ToolbarIcons).toBool())))
         barre_standard->addWidget(button_highlight);
     //Mappeur 2 pour passer une valeur à la fonction
-    QSignalMapper *mappeur_couleur2 = new QSignalMapper;
-    connect(button_highlight, SIGNAL(clicked()), mappeur_couleur2, SLOT(map()));
-    mappeur_couleur2->setMapping(button_highlight, SURLIGNE);
-    connect(mappeur_couleur2, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    connect(button_highlight, &QToolButton::clicked, [this]{ change_couleur(SURLIGNE); });
+
     //Menu du QToolButton
     QMenu *menu_couleurs = new QMenu;
     //Jaune
@@ -1928,28 +1854,13 @@ void DadaWord::create_menus(){
     label_vertf->setStyleSheet("background-color: #008000");
     couleur_vertf->setDefaultWidget(label_vertf);
     menu_couleurs->addAction(couleur_vertf);
+
     //Connects
-    QSignalMapper *mappeur_couleur3 = new QSignalMapper;
-    //Vert clair
-    connect(couleur_vertc, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
-    mappeur_couleur3->setMapping(couleur_vertc, VERTC);
-    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
-    //Vert foncé
-    connect(couleur_vertf, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
-    mappeur_couleur3->setMapping(couleur_vertf, VERTF);
-    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
-    //Jaune
-    connect(couleur_jaune, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
-    mappeur_couleur3->setMapping(couleur_jaune, JAUNE);
-    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
-    //Rouge
-    connect(couleur_rouge, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
-    mappeur_couleur3->setMapping(couleur_rouge, ROUGE);
-    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
-    //Bleu
-    connect(couleur_bleu, SIGNAL(triggered()), mappeur_couleur3, SLOT(map()));
-    mappeur_couleur3->setMapping(couleur_bleu, BLEU);
-    connect(mappeur_couleur3, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    connect(couleur_vertc, &QWidgetAction::triggered, [this]{ change_couleur(VERTC); });
+    connect(couleur_vertf, &QWidgetAction::triggered, [this]{ change_couleur(VERTF); });
+    connect(couleur_jaune, &QWidgetAction::triggered, [this]{ change_couleur(JAUNE); });
+    connect(couleur_rouge, &QWidgetAction::triggered, [this]{ change_couleur(ROUGE); });
+    connect(couleur_bleu, &QWidgetAction::triggered, [this]{ change_couleur(BLEU); });
 
     button_highlight->setMenu(menu_couleurs);
 
@@ -1976,10 +1887,7 @@ void DadaWord::create_menus(){
     connect(sousExposant, SIGNAL(triggered(bool)), this, SLOT(setSubScript(bool)));
     menu_format->addAction(couleur_texte);
     QAction *action_highlight = new QAction(QIcon::fromTheme("fill-color", QIcon(":/menus/images/couleur_highlight.png")), tr("Surligner"), menu_format);
-    QSignalMapper *mappeur_couleur4 = new QSignalMapper;
-    connect(action_highlight, SIGNAL(triggered()), mappeur_couleur4, SLOT(map()));
-    mappeur_couleur4->setMapping(action_highlight, SURLIGNE);
-    connect(mappeur_couleur4, SIGNAL(mapped(const int &)), this, SLOT(change_couleur(const int &)));
+    connect(action_highlight, &QAction::triggered, [this]{ change_couleur(SURLIGNE); });
     menu_format->addAction(action_highlight);
 
     //Création de la toolbar de format
@@ -2035,15 +1943,11 @@ void DadaWord::create_menus(){
     QAction *make_recherche = barre_recherche->addAction(tr("Rechercher"));
     make_recherche->setIcon(QIcon::fromTheme("dialog-ok", QIcon(":/menus/images/ok.png")));
     make_recherche->setStatusTip(tr("Rechercher dans le document"));
-    QSignalMapper *mappeur_toolbar5 = new QSignalMapper;
-    connect(make_recherche, SIGNAL(triggered()), mappeur_toolbar5, SLOT(map()));
-    mappeur_toolbar5->setMapping(make_recherche, QTOOLBAR);
-    connect(mappeur_toolbar5, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
+    connect(make_recherche, &QAction::triggered, [this]{ make_search(QTOOLBAR); });
+
     //On connect aussi la QLineEdit
-    QSignalMapper *mappeur_toolbar9 = new QSignalMapper;
-    connect(champ_recherche, SIGNAL(returnPressed()), mappeur_toolbar9, SLOT(map()));
-    mappeur_toolbar9->setMapping(champ_recherche, QTOOLBAR);
-    connect(mappeur_toolbar9, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
+    connect(champ_recherche, &QLineEdit::returnPressed, [this]{ make_search(QTOOLBAR); });
+
     QAction *recherche_avant = barre_recherche->addAction(tr("Occurence précédente"));
     recherche_avant->setIcon(QIcon::fromTheme("go-previous", QIcon(":/menus/images/avant.png")));
     recherche_avant->setStatusTip(tr("Recherche l'occurence précédente"));
@@ -2054,14 +1958,8 @@ void DadaWord::create_menus(){
     ferme_recherche->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/exit.png")));
     ferme_recherche->setStatusTip(tr("Ferme la barre d'outils de recherche"));
     connect(ferme_recherche, SIGNAL(triggered()), this, SLOT(hide_searchbar()));
-    QSignalMapper *mappeur_toolbar6 = new QSignalMapper;
-    connect(recherche_avant, SIGNAL(triggered()), mappeur_toolbar6, SLOT(map()));
-    mappeur_toolbar6->setMapping(recherche_avant, DROITE);
-    connect(mappeur_toolbar6, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
-    QSignalMapper *mappeur_toolbar7 = new QSignalMapper;
-    connect(recherche_apres, SIGNAL(triggered()), mappeur_toolbar7, SLOT(map()));
-    mappeur_toolbar7->setMapping(recherche_apres, GAUCHE);
-    connect(mappeur_toolbar7, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
+    connect(recherche_avant, &QAction::triggered, [this]{ make_search(DROITE); });
+    connect(recherche_apres, &QAction::triggered, [this]{ make_search(GAUCHE); });
 
     //Barre d'édition
     barre_edition = new QToolBar;
@@ -2087,7 +1985,7 @@ void DadaWord::openTab(bool fichier, QString titre){
     QTextEdit *document_onglet = new QTextEdit;
     document_onglet->installEventFilter(this);
     document_onglet->setContextMenuPolicy(Qt::CustomContextMenu); //Activation du menu personnalisé
-    connect(document_onglet, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(affiche_menu_perso()));//Connection au slot d'affichage du menu
+    connect(document_onglet, &QWidget::customContextMenuRequested, [&]{ affiche_menu_perso(); });//Connection au slot d'affichage du menu
     connect(document_onglet, SIGNAL(cursorPositionChanged()), this, SLOT(curseur_change()));
     QTextDocument *doc_principal_onglet = new QTextDocument;
     document_onglet->setDocument(doc_principal_onglet);
@@ -2819,10 +2717,8 @@ void DadaWord::recherche(bool remplacer){
 
     //Connects
     connect(bouton_annuler, SIGNAL(clicked()), dialog_recherche, SLOT(close()));
-    QSignalMapper *mappeur_x = new QSignalMapper;
-    connect(bouton_recherche, SIGNAL(clicked()), mappeur_x, SLOT(map()));
-    mappeur_x->setMapping(bouton_recherche, 196);//Bug si on passe "FENETRE" -> je passe un int absurde en attendant de trouver le bug
-    connect(mappeur_x, SIGNAL(mapped(const int)), this, SLOT(make_search(const int)));
+    // TODO Investigate this old bug
+    connect(bouton_recherche, &QPushButton::clicked, [this]{ make_search(196); }); //Bug si on passe "FENETRE" -> je passe un int absurde en attendant de trouver le bug
 
     dialog_recherche->setLayout(layout);
     dialog_recherche->show();
@@ -3259,7 +3155,7 @@ void DadaWord::html_highlight(){
 //Menu personnalisé
 void DadaWord::affiche_menu_perso(){
     //Vérification de l'éditeur
-    QTextEdit *editor = qobject_cast<QTextEdit *>(sender());
+    QTextEdit *editor = qobject_cast<QTextEdit *>(this->zone_centrale->activeSubWindow()->widget());
     if(!editor){
         return;
     }
@@ -3281,28 +3177,19 @@ void DadaWord::affiche_menu_perso(){
         //S'il y a des propositions, on ajoute un séparateur
         menu_contextuel->addSeparator();
         //On ajoute "Ignorer" et "Ajouter au dictionnaire" au menu
-        QSignalMapper *orth1, *orth2, *orth3;  orth1 = new QSignalMapper;  orth2 = new QSignalMapper; orth3 = new QSignalMapper;
         QAction *mc_ignore = menu_contextuel->addAction(tr("Ignorer ce mot"));
         QAction *mc_ignore_def = menu_contextuel->addAction(tr("Ignorer définitivement"));
         QAction *mc_add = menu_contextuel->addAction(tr("Ajouter au dictionnaire"));
-        connect(mc_ignore, SIGNAL(triggered()), orth1, SLOT(map()));
-        orth1->setMapping(mc_ignore, mot);
-        connect(orth1, SIGNAL(mapped(QString)), orthographe, SLOT(ignore(QString)));
-        connect(mc_add, SIGNAL(triggered()), orth2, SLOT(map()));
-        orth2->setMapping(mc_add, mot);
-        connect(orth2, SIGNAL(mapped(QString)), orthographe, SLOT(addDico(QString)));
-        connect(mc_ignore_def, SIGNAL(triggered()), orth3, SLOT(map()));
-        orth3->setMapping(mc_ignore_def, mot);
-        connect(orth3, SIGNAL(mapped(QString)), orthographe, SLOT(ignoreDef(QString)));
+        connect(mc_ignore, &QAction::triggered, [&]{ orthographe->ignore(mot); });
+        connect(mc_add, &QAction::triggered, [&]{ orthographe->addDico(mot); });
+        connect(mc_ignore_def, &QAction::triggered, [&]{ orthographe->ignoreDef(mot); });
+
         QMenu *menu_contextuel_remplacement = menu_contextuel->addMenu(tr("Autocorrection"));
         if(propositions.size() > 0){
             for(int i=0; i<propositions.size(); i++){
                 QAction *temp = new QAction(propositions.at(i), menu_contextuel_remplacement);
                 menu_contextuel_remplacement->addAction(temp);
-                QSignalMapper *mapperAutocorrection = new QSignalMapper;
-                connect(temp, SIGNAL(triggered()), mapperAutocorrection, SLOT(map()));
-                mapperAutocorrection->setMapping(temp, propositions.at(i));
-                connect(mapperAutocorrection, SIGNAL(mapped(QString)), this, SLOT(orth_autocorrection(QString)));
+                connect(temp, &QAction::triggered, [&]{ orth_autocorrection(propositions.at(i)); });
             }
         }
         else{
@@ -3534,10 +3421,7 @@ void DadaWord::rm_annexe(){
             rm_button[i]->setFlat(true);
             rm_button[i]->setIcon(QIcon::fromTheme("dialog-close", QIcon(":/menus/images/sortir.png")));
             rm_button[i]->setText(annexes.at(i));
-            QSignalMapper *mappeur = new QSignalMapper;
-            connect(rm_button[i], SIGNAL(clicked()), mappeur, SLOT(map()));
-            mappeur->setMapping(rm_button[i], annexes.at(i));
-            connect(mappeur, SIGNAL(mapped(QString)), this, SLOT(make_rm_annexe(QString)));
+            connect(rm_button[i], &QPushButton::clicked, [&]{ make_rm_annexe(annexes.at(i)); });
             layout->addWidget(rm_button[i], i+1, 0, 1, 1, Qt::AlignLeft);
         }
 

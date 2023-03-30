@@ -33,7 +33,6 @@
 #include <QPrintPreviewDialog>
 #include <QProgressBar>
 #include <QScrollArea>
-#include <QSignalMapper>
 #include <QSpinBox>
 #include <QStandardPaths>
 #include <QStatusBar>
@@ -77,7 +76,7 @@ public slots:
 signals:
     void deleteAnnexes();
 
-private slots:
+public slots:
     void showAbout();
     void changeFont(QFont nouvelle_police);
     void changeFont(QString police);
@@ -98,7 +97,7 @@ private slots:
     bool eventFilter(QObject *, QEvent *);
     void incrementList();
     bool desincrementList();
-    void openTab(bool fichier = false, QString titre = "null");
+    void openTab(bool fichier = false, QString titre = "");
     void indicateur_modifications();
     void changement_focus(QMdiSubWindow *fenetre_activee);
     void closeAll();
@@ -198,7 +197,7 @@ private:
     QLineEdit *champ_recherche, *champ_recherche2;
     QToolBar *barre_recherche;
     QAction *affichage_recherche;
-    QString type_liste;
+    QString listType;
     QToolBar *bar_format;
     QComboBox *nom_format;
     QAction *affichage_format;

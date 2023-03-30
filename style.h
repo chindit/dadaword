@@ -14,7 +14,6 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QSettings>
-#include <QSignalMapper>
 #include <QSpinBox>
 #include <QStackedWidget>
 #include <QStringList>

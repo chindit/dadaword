@@ -203,14 +203,8 @@ void Style::affiche_fen(){
         color_background.at(i)->setText(tr("Transparent"));
         color_foreground.at(i)->setText("#000000");
 
-        QSignalMapper *mappeur = new QSignalMapper;
-        QSignalMapper *mappeur2 = new QSignalMapper;
-        connect(buttonForeground, SIGNAL(clicked()), mappeur, SLOT(map()));
-        mappeur->setMapping(buttonForeground, 0);
-        connect(mappeur, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
-        connect(buttonBackground, SIGNAL(clicked()), mappeur2, SLOT(map()));
-        mappeur2->setMapping(buttonBackground, 1);
-        connect(mappeur2, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
+        connect(buttonForeground, &QPushButton::clicked, [this]{ change_couleur(0); });
+        connect(buttonBackground, &QPushButton::clicked, [this]{ change_couleur(1); });
 
         QCheckBox *boxBold = new QCheckBox;
         QCheckBox *boxItalic = new QCheckBox;
@@ -342,14 +336,8 @@ void Style::ajoute_style(){
     color_background.at(nb_styles-1)->setText("#FFFFFF");
     color_foreground.at(nb_styles-1)->setText("#000000");
 
-    QSignalMapper *mappeur = new QSignalMapper;
-    QSignalMapper *mappeur2 = new QSignalMapper;
-    connect(buttonForeground, SIGNAL(clicked()), mappeur, SLOT(map()));
-    mappeur->setMapping(buttonForeground, 0);
-    connect(mappeur, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
-    connect(buttonBackground, SIGNAL(clicked()), mappeur2, SLOT(map()));
-    mappeur2->setMapping(buttonBackground, 1);
-    connect(mappeur2, SIGNAL(mapped(int)), this, SLOT(change_couleur(int)));
+    connect(buttonForeground, &QPushButton::clicked, [this]{ change_couleur(0); });
+    connect(buttonBackground, &QPushButton::clicked, [this]{ change_couleur(1); });
 
     QCheckBox *boxBold = new QCheckBox;
     QCheckBox *boxItalic = new QCheckBox;

@@ -34,8 +34,6 @@ public slots:
     void remplacer(QString nmot = "");
     void setDico(QString langue = "");
     void ignoreDef(QString mot = "");
-    
-private slots:
     void checkWord();
     void ignore(QString mot = "");
     void addDico(QString mot = "");
